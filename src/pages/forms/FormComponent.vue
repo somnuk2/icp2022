@@ -466,11 +466,25 @@
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
+                        <q-checkbox
+                          left-label
+                          v-model="pdpa"
+                          label="ข้าพเจ้ายินยอมให้ใช้ข้อมูลส่วนบุคคลทั้งหมดข้างต้นนี้เพื่อเป็นประโยชน์ต่อตัวข้าพเจ้าและทางสมาคม"
+                          checked-icon="task_alt"
+                          unchecked-icon="highlight_off"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12 q-pa-md row justify-center"
+                      >
                         <q-btn
                           label="บันทึก"
                           type="submit"
                           color="primary"
                           icon="save"
+                          :disable="!pdpa"
                         />
                         <q-btn
                           label="ยกเลิก"
@@ -571,6 +585,7 @@ export default {
   components: {},
   data() {
     return {
+      pdpa: ref(false),
       picked: new Date(),
       // url_api_institute: "http://localhost:85/icp2022/api-institute.php",
       // url_api_member: "http://localhost:85/icp2022/api-member.php",

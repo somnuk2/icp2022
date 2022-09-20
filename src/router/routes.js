@@ -9,13 +9,20 @@ import LoginPage1 from "pages/registration/LoginPage1.vue";
 import LogoutPage from "pages/registration/LogoutPage.vue";
 import RegistrationPage from "pages/registration/RegistrationPage.vue";
 import MainLayout from "layouts/MainLayout.vue";
+import IndexPage from "pages/IndexPage.vue";
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: MainLayout,
-    children: [{ path: "/", component: () => import("pages/IndexPage.vue") }],
+    children: [
+      {
+        path: "/",
+        name: "IndexPage",
+        component: IndexPage,
+      },
+    ],
   },
 
   // Always leave this as last one,

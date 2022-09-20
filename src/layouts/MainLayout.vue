@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          รหัส :
+          ICP :
           <label for="member_id">{{ $store.getters.myMember_id }}</label>
           /
           <label for="myName">{{ $store.getters.myName }}</label>
@@ -43,10 +43,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      v-if="$store.getters.myName.length > 0"
+    >
       <q-list>
-        <q-item-label header> ICP SCORE CARD </q-item-label>
-
+        <q-item-label header> Individual Career Planning (ICP)</q-item-label>
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -54,7 +58,6 @@
         />
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>

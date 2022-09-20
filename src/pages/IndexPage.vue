@@ -1,6 +1,7 @@
 <template>
   <q-page class="flex flex-center">
-    <h3>ICP score card</h3>
+    <h3>Individual Career Planning (ICP)</h3>
+    <br />
   </q-page>
 </template>
 
