@@ -156,15 +156,18 @@
                       </div>
                     </div>
                     <div class="row">
+                      <!-- ปุ่มควบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
+                        <!-- บันทึก/แก้ไข -->
                         <q-btn
                           label="บันทึก"
                           type="submit"
                           color="primary"
                           icon="save"
                         />
+                        <!-- ยกเลิก -->
                         <q-btn
                           label="ยกเลิก"
                           type="reset"
@@ -173,20 +176,39 @@
                           class="q-ml-sm"
                           icon="clear"
                         />
+                        <!-- ออก -->
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
+                        />
+                        <!-- ย้อนกลับ -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_previous"
-                          @click="onPrevious"
-                        />
+                          to="/FormReport"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >กลับฟอร์มรายงานการพัฒนาตนเอง</q-tooltip
+                          >
+                        </q-btn>
+                        <!-- ไปรายงานการประเมินตนเอง -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_next"
-                          @click="onNext"
-                        />
+                          to="/FormPivotTable"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >ไปฟอร์มรายงานการประเมินตนเอง</q-tooltip
+                          >
+                        </q-btn>
                       </div>
                     </div>
                     <div class="row">
@@ -252,6 +274,7 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 
 export default {
   name: "FormSelfAssessment",
@@ -387,9 +410,35 @@ export default {
       perform: {
         options: [],
       },
+      $q: useQuasar(),
     };
   },
   methods: {
+    // confirm(information) {
+    //   var con = false;
+    //   this.$q
+    //     .dialog({
+    //       title: "ยืนยัน",
+    //       message: information,
+    //       persistent: true,
+    //       cancel: true,
+    //     })
+    //     .onOk(() => {
+    //       con = true;
+    //       console.log(">>>> OK:", con);
+    //     })
+    //     .onOk(() => {
+    //       con = true;
+    //       console.log(">>>> OK:", con);
+    //     })
+    //     .onCancel(() => {
+    //       // console.log('>>>> Cancel')
+    //       console.log(">>>> Cancel:", con);
+    //     })
+    //     .onDismiss(() => {
+    //       // console.log('I am triggered on both OK and Cancel')
+    //     });
+    // },
     resetForm() {
       this.status = "บันทึก";
       this.isEdit = false;
@@ -415,49 +464,65 @@ export default {
     },
     submitForm() {
       if (!this.isEdit) {
-        if (confirm("คุณต้องการเพิ่มข้อมูลการประเมินตนเองหรือไม่ ?")) {
-          console.log("บันทึกข้อมูล");
-          console.log("qualification:", this.selfAssessment);
-          const newSelfAssessment = {
-            self_assessment_date: this.self_assessment_date,
-            qa_plan_career_id: this.qa_plan_career_id,
-            perform_id: this.perform_id,
-          };
-          this.$emit("saveData", newSelfAssessment);
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "insert",
+        // if (this.confirm("คุณต้องการเพิ่มข้อมูลการประเมินตนเองหรือไม่ ?")) {
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการเพิ่มข้อมูลการประเมินตนเองหรือไม่ ?",
+            persistent: true,
+            cancel: true,
+          })
+          .onOk(() => {
+            console.log("บันทึกข้อมูล");
+            console.log("qualification:", this.selfAssessment);
+            const newSelfAssessment = {
               self_assessment_date: this.self_assessment_date,
               qa_plan_career_id: this.qa_plan_career_id,
               perform_id: this.perform_id,
-            })
-            .then((res) => {
-              console.log("Insert:", response.data);
-              this.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+            };
+            this.$emit("saveData", newSelfAssessment);
+            axios
+              .post(this.url_api_self_assessment, {
+                action: "insert",
+                self_assessment_date: this.self_assessment_date,
+                qa_plan_career_id: this.qa_plan_career_id,
+                perform_id: this.perform_id,
+              })
+              .then((res) => {
+                console.log("Insert:", res.data);
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
       } else {
-        if (confirm("คุณต้องการแก้ไขข้อมูลการประเมินตนเองหรือไม่ ?")) {
-          console.log("Update ข้อมูลการประเมินตนเอง");
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "update",
-              self_assessment_id: this.self_assessment_id,
-              qa_plan_career_id: this.qa_plan_career_id,
-              perform_id: this.perform_id,
-              self_assessment_date: this.self_assessment_date,
-            })
-            .then((response) => {
-              console.log("Update:", response.data);
-              this.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+        // if (this.confirm("คุณต้องการแก้ไขข้อมูลการประเมินตนเองหรือไม่ ?")) {
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการแก้ไขข้อมูลการประเมินตนเองหรือไม่ ?",
+            persistent: true,
+            cancel: true,
+          })
+          .onOk(() => {
+            console.log("Update ข้อมูลการประเมินตนเอง");
+            axios
+              .post(this.url_api_self_assessment, {
+                action: "update",
+                self_assessment_id: this.self_assessment_id,
+                qa_plan_career_id: this.qa_plan_career_id,
+                perform_id: this.perform_id,
+                self_assessment_date: this.self_assessment_date,
+              })
+              .then((response) => {
+                console.log("Update:", response.data);
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
       }
     },
     OnEdit(self_assessment_id) {
@@ -488,25 +553,36 @@ export default {
         });
     },
     onDelete(self_assessment_id, self_assessment_date) {
-      if (
-        confirm(
-          "คุณต้องการลบผลการประเมินวัน " + self_assessment_date + " หรือไม่ ?"
-        )
-      ) {
-        var self = this;
-        axios
-          .post(this.url_api_self_assessment, {
-            action: "delete",
-            self_assessment_id: self_assessment_id,
-          })
-          .then(function (response) {
-            console.log(response);
-            self.getUpdate();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      // if (
+      //   this.confirm(
+      //     "คุณต้องการลบผลการประเมินวัน " + self_assessment_date + " หรือไม่ ?"
+      //   )
+      // ) {
+      this.$q
+        .dialog({
+          title: "ยืนยัน",
+          message:
+            "คุณต้องการลบผลการประเมินวัน " +
+            self_assessment_date +
+            " หรือไม่ ?",
+          persistent: true,
+          cancel: true,
+        })
+        .onOk(() => {
+          var self = this;
+          axios
+            .post(this.url_api_self_assessment, {
+              action: "delete",
+              self_assessment_id: self_assessment_id,
+            })
+            .then(function (response) {
+              console.log(response);
+              self.getUpdate();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
     },
     onNext() {
       this.$router.replace({ name: "FormPivotTable" });
@@ -560,11 +636,11 @@ export default {
       this.getQualification();
     },
     getQualification() {
-      console.log(" แสดงข้อมูลคุณสมบัติ ", this.plan_career.options.value);
+      console.log(" แสดงข้อมูลคุณสมบัติ ", this.plan_career_id);
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
-          action: "get_career_qualifiation_by_plan_career_id",
+          action: "get_qa_plan_career_by_plan_career_id",
           plan_career_id: this.plan_career_id,
         })
         .then(function (res) {

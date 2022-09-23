@@ -39,6 +39,7 @@
                             label="ยืนยัน"
                             icon="check_box"
                             @Click="confirm()"
+                            to="/"
                           />
                           <q-btn
                             class="btn btn-dark btn-lg btn-block"
@@ -46,7 +47,7 @@
                             color="primary"
                             label="ยกเลิก"
                             icon="dangerous"
-                            @Click="cancel()"
+                            to="/"
                           />
                         </div>
                       </div>
@@ -75,10 +76,10 @@ export default {
       this.$store.commit("setMyMember_id", 0);
       this.$store.commit("setMyName", "");
       this.$store.commit("setMyStatus", "");
-      this.$router.replace({ name: "home" });
+      // this.$router.replace({ name: "home" });
     },
     cancel() {
-      this.$router.replace({ name: "home" });
+      // this.$router.replace({ name: "home" });
     },
   },
 };

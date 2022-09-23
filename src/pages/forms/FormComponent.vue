@@ -88,7 +88,7 @@
                           v-model="individual.card_id"
                           label="เลขบัตรประชน"
                           clearable
-                          mask="#####-#####-###"
+                          mask="#-####-#####-###"
                           fill-mask="#"
                         >
                           <template v-slot:prepend>
@@ -105,7 +105,7 @@
                           bottom-slots
                           v-model="individual.telephone"
                           label="หมายเลขโทรศัพท์"
-                          mask="(###)##-###-####"
+                          mask="(##)##-###-###"
                           fill-mask="#"
                           clearable
                         >
@@ -469,16 +469,18 @@
                         <q-checkbox
                           left-label
                           v-model="pdpa"
-                          label="ข้าพเจ้ายินยอมให้ใช้ข้อมูลส่วนบุคคลทั้งหมดข้างต้นนี้เพื่อเป็นประโยชน์ต่อตัวข้าพเจ้าและทางสมาคม"
+                          label="ข้าพเจ้ายินยอมให้ใช้ข้อมูลส่วนบุคคล เพื่อเป็นประโยชน์ต่อตัวข้าพเจ้าและแผนงานกลไกจ้างงานคนพิการเข้มแข็งและเตรียมความพร้อมพนักงานสู่การเกษียณแบบบูรณาการ สำนักงานกองทุนสนับสนุนการสร้างเสริมสุขภาพ (สสส.)"
                           checked-icon="task_alt"
                           unchecked-icon="highlight_off"
                         />
                       </div>
                     </div>
                     <div class="row">
+                      <!-- ปุ่มตวบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
+                        <!-- บันทึก/แก้ไข -->
                         <q-btn
                           label="บันทึก"
                           type="submit"
@@ -486,6 +488,7 @@
                           icon="save"
                           :disable="!pdpa"
                         />
+                        <!-- ยกเลิก -->
                         <q-btn
                           label="ยกเลิก"
                           type="reset"
@@ -494,20 +497,39 @@
                           class="q-ml-sm"
                           icon="clear"
                         />
+                        <!-- ออก -->
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
+                        />
+                        <!-- กลับฟอร์มการลงทะเบียน -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_previous"
-                          @click="onPrevious"
-                        />
+                          to="/RegistrationPage"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >กลับฟอร์มการลงทะเบียน</q-tooltip
+                          >
+                        </q-btn>
+                        <!-- ไปฟอร์มกำหนดอาชีพเป้าหมาย -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_next"
-                          @click="onNext"
-                        />
+                          to="/FormPlanCareer"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >ไปฟอร์มกำหนดอาชีพเป้าหมาย</q-tooltip
+                          >
+                        </q-btn>
                       </div>
                     </div>
                   </q-form>
@@ -578,6 +600,7 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 
 //EP-ID	Name	Study Faculty	University	Disibility type
 export default {
@@ -599,7 +622,7 @@ export default {
       url_api_disability: "https://icp2022.net/api-disability.php",
       url_api_project: "https://icp2022.net/api-project.php",
 
-      title: "กำหนดข้อมูลส่วนตัว",
+      title: "ข้อมูลส่วนตัว",
       email: "",
       username: "",
       password: "",
@@ -870,29 +893,32 @@ export default {
       //       : null;
       //   },
       // },
+      $q: useQuasar(),
     };
   },
 
   methods: {
     resetForm() {
-      this.status = "บันทึก";
-      this.isEdit = false;
       console.log("ยกเลิกการบันทึกข้อมูล");
-      this.individual.individual_id = "";
+      // this.individual.individual_id = "";
       // ข้อมูลส่วนตัว
       // this.individual.member_id = "";
       this.individual.birthday = "";
       this.individual.card_id = "";
       this.individual.telephone = "";
       // ข้อมูลการศึกษา
-      this.individual.name = "";
+      // this.individual.name = "";
       this.individual.year = "";
       this.individual.date = "";
       this.individual.degree = "";
       this.individual.study_faculty = "";
+      this.department.value = "";
+      this.department.label = "";
       this.individual.university = "";
       // ข้อมูลความพิการ
-      this.individual.disability_type = "";
+      this.individual.is_disability = "0";
+      this.disability.value = "";
+      this.disability.label = "";
       this.individual.dis_description = "";
       // ข้อมูลโครงการ
       this.individual.project_id = "";
@@ -900,31 +926,16 @@ export default {
 
     submitForm() {
       if (!this.isEdit) {
-        if (confirm("คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?")) {
-          console.log("บันทึกข้อมูล:", this.individual);
-          const newindividual = {
-            individual_id: this.individual.individual_id,
-            // ข้อมูลส่วนตัว
-            member_id: this.individual.member_id,
-            birthday: this.individual.birthday,
-            card_id: this.individual.card_id,
-            telephone: this.individual.telephone,
-            // ข้อมูลการศึกษา
-            department_id: this.department.value,
-            is_graduate: this.is_graduate,
-            year: this.individual.year,
-            date: this.individual.date,
-            // ข้อมูลความพิการ
-            disability_id: this.disability.value,
-            dis_description: this.individual.dis_description,
-            // ข้อมูลโครงการ
-            project_id: this.project.value,
-          };
-          this.$emit("saveData", newindividual);
-
-          axios
-            .post(this.url_api_individual, {
-              action: "insert",
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?",
+            cancel: true,
+            persistent: true,
+          })
+          .onOk(() => {
+            console.log("บันทึกข้อมูล:", this.individual);
+            const newindividual = {
               individual_id: this.individual.individual_id,
               // ข้อมูลส่วนตัว
               member_id: this.individual.member_id,
@@ -933,39 +944,7 @@ export default {
               telephone: this.individual.telephone,
               // ข้อมูลการศึกษา
               department_id: this.department.value,
-              is_graduate: this.individual.is_graduate,
-              year: this.individual.year,
-              date: this.individual.date,
-              // ข้อมูลความพิการ
-              disability_id: this.disability.value,
-              dis_description: this.individual.dis_description,
-              // ข้อมูลโครงการ
-              project_id: this.project.value,
-            })
-            .then((res) => {
-              console.log(res);
-              // this.resetForm();
-              this.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-      } else {
-        if (confirm("คุณต้องการบันทึกการเแก้ไขข้อมูลหรือไม่?")) {
-          console.log("บันทึกการแก้ไข project:", this.project.value);
-          axios
-            .post(this.url_api_individual, {
-              action: "update",
-              individual_id: this.individual.individual_id,
-              // ข้อมูลส่วนตัว
-              member_id: this.individual.member_id,
-              birthday: this.individual.birthday,
-              card_id: this.individual.card_id,
-              telephone: this.individual.telephone,
-              // ข้อมูลการศึกษา
-              department_id: this.department.value,
-              is_graduate: this.individual.is_graduate,
+              is_graduate: this.is_graduate,
               year: this.individual.year,
               date: this.individual.date,
               // ข้อมูลความพิการ
@@ -974,16 +953,79 @@ export default {
               dis_description: this.individual.dis_description,
               // ข้อมูลโครงการ
               project_id: this.project.value,
-            })
-            .then((response) => {
-              console.log(response);
-              // this.resetForm();
-              this.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+            };
+            this.$emit("saveData", newindividual);
+
+            axios
+              .post(this.url_api_individual, {
+                action: "insert",
+                individual_id: this.individual.individual_id,
+                // ข้อมูลส่วนตัว
+                member_id: this.individual.member_id,
+                birthday: this.individual.birthday,
+                card_id: this.individual.card_id,
+                telephone: this.individual.telephone,
+                // ข้อมูลการศึกษา
+                department_id: this.department.value,
+                is_graduate: this.individual.is_graduate,
+                year: this.individual.year,
+                date: this.individual.date,
+                // ข้อมูลความพิการ
+                is_disability: this.individual.is_disability,
+                disability_id: this.disability.value,
+                dis_description: this.individual.dis_description,
+                // ข้อมูลโครงการ
+                project_id: this.project.value,
+              })
+              .then((res) => {
+                console.log(res);
+                // this.resetForm();
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
+      } else {
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการบันทึกการเแก้ไขข้อมูลหรือไม่?",
+            cancel: true,
+            persistent: true,
+          })
+          .onOk(() => {
+            console.log("บันทึกการแก้ไข project:", this.project.value);
+            axios
+              .post(this.url_api_individual, {
+                action: "update",
+                individual_id: this.individual.individual_id,
+                // ข้อมูลส่วนตัว
+                member_id: this.individual.member_id,
+                birthday: this.individual.birthday,
+                card_id: this.individual.card_id,
+                telephone: this.individual.telephone,
+                // ข้อมูลการศึกษา
+                department_id: this.department.value,
+                is_graduate: this.individual.is_graduate,
+                year: this.individual.year,
+                date: this.individual.date,
+                // ข้อมูลความพิการ
+                is_disability: this.individual.is_disability,
+                disability_id: this.disability.value,
+                dis_description: this.individual.dis_description,
+                // ข้อมูลโครงการ
+                project_id: this.project.value,
+              })
+              .then((response) => {
+                console.log(response);
+                // this.resetForm();
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
       }
     },
     editUser(id) {
@@ -1030,22 +1072,29 @@ export default {
         });
     },
     deleteUser(id, name) {
-      if (confirm("คุณต้องการลบ [ " + id + "-" + name + " ] หรือไม่ ?")) {
-        var self = this;
-        axios
-          .post(this.url_api_individual, {
-            action: "delete",
-            individual_id: id,
-          })
-          .then(function (response) {
-            console.log(response);
-            // self.resetForm();
-            self.getUpdate();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      this.$q
+        .dialog({
+          title: "ยืนยัน",
+          message: "คุณต้องการลบ [ " + id + "-" + name + " ] หรือไม่ ?",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(() => {
+          var self = this;
+          axios
+            .post(this.url_api_individual, {
+              action: "delete",
+              individual_id: id,
+            })
+            .then(function (response) {
+              console.log(response);
+              // self.resetForm();
+              self.getUpdate();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
     },
     getUpdate() {
       var self = this;

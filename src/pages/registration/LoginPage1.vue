@@ -15,7 +15,7 @@
                 </h4>
               </q-card-section>
               <div class="row">
-                <div class="col-md-6 col-xs-12 q-pa-md">
+                <div class="col-md-5 col-xs-12 q-pa-md">
                   <q-img
                     placeholder-src="~assets/images/pics_topic_103.jpg"
                     src="~assets/images/pics_topic_103.jpg"
@@ -23,7 +23,7 @@
                   ></q-img>
                 </div>
 
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-7 col-xs-12">
                   <div class="q-pa-md">
                     <!-- <div
                       class="text-h6 q-pb-md text-blue-8 text-center text-weight-bolder"
@@ -43,7 +43,7 @@
                         type="email"
                         lazy-rules
                         :rules="[this.required, this.isEmail, this.short]"
-                        label="Email"
+                        label="อีเมล:"
                       >
                         <template v-slot:prepend>
                           <q-icon name="email" />
@@ -72,7 +72,7 @@
                         :type="passwordFieldType"
                         lazy-rules
                         :rules="[this.required, this.short]"
-                        label="รหัสผ่าน"
+                        label="รหัสผ่าน:"
                       >
                         <template v-slot:prepend>
                           <q-icon name="lock" />
@@ -111,17 +111,25 @@
                       <div>
                         <q-btn
                           icon="login"
-                          label="Login"
+                          label="เข้าสู่ระบบ"
                           type="submit"
                           color="primary"
                         />
                         <q-btn
                           icon="assignment_ind"
-                          label="SIGN UP"
+                          label="ลงทะเบียน"
                           type="reset"
                           color="primary"
                           flat
                           class="q-ml-sm"
+                        />
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
                         />
                       </div>
                     </q-form>
@@ -250,6 +258,9 @@ export default {
     },
     onRegister() {
       this.$router.replace({ name: "RegistrationPage" });
+    },
+    OnCancel() {
+      this.$router.replace({ name: "home" });
     },
     createState() {
       this.$store.commit("setMyAuthenticate", false);

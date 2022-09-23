@@ -70,7 +70,13 @@ import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: "กำหนดข้อมูลส่วนตัว",
+    title: "การลงทะเบียน",
+    caption: "ข้อมูลการลงทะเบียน",
+    icon: "perm_identity",
+    link: "/RegistrationPage",
+  },
+  {
+    title: "กรอกข้อมูลส่วนตัว",
     caption: "การศึกษา ความพิการ",
     icon: "lock_outline",
     link: "/FormComponent",

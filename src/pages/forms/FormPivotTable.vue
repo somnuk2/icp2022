@@ -93,20 +93,37 @@
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
+                        <!-- ออก -->
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
+                        />
+                        <!-- ย้อนกลับ -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_previous"
-                          @click="onPrevious"
-                        />
-                        <q-btn
+                          to="/FormSelfAssessment"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >กลับฟอร์มการประเมินตนเอง</q-tooltip
+                          >
+                        </q-btn>
+                        <!-- ไปข้างหน้า -->
+                        <!-- <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_next"
                           @click="onNext"
-                        />
+                        >
+                          <q-tooltip class="bg-accent">ไปข้างหน้า</q-tooltip>
+                        </q-btn> -->
                       </div>
                     </div>
                     <!-- ตารางรายงานการประเมินตนเอง -->
@@ -224,6 +241,7 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
+
 export default {
   name: "FormPivotTable",
   components: {},

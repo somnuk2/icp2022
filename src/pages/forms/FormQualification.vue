@@ -154,15 +154,18 @@
                       </div>
                     </div>
                     <div class="row">
+                      <!-- ปุ่มควบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
+                        <!-- บันทึก/แก้ไข -->
                         <q-btn
                           label="บันทึก"
                           type="submit"
                           color="primary"
                           icon="save"
                         />
+                        <!-- ยกเลิก -->
                         <q-btn
                           label="ยกเลิก"
                           type="reset"
@@ -171,20 +174,39 @@
                           class="q-ml-sm"
                           icon="clear"
                         />
+                        <!-- ออก -->
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
+                        />
+                        <!-- ย้อนกลับ -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_previous"
-                          @click="onPrevious"
-                        />
+                          to="/FormPlanCareer"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >กลับฟอร์มกำหนดอาชีพเป้าหมาย</q-tooltip
+                          >
+                        </q-btn>
+                        <!-- ไปข้างหน้า -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_next"
-                          @click="onNext"
-                        />
+                          to="/FormPlan"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >ไปฟอร์มการพัฒนาตนเอง</q-tooltip
+                          >
+                        </q-btn>
                       </div>
                     </div>
                     <div class="row">
@@ -262,6 +284,7 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 
 export default {
   name: "FormQualification",
@@ -283,7 +306,7 @@ export default {
       url_api_qa_plan_career: "https://icp2022.net/api-qa-plan-career.php",
 
       message: "Form Qualification",
-      title: "กำหนดคุณสมบัติ/ทักษะ",
+      title: "คุณสมบัติ/ทักษะ",
       status: "บันทึก",
 
       columns: [
@@ -386,9 +409,35 @@ export default {
       level: {
         options: [],
       },
+      $q: useQuasar(),
     };
   },
   methods: {
+    // confirm(information) {
+    //   var con = false;
+    //   this.$q
+    //     .dialog({
+    //       title: "ยืนยัน",
+    //       message: information,
+    //       persistent: true,
+    //       cancel: true,
+    //     })
+    //     .onOk(() => {
+    //       con = true;
+    //       console.log(">>>> OK:", con);
+    //     })
+    //     .onOk(() => {
+    //       con = true;
+    //       console.log(">>>> OK:", con);
+    //     })
+    //     .onCancel(() => {
+    //       // console.log('>>>> Cancel')
+    //       console.log(">>>> Cancel:", con);
+    //     })
+    //     .onDismiss(() => {
+    //       // console.log('I am triggered on both OK and Cancel')
+    //     });
+    // },
     createValue1(val, done) {
       done(val, "add-unique");
       console.log("new val:", val);
@@ -396,34 +445,40 @@ export default {
     newQualification(val, done) {
       done(val, "add-unique");
       console.log("val:", val);
-      if (confirm("คุณต้องการเพิ่มคุณสมบัติ [" + val + "] ใหม่หรือไม่ ?")) {
-        var self = this;
-        var member_id = Number(this.$store.getters.myMember_id);
-        axios
-          .post(this.url_api_qualification, {
-            action: "insert",
-            qualification_name: val,
-            member_id: member_id,
-          })
-          .then(function (response) {
-            console.log(response);
-            // self.resetForm();
-            // self.getUpdate();
-            self.getQualification();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      // if (confirm("คุณต้องการเพิ่มคุณสมบัติ [" + val + "] ใหม่หรือไม่ ?")) {
+      this.$q
+        .dialog({
+          title: "ยืนยัน",
+          message: "คุณต้องการเพิ่มคุณสมบัติ [" + val + "] ใหม่หรือไม่ ?",
+          persistent: true,
+          cancel: true,
+        })
+        .onOk(() => {
+          var self = this;
+          var member_id = Number(this.$store.getters.myMember_id);
+          axios
+            .post(this.url_api_qualification, {
+              action: "insert",
+              qualification_name: val,
+              member_id: member_id,
+            })
+            .then(function (response) {
+              console.log(response);
+              // self.resetForm();
+              // self.getUpdate();
+              self.getQualification();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
     },
     resetForm() {
-      this.status = "บันทึก";
-      this.isEdit = false;
       console.log("ยกเลิกการบันทึกข้อมูล");
-      this.qualification.skill = "";
-      this.qualification.level = "";
-      this.qualification.goal = "";
-      this.qualification.isVisible = false;
+      this.plan_career.options.value = "";
+      this.qualification.options.value = "";
+      this.target.options.value = "";
+      this.level.options.value = "";
     },
     getUpdateQualification() {
       var self = this;
@@ -497,53 +552,69 @@ export default {
     },
     submitForm() {
       if (!this.isEdit) {
-        if (confirm("คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?")) {
-          console.log("เพิ่มข้อมูล:", this.plan_career.options.value);
-          const newQualification = {
-            plan_career_id: this.plan_career.options.value,
-            qualification_id: this.qualification.options.value,
-            level_id: this.level.options.value,
-            target_id: this.target.options.value,
-          };
-          this.$emit("saveData", newQualification);
-          axios
-            .post(this.url_api_qa_plan_career, {
-              action: "insert",
+        // if (this.confirm("คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?")) {
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?",
+            persistent: true,
+            cancel: true,
+          })
+          .onOk(() => {
+            console.log("เพิ่มข้อมูล:", this.plan_career.options.value);
+            const newQualification = {
               plan_career_id: this.plan_career.options.value,
               qualification_id: this.qualification.options.value,
               level_id: this.level.options.value,
               target_id: this.target.options.value,
-            })
-            .then((res) => {
-              console.log("insert:", res);
-              // this.resetForm();
-              this.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+            };
+            this.$emit("saveData", newQualification);
+            axios
+              .post(this.url_api_qa_plan_career, {
+                action: "insert",
+                plan_career_id: this.plan_career.options.value,
+                qualification_id: this.qualification.options.value,
+                level_id: this.level.options.value,
+                target_id: this.target.options.value,
+              })
+              .then((res) => {
+                console.log("insert:", res);
+                // this.resetForm();
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
       } else {
-        if (confirm("คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?")) {
-          console.log("การแก้ไขข้อมูล");
-          axios
-            .post(this.url_api_qa_plan_career, {
-              action: "update",
-              qa_plan_career_id: this.qa_plan_career_id,
-              plan_career_id: this.plan_career.options.value,
-              qualification_id: this.qualification.options.value,
-              level_id: this.level.options.value,
-              target_id: this.target.options.value,
-            })
-            .then((response) => {
-              console.log(response);
-              // this.resetForm();
-              this.getUpdate();
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+        // if (this.confirm("คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?")) {
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?",
+            persistent: true,
+            cancel: true,
+          })
+          .onOk(() => {
+            console.log("การแก้ไขข้อมูล");
+            axios
+              .post(this.url_api_qa_plan_career, {
+                action: "update",
+                qa_plan_career_id: this.qa_plan_career_id,
+                plan_career_id: this.plan_career.options.value,
+                qualification_id: this.qualification.options.value,
+                level_id: this.level.options.value,
+                target_id: this.target.options.value,
+              })
+              .then((response) => {
+                console.log(response);
+                // this.resetForm();
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
       }
     },
     editUser(qa_plan_career_id) {
@@ -572,31 +643,44 @@ export default {
         });
     },
     onDelete(qa_plan_career_id, career_name, qualification_name) {
-      if (
-        confirm(
-          "คุณต้องการลบคุณสมบัติ [ " +
+      // if (
+      //   this.confirm(
+      // "คุณต้องการลบคุณสมบัติ [ " +
+      //   qualification_name +
+      //   " ] อาชีพ [ " +
+      //   career_name +
+      //   " ] หรือไม่?"
+      //   )
+      // ) {
+      this.$q
+        .dialog({
+          title: "ยืนยัน",
+          message:
+            "คุณต้องการลบคุณสมบัติ [ " +
             qualification_name +
             " ] อาชีพ [ " +
             career_name +
-            " ] หรือไม่?"
-        )
-      ) {
-        console.log("delete:", qa_plan_career_id);
-        var self = this;
-        axios
-          .post(this.url_api_qa_plan_career, {
-            action: "delete",
-            qa_plan_career_id: qa_plan_career_id,
-          })
-          .then(function (response) {
-            console.log(response);
-            // self.resetForm();
-            self.getUpdate();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+            " ] หรือไม่?",
+          persistent: true,
+          cancel: true,
+        })
+        .onOk(() => {
+          console.log("delete:", qa_plan_career_id);
+          var self = this;
+          axios
+            .post(this.url_api_qa_plan_career, {
+              action: "delete",
+              qa_plan_career_id: qa_plan_career_id,
+            })
+            .then(function (response) {
+              console.log(response);
+              // self.resetForm();
+              self.getUpdate();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
     },
     customFilter(rows, terms) {
       console.log(terms, rows);

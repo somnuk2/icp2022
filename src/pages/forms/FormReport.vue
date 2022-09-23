@@ -90,23 +90,43 @@
                     </div>
                     <!-- การเปลี่ยนหน้า -->
                     <div class="row">
+                      <!-- ปุ่มควบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
+                        <!-- ออก -->
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
+                        />
+                        <!-- กลับการพัฒนาตนเอง -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_previous"
-                          @click="onPrevious"
-                        />
+                          to="/FormPlan"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >กลับฟอร์มการพัฒนาตนเอง</q-tooltip
+                          >
+                        </q-btn>
+                        <!-- ไปการประเมินตนเอง -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_next"
-                          @click="onNext"
-                        />
+                          to="/FormSelfAssessment"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >ไปฟอร์มการประเมินตนเอง</q-tooltip
+                          >
+                        </q-btn>
                       </div>
                     </div>
                     <!-- ตารางรายงานการประเมินตนเอง -->

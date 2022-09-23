@@ -19,13 +19,14 @@
               <div class="row">
                 <div class="col-md-12 col-xs-12 q-pa-md">
                   <q-form
-                    @submit.prevent="submitForm"
-                    @reset.prevent="resetForm"
+                    @submit="submitForm"
+                    @reset="resetForm"
                     method="post"
                     class="q-gutter-md"
                   >
                     <div class="row">
-                      <div class="col-md-12 col-xs-12 q-pa-md">
+                      <!-- ชื่อ-สกุล -->
+                      <div class="col-md-6 col-xs-12 q-pa-md">
                         <q-input
                           color="white"
                           bg-color="blue-5"
@@ -43,9 +44,8 @@
                           </template>
                         </q-input>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 col-xs-12 q-pa-md">
+                      <!-- อีเมล -->
+                      <div class="col-md-6 col-xs-12 q-pa-md">
                         <q-input
                           color="white"
                           bg-color="blue-5"
@@ -54,6 +54,9 @@
                           v-model="member.email"
                           label="อีเมล"
                           clearable
+                          type="email"
+                          lazy-rules
+                          :rules="[this.required, this.isEmail, this.short]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="work_history" />
@@ -65,7 +68,8 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-md-12 col-xs-12 q-pa-md">
+                      <!-- รหัสผ่าน -->
+                      <div class="col-md-6 col-xs-12 q-pa-md">
                         <q-input
                           ref="password"
                           v-if="register"
@@ -89,9 +93,8 @@
                           </template>
                         </q-input>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 col-xs-12 q-pa-md">
+                      <!-- ยืนยันรหัสผ่าน -->
+                      <div class="col-md-6 col-xs-12 q-pa-md">
                         <q-input
                           ref="repassword"
                           v-if="register"
@@ -121,13 +124,17 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-md-6 col-xs-12 q-pa-md">
+                      <div
+                        class="col-md-12 col-xs-12 q-pa-md row justify-center"
+                      >
+                        <!-- บันทึก -->
                         <q-btn
                           label="บันทึก"
                           type="submit"
                           color="primary"
                           icon="save"
                         />
+                        <!-- ยกเลิก -->
                         <q-btn
                           label="ยกเลิก"
                           type="reset"
@@ -136,8 +143,30 @@
                           class="q-ml-sm"
                           icon="clear"
                         />
+                        <!-- ออก -->
+                        <q-btn
+                          icon="logout"
+                          label="ออก"
+                          color="primary"
+                          flat
+                          class="q-ml-sm"
+                          to="/"
+                        />
+                        <!-- ไปฟอร์มกรอกข้อมูลส่วนตัว -->
+                        <q-btn
+                          color="primary"
+                          no-caps
+                          flat
+                          icon="skip_next"
+                          to="/FormComponent"
+                        >
+                          <q-tooltip class="bg-accent"
+                            >ไปฟอร์มกรอกข้อมูลส่วนตัว</q-tooltip
+                          >
+                        </q-btn>
                       </div>
                     </div>
+                    <!-- ตารางข้อมูล -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-md">
                         <q-table
@@ -193,124 +222,35 @@
     </q-page-container>
   </q-layout>
 
-  <div class="vue-tempalte">
-    <!-- <form @submit.prevent="submitForm" method="post">
-      <h3>Sign Up/ลงทะเบียนเข้าสู่ระบบ</h3>
-      <div class="form-group">
-        <input
-          type="text"
-          name="member_id"
-          v-model="member.member_id"
-          placeholder="Id/รหัส"
-          class="form-control form-control-lg"
-        />
-      </div>
-      <div class="form-group">
-        <input
-          type="text"
-          name="full_name"
-          v-model="member.full_name"
-          placeholder="Full Name/ชื่อ-นามสกุล"
-          class="form-control form-control-lg"
-        />
-      </div>
-
-      <div class="form-group">
-        <input
-          type="text"
-          name="email"
-          v-model="member.email"
-          placeholder="E-mail/ชื่อผู้ใช้"
-          class="form-control form-control-lg"
-        />
-      </div>
-
-      <div class="form-group">
-        <input
-          type="password"
-          name="password"
-          v-model="member.password"
-          placeholder="Password/รหัสผ่าน"
-          class="form-control form-control-lg"
-        />
-      </div>
-
-      <div class="form-group">
-        <input
-          type="text"
-          name="status"
-          v-model="member.status"
-          placeholder="Status/สถานะ"
-          class="form-control form-control-lg"
-        />
-      </div>
-      <button type="submit" class="btn btn-dark btn-lg btn-block">
-        Sign Up/ลงทะเบียน
-      </button>
-
-      <p class="forgot-password text-right">
-        Already registered
-        <router-link :to="{ name: 'LoginPage' }"
-          >Sign in/เข้าสู่ระบบ?</router-link
-        >
-      </p>
-    </form> -->
-  </div>
-  <div class="py-2">
-    <!-- {{ members }} -->
-    <!-- <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Full Name</th>
-          <th scope="col">E-mail</th>
-          <th scope="col">Password</th>
-          <th scope="col">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="row in members" :key="row.index">
-          <td>{{ row.member_id }}</td>
-          <td>{{ row.full_name }}</td>
-          <td>{{ row.email }}</td>
-          <td>{{ row.password }}</td>
-          <td>{{ row.status }}</td>
-          <td>
-            <button class="btn btn-primary" @click="editUser(row.member_id)">
-              Edit
-            </button>
-          </td>
-          <td>
-            <button class="btn btn-warning" @click="deleteUser(row.member_id)">
-              Delete
-            </button>
-          </td>
-        </tr>
-        <tr></tr>
-      </tbody>
-    </table> -->
-  </div>
+  <div class="vue-tempalte"></div>
+  <div class="py-2"></div>
 </template>
 
 <script>
 import axios from "axios";
+import { useQuasar } from "quasar";
+import { ref } from "vue";
 
 export default {
   data() {
     return {
       url_api_member: "https://icp2022.net/api-member.php",
-      title: "ลงทะเบียนเข้าสู่ระบบ",
+      title: "การลงทะเบียน",
       members: Array,
       register: true,
+      filter: ref(""),
+      loading: ref(false),
       member: {
-        member_id: "",
+        member_id: this.$store.getters.myMember_id,
         full_name: "",
         email: "",
         password: "",
         repassword: "",
-        status: "",
+        // defualt User/Suser/Admin
+        status: "User",
       },
       columns: [
+        { name: "actions", align: "center", label: "Action" },
         {
           name: "mem_id",
           required: true,
@@ -352,60 +292,80 @@ export default {
           format: (val) => `${val}`,
           sortable: true,
         },
-        { name: "actions", align: "center", label: "Action" },
       ],
       members1: [],
+      $q: useQuasar(),
+      passwordFieldType: "password",
+      btnLabel: "กดปุ่ม",
+      visibility: false,
+      visibilityIcon: "visibility",
+      checkUser: ref(false),
     };
   },
   methods: {
     submitForm() {
       if (!this.isEdit) {
-        console.log("บันทึกข้อมูล");
-        console.log("member:", this.member);
-        const newMember = {
-          member_id: this.member.member_id,
-          full_name: this.member.full_name,
-          email: this.member.email,
-          password: this.member.password,
-          status: this.member.status,
-        };
-        this.$emit("saveData", newMember);
-        axios
-          .post(this.url_api_member, {
-            action: "insert",
-            member_id: this.member.member_id,
-            full_name: this.member.full_name,
-            email: this.member.email,
-            password: this.member.password,
-            status: this.member.status,
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?",
+            cancel: true,
+            persistent: true,
           })
-          .then((res) => {
-            console.log(res);
-            // this.resetForm();
-            // this.getAllUser();
-            this.getUpdate();
-          })
-          .catch(function (error) {
-            console.log(error);
+          .onOk(() => {
+            this.checkNewMemeber(this.member.email);
+            // const newMember = {
+            //   member_id: this.member.member_id,
+            //   full_name: this.member.full_name,
+            //   email: this.member.email,
+            //   password: this.member.password,
+            //   status: this.member.status,
+            // };
+            // this.$emit("saveData", newMember);
+            // axios
+            //   .post(this.url_api_member, {
+            //     action: "insert",
+            //     member_id: this.member.member_id,
+            //     full_name: this.member.full_name,
+            //     email: this.member.email,
+            //     password: this.member.password,
+            //     status: this.member.status,
+            //   })
+            //   .then((res) => {
+            //     console.log(res);
+            //     this.getUpdate();
+            //   })
+            //   .catch(function (error) {
+            //     console.log(error);
+            //   });
           });
       } else {
-        axios
-          .post(this.url_api_member, {
-            action: "update",
-            member_id: this.member.member_id,
-            full_name: this.member.full_name,
-            email: this.member.email,
-            password: this.member.password,
-            status: this.member.status,
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?",
+            cancel: true,
+            persistent: true,
           })
-          .then((response) => {
-            console.log(response);
-            this.resetForm();
-            // this.getAllUser();
-            this.getUpdate();
-          })
-          .catch(function (error) {
-            console.log(error);
+          .onOk(() => {
+            axios
+              .post(this.url_api_member, {
+                action: "update",
+                member_id: this.member.member_id,
+                full_name: this.member.full_name,
+                email: this.member.email,
+                password: this.member.password,
+                status: this.member.status,
+              })
+              .then((response) => {
+                console.log(response);
+                // this.resetForm();
+                // this.getAllUser();
+                this.getUpdate();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
           });
       }
     },
@@ -424,12 +384,69 @@ export default {
           console.log(error);
         });
     },
+    addNewMember() {
+      console.log("บันทึกข้อมูล");
+      console.log("member:", this.member);
+      const newMember = {
+        member_id: this.member.member_id,
+        full_name: this.member.full_name,
+        email: this.member.email,
+        password: this.member.password,
+        status: this.member.status,
+      };
+      this.$emit("saveData", newMember);
+      axios
+        .post(this.url_api_member, {
+          action: "insert",
+          member_id: this.member.member_id,
+          full_name: this.member.full_name,
+          email: this.member.email,
+          password: this.member.password,
+          status: this.member.status,
+        })
+        .then((res) => {
+          console.log(res);
+          this.getUpdate();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    checkNewMemeber(email) {
+      console.log(" ตรวจสอบผู้ใช้ ", email);
+      var self = this;
+      axios
+        .post(this.url_api_member, {
+          action: "checkUser",
+          email: email,
+        })
+        .then(function (res) {
+          var isMember = res.data.length > 0;
+          if (isMember) {
+            console.log("Is member:", isMember);
+            self.$q
+              .dialog({
+                title: "แจ้งเพื่อทราบ",
+                message: "อีเมล:" + email + " เป็นสมาชิคแล้ว",
+                persistent: true,
+              })
+              .onOk(() => {});
+          } else {
+            console.log("New Member");
+            self.addNewMember();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     getUpdate() {
       console.log(" แสดงข้อมูลทั้งหมด ");
       var self = this;
       axios
         .post(this.url_api_member, {
           action: "getall",
+          member_id: this.member.member_id,
         })
         .then(function (res) {
           console.log("Registration:", res.data);
@@ -461,33 +478,39 @@ export default {
         });
     },
     resetForm() {
-      this.status = "บันทึก";
-      this.isEdit = false;
       console.log("ยกเลิกการบันทึกข้อมูล");
       this.member.member_id = 0;
       this.member.full_name = "";
       this.member.email = "";
       this.member.password = "";
+      this.member.repassword = "";
       this.member.status = "";
     },
     deleteUser(id, name) {
-      if (confirm("คุณต้องการลบ [" + name + "] หรือไม่ ?")) {
-        var self = this;
-        axios
-          .post(this.url_api_member, {
-            action: "delete",
-            id: id,
-          })
-          .then(function (response) {
-            console.log(response);
-            self.resetForm();
-            // self.getAllUser();
-            this.getUpdate();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      this.$q
+        .dialog({
+          title: "ยืนยัน",
+          message: "คุณต้องการลบ [" + name + "] หรือไม่ ?",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(() => {
+          var self = this;
+          axios
+            .post(this.url_api_member, {
+              action: "delete",
+              id: id,
+            })
+            .then(function (response) {
+              console.log(response);
+              // self.resetForm();
+              // self.getAllUser();
+              self.getUpdate();
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        });
     },
     required(val) {
       return (val && val.length > 0) || "ช่องที่ต้องกรอก";
@@ -513,6 +536,9 @@ export default {
       this.visibility = !this.visibility;
       this.passwordFieldType = this.visibility ? "text" : "password";
       this.visibilityIcon = this.visibility ? "visibility_off" : "visibility";
+    },
+    OnCancel() {
+      this.$router.replace({ name: "home" });
     },
   },
   created() {

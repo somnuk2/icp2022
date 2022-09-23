@@ -7,6 +7,7 @@ import store from "./store";
 import VueChartkick from "vue-chartkick";
 import "chartkick/chart.js";
 import VueApexCharts from "vue3-apexcharts";
+import { Quasar, Dialog } from "quasar";
 
 // npm install --save-dev @fortawesome/fontawesome-free
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -17,4 +18,9 @@ createApp(App)
   .use(VueChartkick)
   .use(store)
   .use(router)
+  .use(Quasar, {
+    plugins: {
+      Dialog,
+    },
+  })
   .mount("#app");
