@@ -482,7 +482,7 @@
                       >
                         <!-- บันทึก/แก้ไข -->
                         <q-btn
-                          label="บันทึก"
+                          :label="btnLabel"
                           type="submit"
                           color="primary"
                           icon="save"
@@ -610,17 +610,50 @@ export default {
     return {
       pdpa: ref(false),
       picked: new Date(),
+      // php-mysql
       // url_api_institute: "http://localhost:85/icp2022/api-institute.php",
       // url_api_member: "http://localhost:85/icp2022/api-member.php",
       // url_api_individual: "http://localhost:85/icp2022/api-individual.php",
       // url_api_disability: "http://localhost:85/icp2022/api-disability.php",
       // url_api_project: "http://localhost:85/icp2022/api-project.php",
-
-      url_api_institute: "https://icp2022.net/api-institute.php",
-      url_api_member: "https://icp2022.net/api-member.php",
-      url_api_individual: "https://icp2022.net/api-individual.php",
-      url_api_disability: "https://icp2022.net/api-disability.php",
-      url_api_project: "https://icp2022.net/api-project.php",
+      url_api_individual:
+        // "https://icp2022.net/icp_v1/individual_form/api-individual.php",
+        "https://icp2022.net/icp_v1/individual_form/api-individual.php",
+      php_individual: {
+        // getUpdate(member_id)
+        select_individual: "getall",
+        // submitForm()
+        insert_individual: "insert",
+        update_individual: "update",
+        // editUser(member_id)
+        edit_individual: "edit",
+        // deleteUser(member_id, name)
+        delete_individual: "delete",
+      },
+      url_api_institute:
+        "https://icp2022.net/icp_v1/individual_form/api-institute.php",
+      php_insititue: {
+        // getInstitutes()
+        select_institute: "getInstitutes",
+        // getDegrees()
+        select_degree: "getDegrees",
+        // getDepartments()
+        select_department: "getDepartments",
+      },
+      url_api_disability:
+        "https://icp2022.net/icp_v1/individual_form/api-disability.php",
+      php_disability: {
+        // getDisabilitys()
+        select_disability: "getDisabilitys",
+      },
+      url_api_project:
+        "https://icp2022.net/icp_v1/individual_form/api-project.php",
+      php_project: {
+        // getProjects()
+        select_project: "getProjects",
+      },
+      url_api_member:
+        "https://icp2022.net/icp_v1/individual_form/api-member.php",
 
       title: "ข้อมูลส่วนตัว",
       email: "",
@@ -629,7 +662,7 @@ export default {
       repassword: "",
       register: false,
       passwordFieldType: "password",
-      btnLabel: "กดปุ่ม",
+      btnLabel: "เพิ่มข้อมูล",
       visibility: false,
       visibilityIcon: "visibility",
       input: {
@@ -771,7 +804,7 @@ export default {
           align: "center",
           label: "จบการศึกษา",
           field: (row) => row.is_graduate,
-          format: (val) => `${val ? true : false}`,
+          format: (val) => `${val}`,
         },
         {
           name: "date",
@@ -835,7 +868,7 @@ export default {
         },
       ],
       filter: ref(""),
-      loading: true,
+      loading: ref(false),
       individuals1: [],
       institutes: {
         options: [],
@@ -899,29 +932,34 @@ export default {
 
   methods: {
     resetForm() {
+      this.isEdit = false;
+      console.log("isEdit:", this.isEdit);
+      this.btnLabel = "เพิ่มข้อมูล";
       console.log("ยกเลิกการบันทึกข้อมูล");
-      // this.individual.individual_id = "";
       // ข้อมูลส่วนตัว
-      // this.individual.member_id = "";
       this.individual.birthday = "";
       this.individual.card_id = "";
       this.individual.telephone = "";
       // ข้อมูลการศึกษา
-      // this.individual.name = "";
+      this.is_graduate = "0";
       this.individual.year = "";
       this.individual.date = "";
-      this.individual.degree = "";
-      this.individual.study_faculty = "";
+      this.degree.value = "";
+      this.degree.label = "";
+      this.faculty.value = "";
+      this.faculty.label = "";
       this.department.value = "";
       this.department.label = "";
-      this.individual.university = "";
+      this.institute.value = "";
+      this.institute.label = "";
       // ข้อมูลความพิการ
       this.individual.is_disability = "0";
       this.disability.value = "";
       this.disability.label = "";
       this.individual.dis_description = "";
       // ข้อมูลโครงการ
-      this.individual.project_id = "";
+      this.project.label = "";
+      this.project.value = "";
     },
 
     submitForm() {
@@ -958,7 +996,7 @@ export default {
 
             axios
               .post(this.url_api_individual, {
-                action: "insert",
+                action: this.php_individual.insert_individual,
                 individual_id: this.individual.individual_id,
                 // ข้อมูลส่วนตัว
                 member_id: this.individual.member_id,
@@ -978,9 +1016,9 @@ export default {
                 project_id: this.project.value,
               })
               .then((res) => {
-                console.log(res);
+                console.log("บันทึกข้อมูล:", res.data);
                 // this.resetForm();
-                this.getUpdate();
+                this.getUpdate(this.individual.member_id);
               })
               .catch(function (error) {
                 console.log(error);
@@ -998,7 +1036,7 @@ export default {
             console.log("บันทึกการแก้ไข project:", this.project.value);
             axios
               .post(this.url_api_individual, {
-                action: "update",
+                action: this.php_individual.update_individual,
                 individual_id: this.individual.individual_id,
                 // ข้อมูลส่วนตัว
                 member_id: this.individual.member_id,
@@ -1018,24 +1056,33 @@ export default {
                 project_id: this.project.value,
               })
               .then((response) => {
-                console.log(response);
-                // this.resetForm();
-                this.getUpdate();
+                console.log("บันทึกการแก้ไข:", response.data);
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
+
+                this.getUpdate(this.individual.member_id);
               })
               .catch(function (error) {
                 console.log(error);
               });
+          })
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
           });
       }
     },
-    editUser(id) {
-      this.status = "Update(อัพเดท)";
+    editUser(individual_id) {
+      console.log("Edit data");
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
       axios
         .post(this.url_api_individual, {
           action: "edit",
-          individual_id: id,
+          individual_id: individual_id,
         })
         .then(function (response) {
           console.log("Edit data:", response.data);
@@ -1071,11 +1118,16 @@ export default {
           console.log(error);
         });
     },
-    deleteUser(id, name) {
+    deleteUser(individual_id, full_name) {
       this.$q
         .dialog({
           title: "ยืนยัน",
-          message: "คุณต้องการลบ [ " + id + "-" + name + " ] หรือไม่ ?",
+          message:
+            "คุณต้องการลบ [ " +
+            individual_id +
+            "-" +
+            full_name +
+            " ] หรือไม่ ?",
           cancel: true,
           persistent: true,
         })
@@ -1084,23 +1136,24 @@ export default {
           axios
             .post(this.url_api_individual, {
               action: "delete",
-              individual_id: id,
+              individual_id: individual_id,
             })
             .then(function (response) {
-              console.log(response);
-              // self.resetForm();
-              self.getUpdate();
+              console.log("delete:", response.data);
+              self.getUpdate(self.individual.member_id);
             })
             .catch(function (error) {
               console.log(error);
             });
         });
     },
-    getUpdate() {
+    getUpdate(member_id) {
+      console.log("get update-member_id:", member_id);
       var self = this;
       axios
         .post(this.url_api_individual, {
           action: "getall",
+          member_id: member_id,
         })
         .then(function (res) {
           console.log("q-table:", res);
@@ -1315,7 +1368,7 @@ export default {
     },
   },
   mounted() {
-    this.getUpdate();
+    this.getUpdate(this.individual.member_id);
     this.getInstitutes();
     this.getFacultys();
     this.getDegrees();

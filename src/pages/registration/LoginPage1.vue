@@ -152,7 +152,7 @@ export default {
   data() {
     return {
       // url_api_member: "http://localhost:85/icp2022/api-member.php",
-      url_api_member: "https://icp2022.net/api-member.php",
+      url_api_member: "https://icp2022.net/icp_v1/signin_form/api-member.php",
 
       title: "เข้าสู่ระบบ",
       email: "",

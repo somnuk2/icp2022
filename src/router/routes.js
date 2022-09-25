@@ -5,6 +5,7 @@ import FormPlanCareer from "pages/forms/FormPlanCareer.vue";
 import FormQualification from "pages/forms/FormQualification.vue";
 import FormSelfAssessment from "pages/forms/FormSelfAssessment.vue";
 import FormReport from "pages/forms/FormReport.vue";
+import FormRegistration from "pages/forms/FormRegistration.vue";
 import LoginPage1 from "pages/registration/LoginPage1.vue";
 import LogoutPage from "pages/registration/LogoutPage.vue";
 import RegistrationPage from "pages/registration/RegistrationPage.vue";
@@ -30,6 +31,11 @@ const routes = [
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),
+  },
+  {
+    path: "/FormRegistration",
+    name: "FormRegistration",
+    component: FormRegistration,
   },
   {
     path: "/FormComponent",

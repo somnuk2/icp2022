@@ -20,7 +20,7 @@
                 <div class="col-md-12 col-xs-12 q-pa-md">
                   <q-form
                     @submit.prevent="submitForm"
-                    @reset.prevent="resetForm"
+                    @reset="resetForm"
                     method="post"
                     class="q-gutter-md"
                   >
@@ -36,7 +36,7 @@
                           emit-value
                           map-options
                           @update:model-value="
-                            (val) => onPlanCareerSelected(val)
+                            (plan_career_id) => getQualification(plan_career_id)
                           "
                         >
                           <template v-slot:prepend>
@@ -162,7 +162,7 @@
                       >
                         <!-- บันทึก/แก้ไข -->
                         <q-btn
-                          label="บันทึก"
+                          :label="btnLabel"
                           type="submit"
                           color="primary"
                           icon="save"
@@ -290,13 +290,17 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url: "https://icp2022.net/api-member.php",
+      url: "https://icp2022.net/icp_v1/self_assessment_form/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/api-qa-plan-career.php",
-      url_api_self_assessment: "https://icp2022.net/api-self-assessment.php",
-      url_api_plan: "https://icp2022.net/api-plan.php",
-      url_api_plan_career: "https://icp2022.net/api-plan-career.php",
-      url_api_qa_plan_career: "https://icp2022.net/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
+      url_api_self_assessment:
+        "https://icp2022.net/icp_v1/self_assessment_form/api-self-assessment.php",
+      url_api_plan:
+        "https://icp2022.net/icp_v1/self_assessment_form/api-plan.php",
+      url_api_plan_career:
+        "https://icp2022.net/icp_v1/self_assessment_form/api-plan-career.php",
+      url_api_qa_plan_career:
+        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
 
       message: "Form Self Acessment",
       title: "การประเมินตนเอง",
@@ -305,7 +309,7 @@ export default {
       selfAssessments_: Array,
       careers: Array,
       career_qualifications: Array,
-      employee_id: this.$store.getters.myMember_id,
+      member_id: this.$store.getters.myMember_id,
       planCareerId: "",
       selfAssessment: {
         selfAssessmentId: "",
@@ -319,7 +323,7 @@ export default {
       qualification: {
         options: [],
       },
-
+      btnLabel: "เพิ่มข้อมูล",
       columns: [
         { name: "actions", align: "center", label: "Action" },
         {
@@ -414,38 +418,16 @@ export default {
     };
   },
   methods: {
-    // confirm(information) {
-    //   var con = false;
-    //   this.$q
-    //     .dialog({
-    //       title: "ยืนยัน",
-    //       message: information,
-    //       persistent: true,
-    //       cancel: true,
-    //     })
-    //     .onOk(() => {
-    //       con = true;
-    //       console.log(">>>> OK:", con);
-    //     })
-    //     .onOk(() => {
-    //       con = true;
-    //       console.log(">>>> OK:", con);
-    //     })
-    //     .onCancel(() => {
-    //       // console.log('>>>> Cancel')
-    //       console.log(">>>> Cancel:", con);
-    //     })
-    //     .onDismiss(() => {
-    //       // console.log('I am triggered on both OK and Cancel')
-    //     });
-    // },
     resetForm() {
-      this.status = "บันทึก";
       this.isEdit = false;
+      console.log("isEdit:", this.isEdit);
+      this.btnLabel = "เพิ่มข้อมูล";
+
       console.log("ยกเลิกการบันทึกข้อมูล");
-      this.selfAssessment.month = "";
-      this.selfAssessment.assessment = "";
-      this.selfAssessment.isVisible = false;
+      this.plan_career_id = "";
+      this.qa_plan_career_id = "";
+      this.self_assessment_date = "";
+      this.perform_id = "";
     },
     getAllUser() {
       console.log(" แสดงข้อมูลทั้งหมด ");
@@ -490,7 +472,7 @@ export default {
               })
               .then((res) => {
                 console.log("Insert:", res.data);
-                this.getUpdate();
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
@@ -517,16 +499,26 @@ export default {
               })
               .then((response) => {
                 console.log("Update:", response.data);
-                this.getUpdate();
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
+
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
               });
+          })
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
           });
       }
     },
     OnEdit(self_assessment_id) {
-      this.status = "Update(อัพเดท)";
+      console.log("Edit data");
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
       console.log("Edit", this.self_assessment_id);
@@ -540,7 +532,7 @@ export default {
           self.self_assessment_id = response.data.self_assessment_id;
           // อาชีพเป้าหมาย
           self.plan_career_id = response.data.plan_career_id;
-          self.getQualification();
+          self.getQualification(self.plan_career_id);
           // คุณสมบัติตามอาชีพเป้าหมาย
           self.qa_plan_career_id = response.data.qa_plan_career_id;
           // ประเมินผลตนเอง
@@ -552,12 +544,8 @@ export default {
           console.log(error);
         });
     },
+
     onDelete(self_assessment_id, self_assessment_date) {
-      // if (
-      //   this.confirm(
-      //     "คุณต้องการลบผลการประเมินวัน " + self_assessment_date + " หรือไม่ ?"
-      //   )
-      // ) {
       this.$q
         .dialog({
           title: "ยืนยัน",
@@ -577,7 +565,7 @@ export default {
             })
             .then(function (response) {
               console.log(response);
-              self.getUpdate();
+              self.getUpdate(self.member_id);
             })
             .catch(function (error) {
               console.log(error);
@@ -590,26 +578,27 @@ export default {
     onPrevious() {
       this.$router.replace({ name: "FormPlan" });
     },
-    getUpdate() {
-      console.log(" แสดงข้อมูลทั้งหมด ");
+    // checked
+    getUpdate(member_id) {
+      console.log(" แสดงข้อมูล การประเมินตนเอง ", member_id);
       var self = this;
       axios
         .post(this.url_api_self_assessment, {
           action: "getAll",
+          member_id: member_id,
         })
         .then(function (res) {
-          console.log("self_assessment:", res);
+          console.log("self_assessment:", res.data);
           self.selfAssessments1 = res.data;
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    getCareer() {
-      console.log(" ข้อมูลอาชีพ ");
+    // checked
+    getCareer(member_id) {
+      console.log(" ข้อมูลอาชีพ สมาชิค", member_id);
       var self = this;
-      var member_id = Number(this.$store.getters.myMember_id);
-      console.log("member_id:", member_id);
       axios
         .post(this.url_api_plan_career, {
           action: "get_plan_career_by_member_id",
@@ -630,35 +619,31 @@ export default {
           console.log(error);
         });
     },
-    onPlanCareerSelected(val) {
-      console.log("เลือกอาชีพเป้าหมาย:", val.label);
-      console.log("รหัสอาชีพเป้าหมาย:", val.value);
-      this.getQualification();
-    },
-    getQualification() {
-      console.log(" แสดงข้อมูลคุณสมบัติ ", this.plan_career_id);
+    // checked
+    getQualification(plan_career_id) {
+      console.log(" แสดงข้อมูลคุณสมบัติ รหัสแผนอาชีพ: ", plan_career_id);
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
           action: "get_qa_plan_career_by_plan_career_id",
-          plan_career_id: this.plan_career_id,
+          plan_career_id: plan_career_id,
         })
         .then(function (res) {
-          console.log(res);
+          console.log("qa_plan_career:", res.data);
           var qa_plan_career_id = res.data.map(
             (item) => item.qa_plan_career_id
           );
           var qualification_name = res.data.map(
             (item) => item.qualification_name
           );
-          var level_name = res.data.map((item) => item.level_name);
+          var level_name = res.data.map((item) => item.level_description);
           var target_name = res.data.map((item) => item.target_name);
           self.qa_plan_career.options.splice(0);
           for (var i = 0; i < qa_plan_career_id.length; i++) {
             self.qa_plan_career.options.push({
               label: qualification_name[i],
               value: qa_plan_career_id[i],
-              description: level_name[i] + ":" + target_name[i],
+              description: level_name[i] + " " + target_name[i],
             });
           }
         })
@@ -690,8 +675,8 @@ export default {
     },
   },
   mounted() {
-    this.getUpdate();
-    this.getCareer();
+    this.getUpdate(this.member_id);
+    this.getCareer(this.member_id);
     this.getPerform();
   },
   created() {},

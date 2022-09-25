@@ -20,7 +20,7 @@
                 <div class="col-md-12 col-xs-12 q-pa-md">
                   <q-form
                     @submit.prevent="submitForm"
-                    @reset.prevent="resetForm"
+                    @reset="resetForm"
                     method="post"
                     class="q-gutter-md"
                   >
@@ -160,7 +160,7 @@
                       >
                         <!-- บันทึก/แก้ไข -->
                         <q-btn
-                          label="บันทึก"
+                          :label="btnLabel"
                           type="submit"
                           color="primary"
                           icon="save"
@@ -299,15 +299,19 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url: "https://icp2022.net/api-member.php",
-      url_api_career: "https://icp2022.net/api-career.php",
-      url_api_plan_career: "https://icp2022.net/api-plan-career.php",
-      url_api_qualification: "https://icp2022.net/api-qualification.php",
-      url_api_qa_plan_career: "https://icp2022.net/api-qa-plan-career.php",
+      url: "https://icp2022.net/icp_v1/qa_plan_career_form/api-member.php",
+      url_api_career:
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-career.php",
+      url_api_plan_career:
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-plan-career.php",
+      url_api_qualification:
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qualification.php",
+      url_api_qa_plan_career:
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qa-plan-career.php",
 
       message: "Form Qualification",
       title: "คุณสมบัติ/ทักษะ",
-      status: "บันทึก",
+      btnLabel: "เพิ่มข้อมูล",
 
       columns: [
         { name: "actions", align: "center", label: "Action" },
@@ -321,7 +325,7 @@ export default {
         },
         {
           name: "plan_career_id",
-          label: "รหัสแผนอาชีพ",
+          label: "รหัสอาชีพเป้าหมาย",
           align: "center",
           field: (row) => row.plan_career_id,
           format: (val) => `${val}`,
@@ -369,10 +373,10 @@ export default {
           format: (val) => `${val}`,
         },
         {
-          name: "level_name",
+          name: "level_description",
           label: "ระดับ",
           align: "left",
-          field: (row) => row.level_name,
+          field: (row) => row.level_description,
           format: (val) => `${val}`,
         },
         {
@@ -390,6 +394,7 @@ export default {
           format: (val) => `${val}`,
         },
       ],
+      member_id: this.$store.getters.myMember_id,
       filter: ref(""),
       loading: ref(false),
       qa_plan_career_id: "",
@@ -413,31 +418,6 @@ export default {
     };
   },
   methods: {
-    // confirm(information) {
-    //   var con = false;
-    //   this.$q
-    //     .dialog({
-    //       title: "ยืนยัน",
-    //       message: information,
-    //       persistent: true,
-    //       cancel: true,
-    //     })
-    //     .onOk(() => {
-    //       con = true;
-    //       console.log(">>>> OK:", con);
-    //     })
-    //     .onOk(() => {
-    //       con = true;
-    //       console.log(">>>> OK:", con);
-    //     })
-    //     .onCancel(() => {
-    //       // console.log('>>>> Cancel')
-    //       console.log(">>>> Cancel:", con);
-    //     })
-    //     .onDismiss(() => {
-    //       // console.log('I am triggered on both OK and Cancel')
-    //     });
-    // },
     createValue1(val, done) {
       done(val, "add-unique");
       console.log("new val:", val);
@@ -474,11 +454,18 @@ export default {
         });
     },
     resetForm() {
+      this.isEdit = false;
+      console.log("isEdit:", this.isEdit);
+      this.btnLabel = "เพิ่มข้อมูล";
       console.log("ยกเลิกการบันทึกข้อมูล");
       this.plan_career.options.value = "";
+      this.plan_career.options.label = "";
       this.qualification.options.value = "";
+      this.qualification.options.label = "";
       this.target.options.value = "";
+      this.target.options.lebel = "";
       this.level.options.value = "";
+      this.level.options.label = "";
     },
     getUpdateQualification() {
       var self = this;
@@ -495,19 +482,17 @@ export default {
           self.loading = false;
         });
     },
-    getCareer() {
-      console.log(" ข้อมูลอาชีพ ");
+    // checked
+    getCareer(member_id) {
+      console.log(" ข้อมูลอาชีพ สมาขิค:", member_id);
       var self = this;
-      var member_id = Number(this.$store.getters.myMember_id);
-      console.log("member_id:", member_id);
       axios
         .post(this.url_api_plan_career, {
           action: "get_plan_career_by_member_id",
           member_id: member_id,
         })
         .then(function (res) {
-          self.plan_careers = res.data;
-          console.log("get_plan_career_by_member_id:", self.plan_careers);
+          console.log("get_plan_career_by_member_id:", res.data);
           var plan_career_id = res.data.map((item) => item.plan_career_id);
           var career_name = res.data.map((item) => item.career_name);
           self.plan_career.options.splice(0);
@@ -578,9 +563,8 @@ export default {
                 target_id: this.target.options.value,
               })
               .then((res) => {
-                console.log("insert:", res);
-                // this.resetForm();
-                this.getUpdate();
+                console.log("insert:", res.data);
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
@@ -607,18 +591,26 @@ export default {
                 target_id: this.target.options.value,
               })
               .then((response) => {
-                console.log(response);
-                // this.resetForm();
-                this.getUpdate();
+                console.log("Update:", response.data);
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
               });
+          })
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
           });
       }
     },
     editUser(qa_plan_career_id) {
-      this.status = "Update(อัพเดท)";
+      console.log("Edit data");
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
       axios
@@ -643,15 +635,6 @@ export default {
         });
     },
     onDelete(qa_plan_career_id, career_name, qualification_name) {
-      // if (
-      //   this.confirm(
-      // "คุณต้องการลบคุณสมบัติ [ " +
-      //   qualification_name +
-      //   " ] อาชีพ [ " +
-      //   career_name +
-      //   " ] หรือไม่?"
-      //   )
-      // ) {
       this.$q
         .dialog({
           title: "ยืนยัน",
@@ -673,9 +656,8 @@ export default {
               qa_plan_career_id: qa_plan_career_id,
             })
             .then(function (response) {
-              console.log(response);
-              // self.resetForm();
-              self.getUpdate();
+              console.log("delete:", response.data);
+              self.getUpdate(self.member_id);
             })
             .catch(function (error) {
               console.log(error);
@@ -713,11 +695,14 @@ export default {
       });
       return filteredRows;
     },
-    getUpdate() {
+    // checked
+    getUpdate(member_id) {
+      console.log("ข้อมูลจาก qa_plan_career:", member_id);
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
           action: "getAll",
+          member_id: member_id,
         })
         .then(function (res) {
           console.log("getUpdate():", res);
@@ -790,36 +775,12 @@ export default {
   },
   created() {
     this.getQualification();
-    this.getCareer();
+    this.getCareer(this.member_id);
     this.getTarget();
     this.getLevel();
-    this.getUpdate();
+    this.getUpdate(this.member_id);
   },
-  computed: {
-    showAll: {
-      get: function () {
-        console.log(this.filterToggle);
-        return (
-          this.filterToggle.nice_to_have &&
-          this.filterToggle.must_have &&
-          this.filterToggle.optional
-        );
-      },
-      set: function (newValue) {
-        this.filterToggle.nice_to_have = newValue;
-        this.filterToggle.must_have = newValue;
-        this.filterToggle.optional = newValue;
-      },
-    },
-    filter1() {
-      return {
-        search: this.search,
-        nice_to_have: this.filterToggle.nice_to_have,
-        must_have: this.filterToggle.must_have,
-        optional: this.filterToggle.optional,
-      };
-    },
-  },
+  computed: {},
 };
 </script>
 

@@ -20,7 +20,7 @@
                 <div class="col-md-12 col-xs-12 q-pa-md">
                   <q-form
                     @submit.prevent="submitForm"
-                    @reset.prevent="resetForm"
+                    @reset="resetForm"
                     method="post"
                     class="q-gutter-md"
                   >
@@ -36,7 +36,8 @@
                           emit-value
                           map-options
                           @update:model-value="
-                            (val) => onPlanCareerSelected(val)
+                            (plan_career_id) =>
+                              getQa_plan_career(plan_career_id)
                           "
                         >
                           <template v-slot:prepend>
@@ -163,7 +164,7 @@
                           map-options
                         >
                           <template v-slot:prepend>
-                            <q-icon name="perm_phone_msg" />
+                            <q-icon name="forward_to_inbox" />
                           </template>
                           <template v-slot:option="scope">
                             <q-item v-bind="scope.itemProps">
@@ -292,7 +293,7 @@
                       >
                         <!-- ปุ่มบันทึก/แก้ไข -->
                         <q-btn
-                          label="บันทึก"
+                          :label="btnLabel"
                           type="submit"
                           color="primary"
                           icon="save"
@@ -416,9 +417,11 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url_api_plan: "https://icp2022.net/api-plan.php",
-      url_api_plan_career: "https://icp2022.net/api-plan-career.php",
-      url_api_qa_plan_career: "https://icp2022.net/api-qa-plan-career.php",
+      url_api_plan: "https://icp2022.net/icp_v1/plan_form/api-plan.php",
+      url_api_plan_career:
+        "https://icp2022.net/icp_v1/plan_form/api-plan-career.php",
+      url_api_qa_plan_career:
+        "https://icp2022.net/icp_v1/plan_form/api-qa-plan-career.php",
 
       message: "Form Plan Career",
       title: "การพัฒนาตนเอง",
@@ -430,27 +433,8 @@ export default {
         plan_end_date: "",
       },
       isEdit: false,
+      btnLabel: "เพิ่มข้อมูล",
       status: "บันทึก",
-      // career: {
-      //   options: [
-      //     {
-      //       label: this.Plan_Career_ids,
-      //       value: this.Name_Plan_Careers,
-      //     },
-      //   ],
-      // },
-      // level: {
-      //   options: [
-      //     {
-      //       label: "การเรียน",
-      //       value: "1",
-      //     },
-      //     {
-      //       label: "การปฏิบัติ",
-      //       value: "2",
-      //     },
-      //   ],
-      // },
       level1: "",
       columns: [
         { name: "actions", align: "center", label: "Action" },
@@ -491,7 +475,7 @@ export default {
           name: "development_description",
           label: "ชนิดการพัฒนา",
           align: "left",
-          field: (row) => row.development_description,
+          field: (row) => row.development_name,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -561,7 +545,7 @@ export default {
         },
       ],
       filter: ref(""),
-      loading: true,
+      loading: ref(false),
       plans1: [],
       qa_plan_career_id: "",
       qa_plan_career: {
@@ -583,28 +567,26 @@ export default {
       frequency: {
         options: [],
       },
+      member_id: this.$store.getters.myMember_id,
       $q: useQuasar(),
     };
   },
   methods: {
     resetForm() {
       console.log("ยกเลิก");
+      this.isEdit = false;
+      console.log("isEdit:", this.isEdit);
+      this.btnLabel = "เพิ่มข้อมูล";
+      this.qa_plan_career_id = "";
+      this.plan_career_id = "";
+      this.development_id = "";
+      this.importance_id = "";
+      this.frequency_id = "";
+      this.plan.plan_title = "";
+      this.plan.plan_channel = "";
+      this.plan.plan_start_date = "";
+      this.plan.plan_end_date = "";
     },
-    // getAllUser() {
-    //   console.log(" แสดงข้อมูลทั้งหมด ");
-    //   var self = this;
-    //   axios
-    //     .post(this.url_api_plan, {
-    //       action: "getall",
-    //     })
-    //     .then(function (res) {
-    //       console.log(res);
-    //       self.plans = res.data;
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // },
     submitForm() {
       if (!this.isEdit) {
         this.$q
@@ -640,9 +622,9 @@ export default {
                 plan_end_date: this.plan.plan_end_date,
               })
               .then((res) => {
-                console.log(res);
+                console.log("insert", res.data);
                 // this.resetForm();
-                this.getUpdate();
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
@@ -671,18 +653,26 @@ export default {
                 plan_end_date: this.plan.plan_end_date,
               })
               .then((response) => {
-                console.log(response);
-                // this.resetForm();
-                this.getUpdate();
+                console.log("Update", response.data);
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
               });
+          })
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
           });
       }
     },
     onEdit(plan_id) {
-      this.status = "Update(อัพเดท)";
+      console.log("Edit data");
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
       axios
@@ -696,7 +686,7 @@ export default {
           // อาชีพเป้าหมาย
           self.plan_career_id = response.data.plan_career_id;
           //คุณสมบัติตามอาชีพเป้าหมาย
-          self.getQualification();
+          self.getQa_plan_career(self.plan_career_id);
           self.qa_plan_career_id = response.data.qa_plan_career_id;
           // ชนิดการพัฒนา
           self.development_id = response.data.development_id;
@@ -749,12 +739,14 @@ export default {
     onPrevious() {
       this.$router.replace({ name: "FormQualification" });
     },
-    getUpdate() {
-      console.log(" แสดงข้อมูลการพัฒนาตนเอง ");
+    // checked
+    getUpdate(member_id) {
+      console.log(" แสดงข้อมูลการพัฒนาตนเอง สมาชิค: ", member_id);
       var self = this;
       axios
         .post(this.url_api_plan, {
           action: "getall",
+          member_id: member_id,
         })
         .then(function (res) {
           console.log("การพัฒนาตนเอง:", res.data);
@@ -764,11 +756,10 @@ export default {
           self.loading = false;
         });
     },
-    getCareer() {
-      console.log(" ข้อมูลอาชีพ ");
+    // checked
+    getCareer(member_id) {
+      console.log(" ข้อมูลอาชีพ สมาชิค:", member_id);
       var self = this;
-      var member_id = Number(this.$store.getters.myMember_id);
-      console.log("member_id:", member_id);
       axios
         .post(this.url_api_plan_career, {
           action: "get_plan_career_by_member_id",
@@ -789,19 +780,14 @@ export default {
           console.log(error);
         });
     },
-    onPlanCareerSelected(val) {
-      console.log("เลือกอาชีพเป้าหมาย:", val.label);
-      console.log("รหัสอาชีพเป้าหมาย:", val.plan_career_id);
-      this.getQualification();
-    },
-    getQualification() {
-      console.log(" แสดงข้อมูลคุณสมบัติของอาชีพ ", this.plan_career_id);
+    // checked
+    getQa_plan_career(plan_career_id) {
+      console.log(" แสดงข้อมูลคุณสมบัติของอาชีพ ", plan_career_id);
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
-          // action: "get_career_qualifiation_by_plan_career_id",
           action: "get_qa_plan_career_by_plan_career_id",
-          plan_career_id: this.plan_career_id,
+          plan_career_id: plan_career_id,
         })
         .then(function (res) {
           console.log("แสดงข้อมูลคุณสมบัติของอาชีพ1:", res.data);
@@ -811,14 +797,14 @@ export default {
           var qualification_name = res.data.map(
             (item) => item.qualification_name
           );
-          var level_name = res.data.map((item) => item.level_name);
+          var level_name = res.data.map((item) => item.level_description);
           var target_name = res.data.map((item) => item.target_name);
           self.qa_plan_career.options.splice(0);
           for (var i = 0; i < qa_plan_career_id.length; i++) {
             self.qa_plan_career.options.push({
               label: qualification_name[i],
               value: qa_plan_career_id[i],
-              description: level_name[i] + ":" + target_name[i],
+              description: level_name[i] + " " + target_name[i],
             });
           }
         })
@@ -894,8 +880,8 @@ export default {
     },
   },
   created() {
-    this.getUpdate();
-    this.getCareer();
+    this.getUpdate(this.member_id);
+    this.getCareer(this.member_id);
     this.getDevelopment();
     this.getImportance();
     this.getFrequency();

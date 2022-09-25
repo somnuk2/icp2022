@@ -73,7 +73,7 @@ const linksList = [
     title: "การลงทะเบียน",
     caption: "ข้อมูลการลงทะเบียน",
     icon: "perm_identity",
-    link: "/RegistrationPage",
+    link: "/FormRegistration",
   },
   {
     title: "กรอกข้อมูลส่วนตัว",

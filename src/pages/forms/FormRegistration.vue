@@ -124,7 +124,6 @@
                       </div>
                     </div>
                     <div class="row">
-                      <!-- ปุ่มควบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-md row justify-center"
                       >
@@ -154,7 +153,7 @@
                           to="/"
                         />
                         <!-- ไปฟอร์มกรอกข้อมูลส่วนตัว -->
-                        <!-- <q-btn
+                        <q-btn
                           color="primary"
                           no-caps
                           flat
@@ -164,7 +163,7 @@
                           <q-tooltip class="bg-accent"
                             >ไปฟอร์มกรอกข้อมูลส่วนตัว</q-tooltip
                           >
-                        </q-btn> -->
+                        </q-btn>
                       </div>
                     </div>
                     <!-- ตารางข้อมูล -->
@@ -235,7 +234,8 @@ import { ref } from "vue";
 export default {
   data() {
     return {
-      url_api_member: "https://icp2022.net/icp_v1/signup_form/api-member.php",
+      url_api_member:
+        "https://icp2022.net/icp_v1/registration_form/api-member.php",
       title: "การลงทะเบียน",
       members: Array,
       register: true,
@@ -315,6 +315,30 @@ export default {
           })
           .onOk(() => {
             this.checkNewMemeber(this.member.email);
+            // const newMember = {
+            //   member_id: this.member.member_id,
+            //   full_name: this.member.full_name,
+            //   email: this.member.email,
+            //   password: this.member.password,
+            //   status: this.member.status,
+            // };
+            // this.$emit("saveData", newMember);
+            // axios
+            //   .post(this.url_api_member, {
+            //     action: "insert",
+            //     member_id: this.member.member_id,
+            //     full_name: this.member.full_name,
+            //     email: this.member.email,
+            //     password: this.member.password,
+            //     status: this.member.status,
+            //   })
+            //   .then((res) => {
+            //     console.log(res);
+            //     this.getUpdate();
+            //   })
+            //   .catch(function (error) {
+            //     console.log(error);
+            //   });
           });
       } else {
         this.$q
@@ -418,12 +442,12 @@ export default {
         });
     },
     getUpdate() {
-      console.log("แสดงข้อมูลอีเมล:", this.member.email);
+      console.log(" แสดงข้อมูลทั้งหมด ");
       var self = this;
       axios
         .post(this.url_api_member, {
-          action: "getEmail",
-          email: this.member.email,
+          action: "getall",
+          member_id: this.member.member_id,
         })
         .then(function (res) {
           console.log("Registration:", res.data);

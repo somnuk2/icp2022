@@ -239,14 +239,17 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url_api_pivot: "https://icp2022.net/api-pivot.php",
-      url: "https://icp2022.net/api-member.php",
+      url_api_pivot: "https://icp2022.net/icp_v1/plan_report/api-pivot.php",
+      url: "https://icp2022.net/icp_v1/plan_report/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/api-qa-plan-career.php",
-      url_api_self_assessment: "https://icp2022.net/api-self-assessment.php",
-      url_api_plan: "https://icp2022.net/api-plan.php",
-      url_api_plan_career: "https://icp2022.net/api-plan-career.php",
-      url_api_qa_plan_career: "https://icp2022.net/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1/plan_report/api-qa-plan-career.php",
+      url_api_self_assessment:
+        "https://icp2022.net/icp_v1/plan_report/api-self-assessment.php",
+      url_api_plan: "https://icp2022.net/icp_v1/plan_report/api-plan.php",
+      url_api_plan_career:
+        "https://icp2022.net/icp_v1/plan_report/api-plan-career.php",
+      url_api_qa_plan_career:
+        "https://icp2022.net/icp_v1/plan_report/api-qa-plan-career.php",
 
       title: "รายงานการพัฒนาตนเอง",
       message: "Form Report",
