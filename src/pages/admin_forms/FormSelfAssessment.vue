@@ -27,8 +27,6 @@
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterPlan_career"
-                          use-input
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
@@ -62,8 +60,6 @@
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterQa_plan_career"
-                          use-input
                           color="green"
                           v-model="qa_plan_career_id"
                           :options="qa_plan_career.options"
@@ -129,8 +125,6 @@
                       <!-- ประเมินตนเอง -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterPerform"
-                          use-input
                           color="green"
                           v-model="perform_id"
                           :options="perform.options"
@@ -307,7 +301,7 @@ export default {
         "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
 
       message: "Form Self Acessment",
-      title: "การประเมินตนเอง",
+      title: "จัดการประเมินตนเอง",
       currentYear: new Date().getFullYear(),
       selfAssessments: Array,
       selfAssessments_: Array,
@@ -403,16 +397,10 @@ export default {
       ],
       selfAssessments1: [],
       qa_plan_career_id: "",
-      qa_plan_career_: {
-        options: [],
-      },
       qa_plan_career: {
         options: [],
       },
       plan_career_id: "",
-      plan_career_: {
-        options: [],
-      },
       plan_career: {
         options: [],
       },
@@ -421,9 +409,6 @@ export default {
       self_assessment_date: "",
       self_assessment_id: "",
       perform_id: "",
-      perform_: {
-        options: [],
-      },
       perform: {
         options: [],
       },
@@ -627,7 +612,6 @@ export default {
               value: plan_career_id[i],
             });
           }
-          self.plan_career_.options = self.plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -660,7 +644,6 @@ export default {
               description: level_name[i] + " " + target_name[i],
             });
           }
-          self.qa_plan_career_.options = self.qa_plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -683,56 +666,10 @@ export default {
               value: perform_id[i],
             });
           }
-          self.perform_.options = self.perform.options;
         })
         .catch(function (error) {
           console.log(error);
         });
-    },
-    filterPerform(val, update) {
-      if (val === "") {
-        update(() => {
-          this.perform.options = this.perform_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.perform.options = this.perform_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterQa_plan_career(val, update) {
-      if (val === "") {
-        update(() => {
-          this.qa_plan_career.options = this.qa_plan_career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.qa_plan_career.options = this.qa_plan_career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterPlan_career(val, update) {
-      if (val === "") {
-        update(() => {
-          this.plan_career.options = this.plan_career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.plan_career.options = this.plan_career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
     },
   },
   mounted() {

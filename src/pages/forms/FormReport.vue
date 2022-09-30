@@ -7,23 +7,23 @@
         style="background: linear-gradient(#74c588, #0ad13c)"
       >
         <div class="row full-width">
-          <div
-            class="col-md-8 offset-md-2 col-xs-16 q-pl-md q-pr-md q-pt-sm q-mt-xl q-mr-sm"
-          >
+          <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
               <q-card-section class="bg-blue-14">
-                <h4 class="text-h5 text-white q-my-md text-center">
+                <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
               </q-card-section>
               <div class="row">
-                <div class="col-md-12 col-xs-12 q-pa-md">
+                <div class="col-md-12 col-xs-12 q-pa-xs">
                   <q-form method="post" class="q-gutter-md">
                     <!-- อาชีพเป้าหมาย + คุณสมบัติ-->
                     <div class="row">
                       <!-- แผนอาชีพ -->
-                      <div class="col-md-6 col-xs-12 q-pa-md">
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterPlan_career"
+                          use-input
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
@@ -55,8 +55,10 @@
                         </q-select>
                       </div>
                       <!-- คุณสมบัติ -->
-                      <div class="col-md-6 col-xs-12 q-pa-md">
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterQa_plan_career"
+                          use-input
                           color="green"
                           v-model="qualification_id"
                           :options="qa_plan_career.options"
@@ -92,7 +94,7 @@
                     <div class="row">
                       <!-- ปุ่มควบคุม -->
                       <div
-                        class="col-md-12 col-xs-12 q-pa-md row justify-center"
+                        class="col-md-12 col-xs-12 q-pa-xs row justify-center"
                       >
                         <!-- ออก -->
                         <q-btn
@@ -100,7 +102,7 @@
                           label="ออก"
                           color="primary"
                           flat
-                          class="q-ml-sm"
+                          class="q-pa-xs"
                           to="/"
                         />
                         <!-- กลับการพัฒนาตนเอง -->
@@ -131,12 +133,12 @@
                     </div>
                     <!-- ตารางรายงานการประเมินตนเอง -->
                     <div class="row">
-                      <div class="col-md-12 col-xs-12 q-pa-md">
-                        <div class="q-pa-md">
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
+                        <div class="q-pa-xs">
                           <q-table
-                            :grid="$q.screen.xs"
+                            class="my-sticky-header-table"
                             ref="myTable"
-                            title="รายงานคุณสมบัติตามอาชีพเป้าหมาย"
+                            title="คุณสมบัติตามอาชีพเป้าหมาย"
                             :rows="qa_plan_careers"
                             :columns="main_columns"
                             row-key="qa_plan_career_id"
@@ -191,8 +193,8 @@
                                     รหัสคุณสมบัติตามอาชีพเป้าหมาย:
                                     {{ props.row.qa_plan_career_id }}
                                     <q-table
-                                      :grid="$q.screen.xs"
-                                      title="รายงานผลการพัฒนาตนเอง"
+                                      class="my-sticky-header-table"
+                                      title="การพัฒนาตนเอง"
                                       :rows="plans"
                                       :columns="columns"
                                       row-key="plan_id"
@@ -410,10 +412,16 @@ export default {
       ],
       qualification_id: "",
       qa_plan_careers: [],
+      qa_plan_career_: {
+        options: [],
+      },
       qa_plan_career: {
         options: [],
       },
       plan_career_id: "",
+      plan_career_: {
+        options: [],
+      },
       plan_career: {
         options: [],
       },
@@ -482,6 +490,7 @@ export default {
               value: plan_career_id[i],
             });
           }
+          self.plan_career_.options = self.plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -518,6 +527,7 @@ export default {
               description: level_name[i] + ":" + target_name[i],
             });
           }
+          self.qa_plan_career_.options = self.qa_plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -564,6 +574,36 @@ export default {
           console.log(error);
         });
     },
+    filterQa_plan_career(val, update) {
+      if (val === "") {
+        update(() => {
+          this.qa_plan_career.options = this.qa_plan_career_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.qa_plan_career.options = this.qa_plan_career_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
+    },
+    filterPlan_career(val, update) {
+      if (val === "") {
+        update(() => {
+          this.plan_career.options = this.plan_career_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.plan_career.options = this.plan_career_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
+    },
   },
   mounted() {
     this.getUpdate();
@@ -573,7 +613,21 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="sass">
+.my-sticky-header-table
+  height: 310px
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    background-color: #c1f4cd
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+  &.q-table--loading thead tr:last-child th
+    top: 48px
+</style>
 <style scoped>
 .myclass td:hover:before {
   display: none;

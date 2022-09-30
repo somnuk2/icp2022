@@ -236,7 +236,7 @@ export default {
     return {
       url_api_member:
         "https://icp2022.net/icp_v1/registration_form/api-member.php",
-      title: "การลงทะเบียน",
+      title: "จัดการลงทะเบียน",
       members: Array,
       register: true,
       filter: ref(""),

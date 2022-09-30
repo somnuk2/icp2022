@@ -26,7 +26,7 @@
                       <!-- อาชีพเป้าหมาย -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterCareer"
+                          filled
                           color="blue-5"
                           v-model="plan_career.career_id"
                           use-input
@@ -260,9 +260,6 @@ export default {
         // end_date: "",
       },
       status: "บันทึก",
-      career_: {
-        options: [],
-      },
       career: {
         options: [],
       },
@@ -346,7 +343,6 @@ export default {
               value: ids[i],
             });
           }
-          self.career_.options = self.career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -368,6 +364,7 @@ export default {
               member_id: this.plan_career.member_id,
               career_id: this.plan_career.career_id,
               start_date: this.plan_career.start_date,
+              // end_date: this.plan_career.end_date,
             };
             this.$emit("saveData", newplan_career);
             axios
@@ -376,6 +373,7 @@ export default {
                 member_id: this.plan_career.member_id,
                 career_id: this.plan_career.career_id,
                 start_date: this.plan_career.start_date,
+                // end_date: this.plan_career.end_date,
               })
               .then((res) => {
                 console.log("ข้อมูลส่วนบุคคล:", res.data);
@@ -390,10 +388,7 @@ export default {
         this.$q
           .dialog({
             title: "ยืนยัน",
-            message:
-              "คุณต้องการบันทึกการแก้ไขข้อมูลสมาชิค:" +
-              this.plan_career.member_id +
-              " หรือไม่?",
+            message: "คุณต้องการบันทึกการแก้ไขข้อมูลหรือไม่?",
             cancel: true,
             persistent: true,
           })
@@ -406,6 +401,7 @@ export default {
                 member_id: this.plan_career.member_id,
                 career_id: this.plan_career.career_id,
                 start_date: this.plan_career.start_date,
+                // end_date: this.plan_career.end_date,
               })
               .then((response) => {
                 console.log("บันทึกการแก้ไข:", response.data);
@@ -511,8 +507,8 @@ export default {
         });
     },
     createValue(career_name, done) {
-      done(career_name, "add-unique");
-      console.log("create career_name:", career_name);
+      done(val, "add-unique");
+      console.log("val:", career_name);
       // if (confirm("คุณต้องการเพิ่มอาชีพ [" + val + "] ใช่ใหม?")) {
       this.$q
         .dialog({
@@ -543,21 +539,6 @@ export default {
     },
     onPrevious() {
       this.$router.replace({ name: "FormComponent" });
-    },
-    filterCareer(val, update) {
-      if (val === "") {
-        update(() => {
-          this.career.options = this.career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.career.options = this.career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
     },
   },
   mounted() {

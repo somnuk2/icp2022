@@ -27,8 +27,6 @@
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterPlan_career"
-                          use-input
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
@@ -63,8 +61,6 @@
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterQa_plan_career"
-                          use-input
                           color="green"
                           v-model="qa_plan_career_id"
                           :options="qa_plan_career.options"
@@ -98,8 +94,6 @@
                       <!-- การพัฒนา -->
                       <div class="col-md-4 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterDevelopment"
-                          use-input
                           color="green"
                           v-model="development_id"
                           :options="development.options"
@@ -166,8 +160,6 @@
                       <!-- ความสำคัญ -->
                       <div class="col-md-3 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterImportance"
-                          use-input
                           color="green"
                           v-model="importance_id"
                           :options="importance.options"
@@ -198,8 +190,6 @@
                       <!-- ความถี่ -->
                       <div class="col-md-3 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterFrequency"
-                          use-input
                           color="green"
                           v-model="frequency_id"
                           :options="frequency.options"
@@ -294,8 +284,8 @@
                         </q-input>
                       </div>
                     </div>
-                    <!-- ปุ่มควบคุม -->
                     <div class="row">
+                      <!-- ปุ่มควบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-xs row justify-center"
                       >
@@ -350,7 +340,6 @@
                         </q-btn>
                       </div>
                     </div>
-                    <!-- ตาราง -->
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-pa-xs">
                         <div class="q-pa-xs">
@@ -432,7 +421,7 @@ export default {
         "https://icp2022.net/icp_v1/plan_form/api-qa-plan-career.php",
 
       message: "Form Plan Career",
-      title: "การพัฒนาตนเอง",
+      title: "จัดการพัฒนาตนเอง",
       plan: {
         plan_id: "",
         plan_title: "",
@@ -556,37 +545,22 @@ export default {
       loading: ref(false),
       plans1: [],
       qa_plan_career_id: "",
-      qa_plan_career_: {
-        options: [],
-      },
       qa_plan_career: {
         options: [],
       },
       plan_career_id: "",
-      plan_career_: {
-        options: [],
-      },
       plan_career: {
         options: [],
       },
       development_id: "",
-      development_: {
-        options: [],
-      },
       development: {
         options: [],
       },
       importance_id: "",
-      importance_: {
-        options: [],
-      },
       importance: {
         options: [],
       },
       frequency_id: "",
-      frequency_: {
-        options: [],
-      },
       frequency: {
         options: [],
       },
@@ -749,7 +723,7 @@ export default {
             .then(function (response) {
               console.log(response);
               // self.resetForm();
-              self.getUpdate(self.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
@@ -798,7 +772,6 @@ export default {
               value: plan_career_id[i],
             });
           }
-          self.plan_career_.options = self.plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -831,7 +804,6 @@ export default {
               description: level_name[i] + " " + target_name[i],
             });
           }
-          self.qa_plan_career_.options = self.qa_plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -854,7 +826,6 @@ export default {
               value: development_id[i],
             });
           }
-          self.development_.options = self.development.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -877,7 +848,6 @@ export default {
               value: importance_id[i],
             });
           }
-          self.importance_.options = self.importance.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -900,86 +870,10 @@ export default {
               value: frequency_id[i],
             });
           }
-          self.frequency_.options = self.frequency.options;
         })
         .catch(function (error) {
           console.log(error);
         });
-    },
-    filterPlan_career(val, update) {
-      if (val === "") {
-        update(() => {
-          this.plan_career.options = this.plan_career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.plan_career.options = this.plan_career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterQa_plan_career(val, update) {
-      if (val === "") {
-        update(() => {
-          this.qa_plan_career.options = this.qa_plan_career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.qa_plan_career.options = this.qa_plan_career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterDevelopment(val, update) {
-      if (val === "") {
-        update(() => {
-          this.development.options = this.development_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.development.options = this.development_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterImportance(val, update) {
-      if (val === "") {
-        update(() => {
-          this.importance.options = this.importance_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.importance.options = this.importance_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterFrequency(val, update) {
-      if (val === "") {
-        update(() => {
-          this.frequency.options = this.frequency_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.frequency.options = this.frequency_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
     },
   },
   created() {

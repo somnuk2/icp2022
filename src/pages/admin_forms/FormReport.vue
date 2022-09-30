@@ -22,8 +22,6 @@
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterPlan_career"
-                          use-input
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
@@ -57,8 +55,6 @@
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
-                          @filter="filterQa_plan_career"
-                          use-input
                           color="green"
                           v-model="qualification_id"
                           :options="qa_plan_career.options"
@@ -92,6 +88,7 @@
                     </div>
                     <!-- การเปลี่ยนหน้า -->
                     <div class="row">
+                      <!-- ปุ่มควบคุม -->
                       <div
                         class="col-md-12 col-xs-12 q-pa-xs row justify-center"
                       >
@@ -101,31 +98,33 @@
                           label="ออก"
                           color="primary"
                           flat
-                          class="q-ml-sm"
+                          class="q-pa-xs"
                           to="/"
                         />
-                        <!-- ย้อนกลับ -->
+                        <!-- กลับการพัฒนาตนเอง -->
                         <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_previous"
-                          to="/FormSelfAssessment"
+                          to="/FormPlan"
                         >
                           <q-tooltip class="bg-accent"
-                            >กลับฟอร์มการประเมินตนเอง</q-tooltip
+                            >กลับฟอร์มการพัฒนาตนเอง</q-tooltip
                           >
                         </q-btn>
-                        <!-- ไปข้างหน้า -->
-                        <!-- <q-btn
+                        <!-- ไปการประเมินตนเอง -->
+                        <q-btn
                           color="primary"
                           no-caps
                           flat
                           icon="skip_next"
-                          @click="onNext"
+                          to="/FormSelfAssessment"
                         >
-                          <q-tooltip class="bg-accent">ไปข้างหน้า</q-tooltip>
-                        </q-btn> -->
+                          <q-tooltip class="bg-accent"
+                            >ไปฟอร์มการประเมินตนเอง</q-tooltip
+                          >
+                        </q-btn>
                       </div>
                     </div>
                     <!-- ตารางรายงานการประเมินตนเอง -->
@@ -191,14 +190,12 @@
                                     {{ props.row.qa_plan_career_id }}
                                     <q-table
                                       class="my-sticky-header-table"
-                                      title="การประเมินตนเอง"
-                                      :rows="self_assessments"
+                                      title="การพัฒนาตนเอง"
+                                      :rows="plans"
                                       :columns="columns"
-                                      row-key="self_assessment_id"
+                                      row-key="plan_id"
                                       selection="multiple"
-                                      v-model:selected="
-                                        selected_self_assessment
-                                      "
+                                      v-model:selected="selected_plan"
                                     >
                                     </q-table>
                                   </div>
@@ -223,7 +220,6 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
-
 export default {
   name: "FormPivotTable",
   components: {},
@@ -241,67 +237,107 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url_api_pivot:
-        "https://icp2022.net/icp_v1/self_assessment_report/api-pivot.php",
-      url: "https://icp2022.net/icp_v1/self_assessment_report/api-member.php",
+      url_api_pivot: "https://icp2022.net/icp_v1/plan_report/api-pivot.php",
+      url: "https://icp2022.net/icp_v1/plan_report/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/icp_v1/self_assessment_report/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1/plan_report/api-qa-plan-career.php",
       url_api_self_assessment:
-        "https://icp2022.net/icp_v1/self_assessment_report/api-self-assessment.php",
-      url_api_plan:
-        "https://icp2022.net/icp_v1/self_assessment_report/api-plan.php",
+        "https://icp2022.net/icp_v1/plan_report/api-self-assessment.php",
+      url_api_plan: "https://icp2022.net/icp_v1/plan_report/api-plan.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1/self_assessment_report/api-plan-career.php",
+        "https://icp2022.net/icp_v1/plan_report/api-plan-career.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/self_assessment_report/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1/plan_report/api-qa-plan-career.php",
 
-      title: "รายงานผลการประเมินตนเอง",
-      message: "Form Pivot Table",
+      title: "รายงานการพัฒนาตนเอง",
+      message: "Form Report",
       selected: ref([]),
-      selected_self_assessment: ref([]),
+      selected_plan: ref([]),
       columns: [
         {
           required: true,
-          name: "self_assessment_id",
+          name: "plan_id",
           align: "center",
-          label: "รหัสการประเมิน",
-          field: (row) => row.self_assessment_id,
+          label: "รหัสการพัฒนา",
+          field: (row) => row.plan_id,
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "self_assessment_date",
+          name: "qa_plan_career_id",
           align: "center",
-          label: "วันประเมิน",
-          field: (row) => row.self_assessment_date,
+          label: "รหัสคุณสมบัติอาชีพ",
+          field: (row) => row.qa_plan_career_id,
           format: (val) => `${val}`,
         },
         {
-          name: "target_id",
+          name: "development_id",
           align: "center",
-          label: "รหัสเป้าหมาย",
-          field: (row) => row.target_id,
+          label: "รหัสชนิดการพัฒนา",
+          field: (row) => row.development_id,
           format: (val) => `${val}`,
         },
         {
-          name: "target_name",
+          name: "development_name",
+          align: "center",
+          label: "ชนิดการพัฒนา",
+          field: (row) => row.development_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_title",
           align: "left",
-          label: "เป้าหมาย",
-          field: (row) => row.target_name,
+          label: "เรื่อง",
+          field: (row) => row.plan_title,
           format: (val) => `${val}`,
         },
         {
-          name: "perform_id",
-          align: "center",
-          label: "รหัสการประเมิน",
-          field: (row) => row.perform_id,
-          format: (val) => `${val}`,
-        },
-        {
-          name: "perform_name",
+          name: "plan_channel",
           align: "left",
-          label: "การประเมิน",
-          field: (row) => row.perform_name,
+          label: "ช่องทาง",
+          field: (row) => row.plan_channel,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "importance_id",
+          align: "center",
+          label: "รหัสความสำคัญ",
+          field: (row) => row.importance_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "importance_name",
+          align: "center",
+          label: "ความสำคัญ",
+          field: (row) => row.importance_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "frequency_id",
+          align: "center",
+          label: "รหัสความถี่",
+          field: (row) => row.frequency_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "frequency_name",
+          align: "center",
+          label: "ความถี่",
+          field: (row) => row.frequency_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_start_date",
+          align: "center",
+          label: "วันเริ่มต้น",
+          field: (row) => row.plan_start_date,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_end_date",
+          align: "center",
+          label: "วันสิ้นสุด",
+          field: (row) => row.plan_end_date,
           format: (val) => `${val}`,
         },
       ],
@@ -370,22 +406,16 @@ export default {
           format: (val) => `${val}`,
         },
       ],
-      self_assessments: [],
       qualification_id: "",
       qa_plan_careers: [],
-      qa_plan_career_: {
-        options: [],
-      },
       qa_plan_career: {
         options: [],
       },
       plan_career_id: "",
-      plan_career_: {
-        options: [],
-      },
       plan_career: {
         options: [],
       },
+      plans: [],
     };
   },
   methods: {
@@ -406,7 +436,7 @@ export default {
         })
         .then(function (res) {
           console.log("self_assessment:", res);
-          self.selfAssessments1 = res.data;
+          self.plans = res.data;
         })
         .catch(function (error) {
           console.log(error);
@@ -427,7 +457,7 @@ export default {
     },
     subRow(qa_plan_career_id) {
       console.log("qa_plan_career_id:", qa_plan_career_id);
-      this.getSelfAassessmentByQaPlanCareerId(qa_plan_career_id);
+      this.getPlanByQaPlanCareerId(qa_plan_career_id);
     },
     // อาชีพเป้าหมาย
     getCareer() {
@@ -450,7 +480,6 @@ export default {
               value: plan_career_id[i],
             });
           }
-          self.plan_career_.options = self.plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -487,7 +516,6 @@ export default {
               description: level_name[i] + ":" + target_name[i],
             });
           }
-          self.qa_plan_career_.options = self.qa_plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -518,52 +546,21 @@ export default {
           console.log(error);
         });
     },
-    // การประเมินตนเอง
-    getSelfAassessmentByQaPlanCareerId(qa_plan_career_id) {
-      console.log(" แสดงข้อมูลการประเมินตนเอง: ", qa_plan_career_id);
+    getPlanByQaPlanCareerId(qa_plan_career_id) {
+      console.log(" แสดงข้อมูลการพัฒนาตนเอง: ", qa_plan_career_id);
       var self = this;
       axios
-        .post(this.url_api_self_assessment, {
-          action: "get_self_aassessment_by_qa_plan_career_id",
+        .post(this.url_api_plan, {
+          action: "get_plan_by_qa_plan_career_id",
           qa_plan_career_id: qa_plan_career_id,
         })
         .then(function (res) {
-          console.log("self_assessment:", res);
-          self.self_assessments = res.data;
+          console.log("plan:", res.data);
+          self.plans = res.data;
         })
         .catch(function (error) {
           console.log(error);
         });
-    },
-    filterQa_plan_career(val, update) {
-      if (val === "") {
-        update(() => {
-          this.qa_plan_career.options = this.qa_plan_career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.qa_plan_career.options = this.qa_plan_career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
-    },
-    filterPlan_career(val, update) {
-      if (val === "") {
-        update(() => {
-          this.plan_career.options = this.plan_career_.options;
-        });
-        return;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        console.log("needle:", needle);
-        this.plan_career.options = this.plan_career_.options.filter(
-          (v) => v.label.indexOf(needle) > -1
-        );
-      });
     },
   },
   mounted() {

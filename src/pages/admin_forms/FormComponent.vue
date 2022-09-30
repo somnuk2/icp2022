@@ -1020,7 +1020,6 @@ export default {
                 dis_description: this.individual.dis_description,
                 // ข้อมูลโครงการ
                 project_id: this.project.value,
-                advisor_id: this.advisor_id,
               })
               .then((res) => {
                 console.log("บันทึกข้อมูล:", res.data);

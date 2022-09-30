@@ -7,15 +7,15 @@
         style="background: linear-gradient(#74c588, #0ad13c)"
       >
         <div class="row full-width">
-          <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
+          <div class="col-md-8 offset-md-2 col-xs-12 q-pa-xs">
             <q-card flat class="bg-white text-black">
               <q-card-section class="bg-deep-purple-7">
-                <h4 class="text-h5 text-white q-my-md text-center">
+                <h4 class="text-h5 text-white q-my-xs text-center">
                   {{ title }}
                 </h4>
               </q-card-section>
               <div class="row">
-                <div class="col-md-5 col-xs-12 q-pa-md">
+                <div class="col-md-5 col-xs-12 q-pa-xs">
                   <q-img
                     placeholder-src="~assets/images/pics_topic_103.jpg"
                     src="~assets/images/pics_topic_103.jpg"
@@ -25,16 +25,7 @@
 
                 <div class="col-md-7 col-xs-12">
                   <div class="q-pa-md">
-                    <!-- <div
-                      class="text-h6 q-pb-md text-blue-8 text-center text-weight-bolder"
-                    >
-                      เข้าระบบ/Login
-                    </div> -->
-                    <q-form
-                      @submit="OnLogin()"
-                      @reset="onRegister()"
-                      class="q-gutter-md"
-                    >
+                    <q-form @submit="OnLogin()" class="q-gutter-md">
                       <q-input
                         ref="email"
                         square
@@ -111,24 +102,24 @@
                       <div>
                         <q-btn
                           icon="login"
-                          label="เข้าสู่ระบบ"
+                          label="เข้าระบบ"
                           type="submit"
                           color="primary"
                         />
                         <q-btn
                           icon="assignment_ind"
                           label="ลงทะเบียน"
-                          type="reset"
                           color="primary"
                           flat
-                          class="q-ml-sm"
+                          class="q-pa-xs"
+                          to="/RegistrationPage"
                         />
                         <q-btn
                           icon="logout"
                           label="ออก"
                           color="primary"
                           flat
-                          class="q-ml-sm"
+                          class="q-pa-xs"
                           to="/"
                         />
                       </div>
@@ -146,6 +137,8 @@
 
 <script>
 import axios from "axios";
+import { ref } from "vue";
+import { useQuasar } from "quasar";
 
 export default {
   name: "LoginPage2",
@@ -164,6 +157,7 @@ export default {
       btnLabel: "กดปุ่ม",
       visibility: false,
       visibilityIcon: "visibility",
+      myAuthenticate: ref(false),
       emp_id: Array,
       input: {
         username: "",
@@ -174,6 +168,7 @@ export default {
         full_name: "",
         status: "",
       },
+      $q: useQuasar(),
     };
   },
 
@@ -196,14 +191,24 @@ export default {
         })
         .then(function (res) {
           console.log("data:", res.data);
-          self.member.member_id = res.data.map((item) => item.member_id)[0];
-          self.member.full_name = res.data.map((item) => item.full_name)[0];
-          self.member.status = res.data.map((item) => item.status)[0];
-          self.storeCommit(
-            self.member.member_id,
-            self.member.full_name,
-            self.member.status
-          );
+          if (res.data.length > 0) {
+            var member_id = res.data.map((item) => item.member_id)[0];
+            var full_name = res.data.map((item) => item.full_name)[0];
+            var status = res.data.map((item) => item.status)[0];
+            self.storeCommit(member_id, full_name, status);
+          } else {
+            console.log("The username and / or password is incorrect");
+            self.$q
+              .dialog({
+                title: "เตือน",
+                message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+                persistent: true,
+              })
+              .onOk(() => {
+                self.input.username = "";
+                self.input.password = "";
+              });
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -214,13 +219,12 @@ export default {
       console.log("login:", full_name);
       console.log("login:", status);
       if (member_id != 0 && full_name != "" && status != "") {
-        this.$store.commit("setMyAuthenticate", true);
+        this.myAuthenticate = true;
+        this.$store.commit("setMyAuthenticate", this.myAuthenticate);
         this.$store.commit("setMyMember_id", member_id);
         this.$store.commit("setMyName", full_name);
         this.$store.commit("setMyStatus", status);
-        this.$router.replace({ name: "home" });
-      } else {
-        console.log("The username and / or password is incorrect");
+        this.$router.replace({ path: "/" });
       }
     },
     required(val) {
