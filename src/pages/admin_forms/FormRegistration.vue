@@ -22,9 +22,10 @@
                     method="post"
                     class="q-gutter-md"
                   >
+                    <!-- ชื่อ -->
                     <div class="row">
                       <!-- ชื่อ-สกุล -->
-                      <div class="col-md-6 col-xs-12 q-pa-xs">
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
                         <q-input
                           color="white"
                           bg-color="blue-5"
@@ -41,6 +42,46 @@
                             <q-icon name="favorite" />
                           </template>
                         </q-input>
+                      </div>
+                    </div>
+                    <!-- บทบาทของผู้ใช้ระบบ -->
+                    <div class="row">
+                      <!-- บทบาทของผู้ใช้ระบบ +อีเมล -->
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
+                        <q-select
+                          color="blue-3"
+                          v-model="member_role"
+                          :options="member_roles.options"
+                          label="บทบาท"
+                          stack-label
+                          emit-value
+                          map-options
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="school" />
+                          </template>
+                          <template v-slot:selected>
+                            บทบาท:
+                            <q-chip
+                              v-if="member_role"
+                              dense
+                              square
+                              color="white"
+                              text-color="primary"
+                              class="q-pa-xs"
+                            >
+                              {{ member_role.label }}
+                            </q-chip>
+                            <q-badge v-else>*none*</q-badge>
+                          </template>
+                          <template v-if="member_role" v-slot:append>
+                            <q-icon
+                              name="cancel"
+                              @click.stop.prevent="institute = null"
+                              class="cursor-pointer"
+                            />
+                          </template>
+                        </q-select>
                       </div>
                       <!-- อีเมล -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
@@ -121,6 +162,7 @@
                         </q-input>
                       </div>
                     </div>
+                    <!-- ปุ่มควบคุม -->
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12 q-pa-xs row justify-center"
@@ -169,6 +211,11 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-ma-xs">
                         <div class="q-pa-xs">
+                          <div class="row items-center q-gutter-sm q-mb-md">
+                            <q-toggle label="administration" v-model="admin" />
+                            <q-toggle label="super user" v-model="suser" />
+                            <q-toggle label="user" v-model="user" />
+                          </div>
                           <q-table
                             class="my-sticky-header-table"
                             title="ข้อมูลสมาชิค"
@@ -235,8 +282,8 @@ export default {
   data() {
     return {
       url_api_member:
-        "https://icp2022.net/icp_v1/registration_form/api-member.php",
-      title: "จัดการลงทะเบียน",
+        "https://icp2022.net/icp_v1_admin/registration_form/api-member.php",
+      title: "การลงทะเบียน(admin)",
       members: Array,
       register: true,
       filter: ref(""),
@@ -288,7 +335,7 @@ export default {
         {
           name: "status",
           align: "center",
-          label: "สถานะ",
+          label: "บทบาท",
           field: (row) => row.status,
           format: (val) => `${val}`,
           sortable: true,
@@ -301,6 +348,33 @@ export default {
       visibility: false,
       visibilityIcon: "visibility",
       checkUser: ref(false),
+      // กำหนดทางเลือกตาราง
+      admin: ref(false),
+      suser: ref(false),
+      user: ref(false),
+      member_roles_: {
+        options: [],
+      },
+      member_roles: {
+        options: [
+          {
+            label: "ผู้ดูแลระบบ",
+            value: "admin",
+          },
+          {
+            label: "ที่ปรึกษา",
+            value: "suser",
+          },
+          {
+            label: "ผู้ใช้ระบบ",
+            value: "user",
+          },
+        ],
+      },
+      member_role: ref({
+        label: "",
+        value: "",
+      }),
     };
   },
   methods: {
@@ -315,30 +389,6 @@ export default {
           })
           .onOk(() => {
             this.checkNewMemeber(this.member.email);
-            // const newMember = {
-            //   member_id: this.member.member_id,
-            //   full_name: this.member.full_name,
-            //   email: this.member.email,
-            //   password: this.member.password,
-            //   status: this.member.status,
-            // };
-            // this.$emit("saveData", newMember);
-            // axios
-            //   .post(this.url_api_member, {
-            //     action: "insert",
-            //     member_id: this.member.member_id,
-            //     full_name: this.member.full_name,
-            //     email: this.member.email,
-            //     password: this.member.password,
-            //     status: this.member.status,
-            //   })
-            //   .then((res) => {
-            //     console.log(res);
-            //     this.getUpdate();
-            //   })
-            //   .catch(function (error) {
-            //     console.log(error);
-            //   });
           });
       } else {
         this.$q
@@ -356,7 +406,7 @@ export default {
                 full_name: this.member.full_name,
                 email: this.member.email,
                 password: this.member.password,
-                status: this.member.status,
+                status: this.member_role.value,
               })
               .then((response) => {
                 console.log(response);
@@ -393,7 +443,7 @@ export default {
         full_name: this.member.full_name,
         email: this.member.email,
         password: this.member.password,
-        status: this.member.status,
+        status: this.member_role.value,
       };
       this.$emit("saveData", newMember);
       axios
@@ -403,7 +453,7 @@ export default {
           full_name: this.member.full_name,
           email: this.member.email,
           password: this.member.password,
-          status: this.member.status,
+          status: this.member_role.value,
         })
         .then((res) => {
           console.log(res);
@@ -442,12 +492,26 @@ export default {
         });
     },
     getUpdate() {
+      var admin = "";
+      var suser = "";
+      var user = "";
+      if (this.admin) {
+        admin = "admin";
+      }
+      if (this.suser) {
+        suser = "suser";
+      }
+      if (this.user) {
+        user = "user";
+      }
       console.log(" แสดงข้อมูลทั้งหมด ");
       var self = this;
       axios
         .post(this.url_api_member, {
+          admin: admin,
+          suser: suser,
+          user: user,
           action: "getall",
-          member_id: this.member.member_id,
         })
         .then(function (res) {
           console.log("Registration:", res.data);
@@ -473,6 +537,7 @@ export default {
           self.member.email = response.data.email;
           self.member.password = response.data.password;
           self.member.status = response.data.status;
+          self.member_role.value = response.data.status;
         })
         .catch(function (error) {
           console.log(error);
@@ -485,7 +550,8 @@ export default {
       this.member.email = "";
       this.member.password = "";
       this.member.repassword = "";
-      this.member.status = "";
+      this.member_role.value = "";
+      this.member_role.label = "";
     },
     deleteUser(id, name) {
       this.$q
@@ -540,6 +606,23 @@ export default {
     },
     OnCancel() {
       this.$router.replace({ name: "home" });
+    },
+    filterMember_role(val, update) {
+      if (val === "") {
+        update(() => {
+          this.member_roles.options = this.member_roles_.options;
+          console.log("member_roles_.options:", this.member_roles_.options);
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.member_roles.options = this.member_roles_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+        console.log("member_roles_.options:", this.member_roles_.options);
+      });
     },
   },
   created() {

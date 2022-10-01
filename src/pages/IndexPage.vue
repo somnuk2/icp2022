@@ -1,6 +1,6 @@
 <template>
   <div class="row justify-center items-center q-ma-xs">
-    <h6 class="q-ma-xs">Individual Career Planning (ICP)</h6>
+    <h6 class="q-ma-xs">Individualized Career Planning (ICP)</h6>
   </div>
   <div class="row justify-center items-center q-ma-xs">
     <h5 class="q-ma-xs">การวางแผนอาชีพเฉพาะบุคคล</h5>

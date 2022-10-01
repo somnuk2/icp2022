@@ -144,6 +144,7 @@
                             row-key="qa_plan_career_id"
                             selection="multiple"
                             v-model:selected="selected"
+                            style="min-height: 100vh"
                           >
                             <template v-slot:header="props">
                               <q-tr :props="props">
@@ -426,6 +427,9 @@ export default {
         options: [],
       },
       plans: [],
+      pagination: {
+        rowsPerPage: 30, // current rows per page being displayed
+      },
     };
   },
   methods: {

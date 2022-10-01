@@ -163,47 +163,15 @@
                           </template>
                         </q-input>
                       </div>
-                      <!-- ความสำคัญ -->
-                      <div class="col-md-3 col-xs-12 q-pa-xs">
-                        <q-select
-                          @filter="filterImportance"
-                          use-input
-                          color="green"
-                          v-model="importance_id"
-                          :options="importance.options"
-                          label="ความสำคัญ"
-                          emit-value
-                          map-options
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="saved_search" />
-                          </template>
-                          <template v-slot:option="scope">
-                            <q-item v-bind="scope.itemProps">
-                              <q-item-section avatar>
-                                <q-icon :name="scope.opt.icon" />
-                              </q-item-section>
-                              <q-item-section>
-                                <q-item-label>{{
-                                  scope.opt.label
-                                }}</q-item-label>
-                                <q-item-label caption>{{
-                                  scope.opt.description
-                                }}</q-item-label>
-                              </q-item-section>
-                            </q-item>
-                          </template>
-                        </q-select>
-                      </div>
-                      <!-- ความถี่ -->
-                      <div class="col-md-3 col-xs-12 q-pa-xs">
+                      <!-- การแจ้งเตือน -->
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
                           @filter="filterFrequency"
                           use-input
                           color="green"
                           v-model="frequency_id"
                           :options="frequency.options"
-                          label="ความถี่"
+                          label="การแจ้งเตือน"
                           emit-value
                           map-options
                         >
@@ -292,6 +260,41 @@
                             </q-icon>
                           </template>
                         </q-input>
+                      </div>
+                    </div>
+                    <!-- ความสำคัญ -->
+                    <div class="row">
+                      <!-- ความสำคัญ -->
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
+                        <q-select
+                          @filter="filterImportance"
+                          use-input
+                          color="green"
+                          v-model="importance_id"
+                          :options="importance.options"
+                          label="ความสำคัญ"
+                          emit-value
+                          map-options
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="saved_search" />
+                          </template>
+                          <template v-slot:option="scope">
+                            <q-item v-bind="scope.itemProps">
+                              <q-item-section avatar>
+                                <q-icon :name="scope.opt.icon" />
+                              </q-item-section>
+                              <q-item-section>
+                                <q-item-label>{{
+                                  scope.opt.label
+                                }}</q-item-label>
+                                <q-item-label caption>{{
+                                  scope.opt.description
+                                }}</q-item-label>
+                              </q-item-section>
+                            </q-item>
+                          </template>
+                        </q-select>
                       </div>
                     </div>
                     <!-- ปุ่มควบคุม -->

@@ -27,6 +27,8 @@
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterPlan_career"
+                          use-input
                           color="green"
                           v-model="plan_career.options.value"
                           :options="plan_career.options"
@@ -57,6 +59,7 @@
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterQualification"
                           color="green"
                           v-model="qualification.options.value"
                           :options="qualification.options"
@@ -93,6 +96,8 @@
                       <!-- ค่าเป้าหมาย -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterTarget"
+                          use-input
                           color="green"
                           v-model="target.options.value"
                           :options="target.options"
@@ -123,6 +128,8 @@
                       <!-- ระดับความสำคัญ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterLevel"
+                          use-input
                           color="green"
                           v-model="level.options.value"
                           :options="level.options"
@@ -308,7 +315,7 @@ export default {
         "https://icp2022.net/icp_v1/qa_plan_career_form/api-qa-plan-career.php",
 
       message: "Form Qualification",
-      title: "จัดการคุณสมบัติ/ทักษะ",
+      title: "คุณสมบัติ/ทักษะ",
       btnLabel: "เพิ่มข้อมูล",
 
       columns: [
@@ -397,18 +404,30 @@ export default {
       loading: ref(false),
       qa_plan_career_id: "",
       qualifications1: [],
+      qualification_: {
+        options: [],
+      },
       qualification: {
         options: [],
       },
       plan_careers: "",
+      plan_career_: {
+        options: [],
+      },
       plan_career: {
         options: [],
       },
       targets: "",
+      target_: {
+        options: [],
+      },
       target: {
         options: [],
       },
       levels: "",
+      level_: {
+        options: [],
+      },
       level: {
         options: [],
       },
@@ -500,6 +519,7 @@ export default {
               value: plan_career_id[i],
             });
           }
+          self.plan_career_.options = self.plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -528,6 +548,7 @@ export default {
               description: full_names[i],
             });
           }
+          self.qualification_.options = self.qualification.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -741,6 +762,7 @@ export default {
               value: target_id[i],
             });
           }
+          self.target_.options = self.target.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -765,10 +787,71 @@ export default {
               value: level_id[i],
             });
           }
+          self.level_.options = self.level.options;
         })
         .catch(function (error) {
           console.log(error);
         });
+    },
+    filterLevel(val, update) {
+      if (val === "") {
+        update(() => {
+          this.level.options = this.level_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.level.options = this.level_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
+    },
+    filterTarget(val, update) {
+      if (val === "") {
+        update(() => {
+          this.target.options = this.target_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.target.options = this.target_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
+    },
+    filterQualification(val, update) {
+      if (val === "") {
+        update(() => {
+          this.qualification.options = this.qualification_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.qualification.options = this.qualification_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
+    },
+    filterPlan_career(val, update) {
+      if (val === "") {
+        update(() => {
+          this.plan_career.options = this.plan_career_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.plan_career.options = this.plan_career_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
     },
   },
   created() {

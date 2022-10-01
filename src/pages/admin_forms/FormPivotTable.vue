@@ -22,6 +22,8 @@
                       <!-- แผนอาชีพ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterPlan_career"
+                          use-input
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
@@ -55,6 +57,8 @@
                       <!-- คุณสมบัติ -->
                       <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
+                          @filter="filterQa_plan_career"
+                          use-input
                           color="green"
                           v-model="qualification_id"
                           :options="qa_plan_career.options"
@@ -369,10 +373,16 @@ export default {
       self_assessments: [],
       qualification_id: "",
       qa_plan_careers: [],
+      qa_plan_career_: {
+        options: [],
+      },
       qa_plan_career: {
         options: [],
       },
       plan_career_id: "",
+      plan_career_: {
+        options: [],
+      },
       plan_career: {
         options: [],
       },
@@ -440,6 +450,7 @@ export default {
               value: plan_career_id[i],
             });
           }
+          self.plan_career_.options = self.plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -476,6 +487,7 @@ export default {
               description: level_name[i] + ":" + target_name[i],
             });
           }
+          self.qa_plan_career_.options = self.qa_plan_career.options;
         })
         .catch(function (error) {
           console.log(error);
@@ -522,6 +534,36 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+    filterQa_plan_career(val, update) {
+      if (val === "") {
+        update(() => {
+          this.qa_plan_career.options = this.qa_plan_career_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.qa_plan_career.options = this.qa_plan_career_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
+    },
+    filterPlan_career(val, update) {
+      if (val === "") {
+        update(() => {
+          this.plan_career.options = this.plan_career_.options;
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        console.log("needle:", needle);
+        this.plan_career.options = this.plan_career_.options.filter(
+          (v) => v.label.indexOf(needle) > -1
+        );
+      });
     },
   },
   mounted() {

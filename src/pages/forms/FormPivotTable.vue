@@ -116,16 +116,6 @@
                             >กลับฟอร์มการประเมินตนเอง</q-tooltip
                           >
                         </q-btn>
-                        <!-- ไปข้างหน้า -->
-                        <!-- <q-btn
-                          color="primary"
-                          no-caps
-                          flat
-                          icon="skip_next"
-                          @click="onNext"
-                        >
-                          <q-tooltip class="bg-accent">ไปข้างหน้า</q-tooltip>
-                        </q-btn> -->
                       </div>
                     </div>
                     <!-- ตารางรายงานการประเมินตนเอง -->
@@ -141,6 +131,7 @@
                             row-key="qa_plan_career_id"
                             selection="multiple"
                             v-model:selected="selected"
+                            style="min-height: 100vh"
                           >
                             <template v-slot:header="props">
                               <q-tr :props="props">
@@ -291,6 +282,13 @@ export default {
           format: (val) => `${val}`,
         },
         {
+          name: "target_value",
+          align: "center",
+          label: "ค่าเป้าหมาย",
+          field: (row) => row.target_value,
+          format: (val) => `${val}`,
+        },
+        {
           name: "perform_id",
           align: "center",
           label: "รหัสการประเมิน",
@@ -302,6 +300,13 @@ export default {
           align: "left",
           label: "การประเมิน",
           field: (row) => row.perform_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "perform_value",
+          align: "center",
+          label: "ผลการประเมิน",
+          field: (row) => row.perform_value,
           format: (val) => `${val}`,
         },
       ],
