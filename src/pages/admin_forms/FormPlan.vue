@@ -425,14 +425,14 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url_api_plan: "https://icp2022.net/icp_v1/plan_form/api-plan.php",
+      url_api_plan: "https://icp2022.net/icp_v1_admin/plan_form/api-plan.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1/plan_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_form/api-plan-career.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/plan_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_form/api-qa-plan-career.php",
 
       message: "Form Plan Career",
-      title: "การพัฒนาตนเอง",
+      title: "การพัฒนาตนเอง(admin)",
       plan: {
         plan_id: "",
         plan_title: "",
@@ -452,6 +452,22 @@ export default {
           label: "รหัสแผนพัฒนาตนเอง",
           align: "center",
           field: (row) => row.plan_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "member_id",
+          label: "รหัสสมาชิค",
+          align: "center",
+          field: (row) => row.member_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "full_name",
+          label: "ชื่อ-สกุล",
+          align: "left",
+          field: (row) => row.full_name,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -647,7 +663,7 @@ export default {
               .then((res) => {
                 console.log("insert", res.data);
                 // this.resetForm();
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -680,7 +696,7 @@ export default {
                 this.isEdit = false;
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -749,7 +765,7 @@ export default {
             .then(function (response) {
               console.log(response);
               // self.resetForm();
-              self.getUpdate(self.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
@@ -763,13 +779,28 @@ export default {
       this.$router.replace({ name: "FormQualification" });
     },
     // checked
-    getUpdate(member_id) {
-      console.log(" แสดงข้อมูลการพัฒนาตนเอง สมาชิค: ", member_id);
+    // getUpdate(member_id) {
+    //   console.log(" แสดงข้อมูลการพัฒนาตนเอง สมาชิค: ", member_id);
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_plan, {
+    //       action: "getall",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       console.log("การพัฒนาตนเอง:", res.data);
+    //       self.plans1 = res.data;
+    //     })
+    //     .finally(() => {
+    //       self.loading = false;
+    //     });
+    // },
+    getUpdate() {
+      console.log(" แสดงข้อมูลการพัฒนาตนเอง สมาชิค: ");
       var self = this;
       axios
         .post(this.url_api_plan, {
-          action: "getall",
-          member_id: member_id,
+          action: "getall_",
         })
         .then(function (res) {
           console.log("การพัฒนาตนเอง:", res.data);
@@ -983,7 +1014,7 @@ export default {
     },
   },
   created() {
-    this.getUpdate(this.member_id);
+    this.getUpdate();
     this.getCareer(this.member_id);
     this.getDevelopment();
     this.getImportance();

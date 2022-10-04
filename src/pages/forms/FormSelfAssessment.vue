@@ -260,6 +260,74 @@
                                 ></q-btn>
                               </q-td>
                             </template>
+                            <!-- การใส่สีผลการประเมิน-->
+                            <template v-slot:body-cell="props">
+                              <!-- ระดับ1 -->
+                              <q-td
+                                key="perform_value"
+                                v-if="props.row.perform_value == 1"
+                                :props="props"
+                                :class="
+                                  props.row.perform_value == 1
+                                    ? 'bg-indigo-1 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                              <!-- ระดับ2 -->
+                              <q-td
+                                key="perform_value"
+                                v-if="props.row.perform_value == 2"
+                                :props="props"
+                                :class="
+                                  props.row.perform_value == 2
+                                    ? 'bg-indigo-2 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                              <!-- ระดับ3 -->
+                              <q-td
+                                key="perform_value"
+                                v-if="props.row.perform_value == 3"
+                                :props="props"
+                                :class="
+                                  props.row.perform_value == 3
+                                    ? 'bg-indigo-3 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                              <!-- ระดับ4 -->
+                              <q-td
+                                key="perform_value"
+                                v-if="props.row.perform_value == 4"
+                                :props="props"
+                                :class="
+                                  props.row.perform_value == 4
+                                    ? 'bg-indigo-4 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                              <!-- ระดับ5 -->
+                              <q-td
+                                key="perform_value"
+                                v-if="props.row.perform_value == 5"
+                                :props="props"
+                                :class="
+                                  props.row.perform_value == 5
+                                    ? 'bg-indigo-5 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                            </template>
                           </q-table>
                         </div>
                       </div>
@@ -387,6 +455,13 @@ export default {
           format: (val) => `${val}`,
         },
         {
+          name: "target_value",
+          align: "center",
+          label: "ค่าเป้าหมาย",
+          field: (row) => row.target_value,
+          format: (val) => `${val}`,
+        },
+        {
           name: "perform_id",
           align: "center",
           label: "รหัสการประเมิน",
@@ -398,6 +473,13 @@ export default {
           align: "left",
           label: "การประเมิน",
           field: (row) => row.perform_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "perform_value",
+          align: "center",
+          label: "ผลการประเมิน",
+          field: (row) => row.perform_value,
           format: (val) => `${val}`,
         },
       ],

@@ -241,19 +241,20 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url_api_pivot: "https://icp2022.net/icp_v1/plan_report/api-pivot.php",
-      url: "https://icp2022.net/icp_v1/plan_report/api-member.php",
+      url_api_pivot:
+        "https://icp2022.net/icp_v1_admin/plan_report/api-pivot.php",
+      url: "https://icp2022.net/icp_v1_admin/plan_report/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/icp_v1/plan_report/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_report/api-qa-plan-career.php",
       url_api_self_assessment:
-        "https://icp2022.net/icp_v1/plan_report/api-self-assessment.php",
-      url_api_plan: "https://icp2022.net/icp_v1/plan_report/api-plan.php",
+        "https://icp2022.net/icp_v1_admin/plan_report/api-self-assessment.php",
+      url_api_plan: "https://icp2022.net/icp_v1_admin/plan_report/api-plan.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1/plan_report/api-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_report/api-plan-career.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/plan_report/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_report/api-qa-plan-career.php",
 
-      title: "รายงานการพัฒนาตนเอง",
+      title: "รายงานการพัฒนาตนเอง(admin)",
       message: "Form Report",
       selected: ref([]),
       selected_plan: ref([]),
@@ -470,15 +471,38 @@ export default {
       this.getPlanByQaPlanCareerId(qa_plan_career_id);
     },
     // อาชีพเป้าหมาย
+    // getCareer() {
+    //   console.log(" ข้อมูลอาชีพ ");
+    //   var self = this;
+    //   var member_id = Number(this.$store.getters.myMember_id);
+    //   console.log("member_id:", member_id);
+    //   axios
+    //     .post(this.url_api_plan_career, {
+    //       action: "get_plan_career_by_member_id",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       var plan_career_id = res.data.map((item) => item.plan_career_id);
+    //       var career_name = res.data.map((item) => item.career_name);
+    //       self.plan_career.options.splice(0);
+    //       for (var i = 0; i < plan_career_id.length; i++) {
+    //         self.plan_career.options.push({
+    //           label: career_name[i],
+    //           value: plan_career_id[i],
+    //         });
+    //       }
+    //       self.plan_career_.options = self.plan_career.options;
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // },
     getCareer() {
       console.log(" ข้อมูลอาชีพ ");
       var self = this;
-      var member_id = Number(this.$store.getters.myMember_id);
-      console.log("member_id:", member_id);
       axios
         .post(this.url_api_plan_career, {
-          action: "get_plan_career_by_member_id",
-          member_id: member_id,
+          action: "get_plan_career",
         })
         .then(function (res) {
           var plan_career_id = res.data.map((item) => item.plan_career_id);

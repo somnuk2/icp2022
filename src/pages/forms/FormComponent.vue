@@ -1067,7 +1067,6 @@ export default {
                 this.isEdit = false;
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
-
                 this.getUpdate(this.individual.member_id);
               })
               .catch(function (error) {

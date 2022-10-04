@@ -294,20 +294,20 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url: "https://icp2022.net/icp_v1/self_assessment_form/api-member.php",
+      url: "https://icp2022.net/icp_v1_admin/self_assessment_form/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
       url_api_self_assessment:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-self-assessment.php",
+        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-self-assessment.php",
       url_api_plan:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-plan.php",
+        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-plan.php",
       url_api_plan_career:
         "https://icp2022.net/icp_v1/self_assessment_form/api-plan-career.php",
       url_api_qa_plan_career:
         "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
 
       message: "Form Self Acessment",
-      title: "การประเมินตนเอง",
+      title: "การประเมินตนเอง(admin)",
       currentYear: new Date().getFullYear(),
       selfAssessments: Array,
       selfAssessments_: Array,
@@ -335,6 +335,20 @@ export default {
           align: "center",
           label: "รหัสการประเมิน",
           field: (row) => row.self_assessment_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "member_id",
+          align: "center",
+          label: "รหัสผู้ใช้",
+          field: (row) => row.member_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "full_name",
+          align: "center",
+          label: "ชื่อ-สกุล",
+          field: (row) => row.full_name,
           format: (val) => `${val}`,
         },
         {
@@ -485,7 +499,7 @@ export default {
               })
               .then((res) => {
                 console.log("Insert:", res.data);
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -516,7 +530,7 @@ export default {
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
 
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -578,7 +592,7 @@ export default {
             })
             .then(function (response) {
               console.log(response);
-              self.getUpdate(self.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
@@ -592,13 +606,28 @@ export default {
       this.$router.replace({ name: "FormPlan" });
     },
     // checked
-    getUpdate(member_id) {
-      console.log(" แสดงข้อมูล การประเมินตนเอง ", member_id);
+    // getUpdate(member_id) {
+    //   console.log(" แสดงข้อมูล การประเมินตนเอง ", member_id);
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_self_assessment, {
+    //       action: "getAll",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       console.log("self_assessment:", res.data);
+    //       self.selfAssessments1 = res.data;
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // },
+    getUpdate() {
+      console.log(" แสดงข้อมูล การประเมินตนเอง ");
       var self = this;
       axios
         .post(this.url_api_self_assessment, {
-          action: "getAll",
-          member_id: member_id,
+          action: "getAll_",
         })
         .then(function (res) {
           console.log("self_assessment:", res.data);
@@ -736,7 +765,7 @@ export default {
     },
   },
   mounted() {
-    this.getUpdate(this.member_id);
+    this.getUpdate();
     this.getCareer(this.member_id);
     this.getPerform();
   },

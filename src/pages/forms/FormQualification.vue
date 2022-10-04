@@ -259,6 +259,73 @@
                                 ></q-btn>
                               </q-td>
                             </template>
+                            <!-- การใส่สีผลการประเมิน-->
+                            <template v-slot:body-cell="props">
+                              <q-td
+                                key="target_value"
+                                v-if="props.row.target_value == 1"
+                                :props="props"
+                                :class="
+                                  props.row.target_value == 1
+                                    ? 'bg-indigo-1 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+
+                              <q-td
+                                key="target_value"
+                                v-if="props.row.target_value == 2"
+                                :props="props"
+                                :class="
+                                  props.row.target_value == 2
+                                    ? 'bg-indigo-2 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+
+                              <q-td
+                                key="target_value"
+                                v-if="props.row.target_value == 3"
+                                :props="props"
+                                :class="
+                                  props.row.target_value == 3
+                                    ? 'bg-indigo-3 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+
+                              <q-td
+                                key="target_value"
+                                v-if="props.row.target_value == 4"
+                                :props="props"
+                                :class="
+                                  props.row.target_value == 4
+                                    ? 'bg-indigo-4 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+
+                              <q-td
+                                key="target_value"
+                                v-if="props.row.target_value == 5"
+                                :props="props"
+                                :class="
+                                  props.row.target_value == 5
+                                    ? 'bg-indigo-5 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                            </template>
                           </q-table>
                         </div>
                       </div>
@@ -396,6 +463,13 @@ export default {
           label: "เป้าหมาย",
           align: "left",
           field: (row) => row.target_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "target_value",
+          label: "ค่าเป้าหมาย",
+          align: "center",
+          field: (row) => row.target_value,
           format: (val) => `${val}`,
         },
       ],

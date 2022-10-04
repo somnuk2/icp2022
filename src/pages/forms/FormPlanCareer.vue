@@ -83,39 +83,8 @@
                           </template>
                         </q-input>
                       </div>
-                      <!-- วันสิ้นสุดแผน -->
-                      <!-- <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-input
-                          filled
-                          v-model="plan_career.end_date"
-                          label="วันสิ้นสุดแผน"
-                        >
-                          <template v-slot:append>
-                            <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                cover
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date
-                                  v-model="plan_career.end_date"
-                                  mask="DD-MM-YYYY"
-                                >
-                                  <div class="row items-center justify-end">
-                                    <q-btn
-                                      v-close-popup
-                                      label="Close"
-                                      color="primary"
-                                      flat
-                                    />
-                                  </div>
-                                </q-date>
-                              </q-popup-proxy>
-                            </q-icon>
-                          </template>
-                        </q-input>
-                      </div> -->
                     </div>
+                     <!-- ปุ่มควบคุม -->
                     <div class="row">
                       <!-- ปุ่มควบคุม -->
                       <div
@@ -564,7 +533,8 @@ export default {
     this.getUpdate(this.plan_career.member_id);
     this.getCareer();
   },
-  created() {},
+  created() {
+  },
 };
 </script>
 

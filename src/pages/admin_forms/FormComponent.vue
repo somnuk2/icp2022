@@ -22,6 +22,27 @@
                     method="post"
                     class="q-gutter-md"
                   >
+                    <!-- ชื่อ-สกุล -->
+                    <div class="row">
+                      <!-- ชื่อ-สกุล -->
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
+                        <q-input
+                          standout
+                          bottom-slots
+                          v-model="member.full_name"
+                          label="ชื่อ-สกุล"
+                          clearable
+                          disable
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="person_add" />
+                          </template>
+                          <template v-slot:append>
+                            <q-icon name="favorite" />
+                          </template>
+                        </q-input>
+                      </div>
+                    </div>
                     <!-- วัน-เดือน-ปี เกิด+หมายเลขโทรศัพท์ -->
                     <div class="row">
                       <!-- วัน-เดือน-ปี เกิด -->
@@ -622,19 +643,19 @@ export default {
       // url_api_project: "http://localhost:85/icp2022/api-project.php",
       url_api_individual:
         // "https://icp2022.net/icp_v1/individual_form/api-individual.php",
-        "https://icp2022.net/icp_v1/individual_form/api-individual.php",
+        "https://icp2022.net/icp_v1_admin/individual_form/api-individual.php",
       url_api_institute:
-        "https://icp2022.net/icp_v1/individual_form/api-institute.php",
+        "https://icp2022.net/icp_v1_admin/individual_form/api-institute.php",
       url_api_disability:
-        "https://icp2022.net/icp_v1/individual_form/api-disability.php",
+        "https://icp2022.net/icp_v1_admin/individual_form/api-disability.php",
       url_api_project:
-        "https://icp2022.net/icp_v1/individual_form/api-project.php",
+        "https://icp2022.net/icp_v1_admin/individual_form/api-project.php",
       url_api_advisor:
-        "https://icp2022.net/icp_v1/individual_form/api-advisor.php",
+        "https://icp2022.net/icp_v1_admin/individual_form/api-advisor.php",
       url_api_member:
-        "https://icp2022.net/icp_v1/individual_form/api-member.php",
+        "https://icp2022.net/icp_v1_admin/individual_form/api-member.php",
 
-      title: "ข้อมูลส่วนตัว",
+      title: "ข้อมูลส่วนตัว (admin)",
       email: "",
       username: "",
       password: "",
@@ -1024,8 +1045,7 @@ export default {
               })
               .then((res) => {
                 console.log("บันทึกข้อมูล:", res.data);
-                // this.resetForm();
-                this.getUpdate(this.individual.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -1068,7 +1088,7 @@ export default {
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
 
-                this.getUpdate(this.individual.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -1093,9 +1113,11 @@ export default {
         })
         .then(function (response) {
           console.log("Edit data:", response.data);
+
           self.individual.individual_id = response.data.individual_id;
           // ข้อมูลส่วนตัว
           self.individual.member_id = response.data.member_id;
+          self.member.full_name = response.data.full_name;
           self.individual.birthday = response.data.birthday;
           // self.individual.card_id = response.data.card_id;
           self.individual.telephone = response.data.telephone;
@@ -1147,20 +1169,36 @@ export default {
             })
             .then(function (response) {
               console.log("delete:", response.data);
-              self.getUpdate(self.individual.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
             });
         });
     },
-    getUpdate(member_id) {
-      console.log("get update-member_id:", member_id);
+    // getUpdate(member_id) {
+    //   console.log("get update-member_id:", member_id);
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_individual, {
+    //       action: "getall",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       console.log("q-table:", res);
+    //       self.individuals1 = res.data;
+    //       console.log("individuals1:", self.individuals1);
+    //     })
+    //     .finally(() => {
+    //       self.loading = false;
+    //     });
+    // },
+    getUpdate() {
+      console.log("get update:");
       var self = this;
       axios
         .post(this.url_api_individual, {
-          action: "getall",
-          member_id: member_id,
+          action: "getall_",
         })
         .then(function (res) {
           console.log("q-table:", res);
@@ -1490,14 +1528,14 @@ export default {
     },
   },
   mounted() {
-    this.getUpdate(this.individual.member_id);
-    this.getInstitutes();
-    this.getFacultys();
-    this.getDegrees();
-    this.getDepartments();
-    this.getDisabilitys();
-    this.getProjects();
-    this.getAdvisors();
+    this.getUpdate();
+    // this.getInstitutes();
+    // this.getFacultys();
+    // this.getDegrees();
+    // this.getDepartments();
+    // this.getDisabilitys();
+    // this.getProjects();
+    // this.getAdvisors();
   },
 };
 </script>

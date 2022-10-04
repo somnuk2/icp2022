@@ -54,8 +54,6 @@
                           :options="member_roles.options"
                           label="บทบาท"
                           stack-label
-                          emit-value
-                          map-options
                         >
                           <template v-slot:prepend>
                             <q-icon name="school" />
@@ -169,7 +167,7 @@
                       >
                         <!-- บันทึก -->
                         <q-btn
-                          label="บันทึก"
+                          :label="btnLabel"
                           type="submit"
                           color="primary"
                           icon="save"
@@ -211,10 +209,32 @@
                     <div class="row">
                       <div class="col-md-12 col-xs-12 q-ma-xs">
                         <div class="q-pa-xs">
+                          <!-- ผู้ดูแลระบบ + ที่ปรึกษา + ผู้ใช้ระบบ -->
                           <div class="row items-center q-gutter-sm q-mb-md">
-                            <q-toggle label="administration" v-model="admin" />
-                            <q-toggle label="super user" v-model="suser" />
-                            <q-toggle label="user" v-model="user" />
+                            <!-- ผู้ดูแลระบบ -->
+                            <q-toggle
+                              color="blue"
+                              label="administration"
+                              v-model="admin"
+                              val="admin"
+                              @update:model-value="getUpdate()"
+                            />
+                            <!-- ที่ปรึกษา -->
+                            <q-toggle
+                              color="green"
+                              label="super user"
+                              v-model="suser"
+                              val="suser"
+                              @update:model-value="getUpdate()"
+                            />
+                            <!-- ผู้ใช้ระบบ -->
+                            <q-toggle
+                              color="red"
+                              label="user"
+                              v-model="user"
+                              val="user"
+                              @update:model-value="getUpdate()"
+                            />
                           </div>
                           <q-table
                             class="my-sticky-header-table"
@@ -294,8 +314,7 @@ export default {
         email: "",
         password: "",
         repassword: "",
-        // defualt User/Suser/Admin
-        status: "User",
+        status: "",
       },
       columns: [
         { name: "actions", align: "center", label: "Action" },
@@ -344,14 +363,13 @@ export default {
       members1: [],
       $q: useQuasar(),
       passwordFieldType: "password",
-      btnLabel: "กดปุ่ม",
       visibility: false,
       visibilityIcon: "visibility",
       checkUser: ref(false),
       // กำหนดทางเลือกตาราง
-      admin: ref(false),
-      suser: ref(false),
-      user: ref(false),
+      admin: ref(true),
+      suser: ref(true),
+      user: ref(true),
       member_roles_: {
         options: [],
       },
@@ -375,6 +393,7 @@ export default {
         label: "",
         value: "",
       }),
+      btnLabel: "เพิ่มข้อมูล",
     };
   },
   methods: {
@@ -409,14 +428,20 @@ export default {
                 status: this.member_role.value,
               })
               .then((response) => {
-                console.log(response);
-                // this.resetForm();
-                // this.getAllUser();
+                console.log("update:", response.data);
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
                 this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
               });
+          })
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
           });
       }
     },
@@ -436,20 +461,17 @@ export default {
         });
     },
     addNewMember() {
-      console.log("บันทึกข้อมูล");
-      console.log("member:", this.member);
       const newMember = {
-        member_id: this.member.member_id,
         full_name: this.member.full_name,
         email: this.member.email,
         password: this.member.password,
         status: this.member_role.value,
       };
       this.$emit("saveData", newMember);
+      console.log("บันทึกข้อมูล", newMember);
       axios
         .post(this.url_api_member, {
           action: "insert",
-          member_id: this.member.member_id,
           full_name: this.member.full_name,
           email: this.member.email,
           password: this.member.password,
@@ -492,25 +514,20 @@ export default {
         });
     },
     getUpdate() {
-      var admin = "";
-      var suser = "";
-      var user = "";
-      if (this.admin) {
-        admin = "admin";
-      }
-      if (this.suser) {
-        suser = "suser";
-      }
-      if (this.user) {
-        user = "user";
-      }
-      console.log(" แสดงข้อมูลทั้งหมด ");
+      console.log(
+        "แสดงข้อมูลสมาชิค:",
+        (this.admin ? "admin" : "") +
+          "-" +
+          (this.suser ? "suser" : "") +
+          "-" +
+          (this.user ? "user" : "")
+      );
       var self = this;
       axios
         .post(this.url_api_member, {
-          admin: admin,
-          suser: suser,
-          user: user,
+          admin: this.admin ? "admin" : "",
+          suser: this.suser ? "suser" : "",
+          user: this.user ? "user" : "",
           action: "getall",
         })
         .then(function (res) {
@@ -522,7 +539,8 @@ export default {
         });
     },
     editUser(id) {
-      this.status = "Update(อัพเดท)";
+      console.log("Edit data");
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
       axios
@@ -531,13 +549,20 @@ export default {
           id: id,
         })
         .then(function (response) {
-          console.log(response);
+          console.log("Edit:", response.data);
           self.member.member_id = response.data.member_id;
           self.member.full_name = response.data.full_name;
           self.member.email = response.data.email;
           self.member.password = response.data.password;
           self.member.status = response.data.status;
           self.member_role.value = response.data.status;
+          if (self.member_role.value == "admin") {
+            self.member_role.label = "ผู้ดูแลระบบ";
+          } else if (self.member_role.value == "suser") {
+            self.member_role.label = "ที่ปรึกษา";
+          } else if (self.member_role.value == "user") {
+            self.member_role.label = "ผู้ใช้ระบบ";
+          }
         })
         .catch(function (error) {
           console.log(error);

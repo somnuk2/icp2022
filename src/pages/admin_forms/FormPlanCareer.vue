@@ -241,12 +241,12 @@ export default {
       // url_api_career: "http://localhost:85/icp2022/api-career.php",
       // url_api_plan_career: "http://localhost:85/icp2022/api-plan-career.php",
       url_api_career:
-        "https://icp2022.net/icp_v1/plan_career_form/api-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_career_form/api-career.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1/plan_career_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/plan_career_form/api-plan-career.php",
 
       message: "Form Plan Career",
-      title: "อาชีพเป้าหมาย",
+      title: "อาชีพเป้าหมาย(admin)",
       plan_careers: Array,
       emp_id: Array,
       plan_careers_: Array,
@@ -280,6 +280,13 @@ export default {
           label: "รหัสสมาชิค",
           align: "center",
           field: (row) => row.member_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "full_name",
+          label: "ชื่อ-สกุล",
+          align: "left",
+          field: (row) => row.full_name,
           format: (val) => `${val}`,
         },
         {
@@ -379,7 +386,7 @@ export default {
               })
               .then((res) => {
                 console.log("ข้อมูลส่วนบุคคล:", res.data);
-                this.getUpdate(this.plan_career.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -412,7 +419,7 @@ export default {
                 this.isEdit = false;
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
-                this.getUpdate(this.plan_career.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -467,23 +474,39 @@ export default {
             .then(function (response) {
               console.log(response);
               // self.resetForm();
-              self.getUpdate(self.plan_career.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
             });
         });
     },
-    getUpdate(member_id) {
-      console.log(" อาชีพเป้าหมาย สมาชิค:", member_id);
+    // getUpdate(member_id) {
+    //   console.log(" อาชีพเป้าหมาย สมาชิค:", member_id);
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_plan_career, {
+    //       action: "getAll",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       console.log("res", res);
+    //       self.plan_careers1 = res.data;
+    //       console.log("plan_careers1:", self.plan_careers1);
+    //     })
+    //     .finally(() => {
+    //       self.loading = false;
+    //     });
+    // },
+    getUpdate() {
+      console.log(" อาชีพเป้าหมาย");
       var self = this;
       axios
         .post(this.url_api_plan_career, {
-          action: "getAll",
-          member_id: member_id,
+          action: "getAll_",
         })
         .then(function (res) {
-          console.log("res", res);
+          console.log("plan_careers:", res.data);
           self.plan_careers1 = res.data;
           console.log("plan_careers1:", self.plan_careers1);
         })

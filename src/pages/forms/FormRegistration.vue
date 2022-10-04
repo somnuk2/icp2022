@@ -121,13 +121,14 @@
                         </q-input>
                       </div>
                     </div>
+                    <!-- ปุ่มการควบคุม -->
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12 q-pa-xs row justify-center"
                       >
                         <!-- บันทึก -->
                         <q-btn
-                          label="บันทึก"
+                          :label="btnLabel"
                           type="submit"
                           color="primary"
                           icon="save"
@@ -297,7 +298,7 @@ export default {
       members1: [],
       $q: useQuasar(),
       passwordFieldType: "password",
-      btnLabel: "กดปุ่ม",
+      btnLabel: "เพิ่มข้อมูล",
       visibility: false,
       visibilityIcon: "visibility",
       checkUser: ref(false),
@@ -315,30 +316,6 @@ export default {
           })
           .onOk(() => {
             this.checkNewMemeber(this.member.email);
-            // const newMember = {
-            //   member_id: this.member.member_id,
-            //   full_name: this.member.full_name,
-            //   email: this.member.email,
-            //   password: this.member.password,
-            //   status: this.member.status,
-            // };
-            // this.$emit("saveData", newMember);
-            // axios
-            //   .post(this.url_api_member, {
-            //     action: "insert",
-            //     member_id: this.member.member_id,
-            //     full_name: this.member.full_name,
-            //     email: this.member.email,
-            //     password: this.member.password,
-            //     status: this.member.status,
-            //   })
-            //   .then((res) => {
-            //     console.log(res);
-            //     this.getUpdate();
-            //   })
-            //   .catch(function (error) {
-            //     console.log(error);
-            //   });
           });
       } else {
         this.$q
@@ -360,13 +337,19 @@ export default {
               })
               .then((response) => {
                 console.log(response);
-                // this.resetForm();
-                // this.getAllUser();
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
                 this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
               });
+          })
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
           });
       }
     },
@@ -458,7 +441,8 @@ export default {
         });
     },
     editUser(id) {
-      this.status = "Update(อัพเดท)";
+      console.log("Edit data");
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
       axios

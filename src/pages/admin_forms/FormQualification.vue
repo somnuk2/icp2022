@@ -304,18 +304,18 @@ export default {
       // url_api_qa_plan_career:
       //   "http://localhost:85/icp2022/api-qa-plan-career.php",
 
-      url: "https://icp2022.net/icp_v1/qa_plan_career_form/api-member.php",
+      url: "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-member.php",
       url_api_career:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-career.php",
+        "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-career.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-plan-career.php",
       url_api_qualification:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qualification.php",
+        "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-qualification.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-qa-plan-career.php",
 
       message: "Form Qualification",
-      title: "คุณสมบัติ/ทักษะ",
+      title: "คุณสมบัติ/ทักษะ(admin)",
       btnLabel: "เพิ่มข้อมูล",
 
       columns: [
@@ -325,6 +325,22 @@ export default {
           label: "รหัสคุณสมบัติอาชีพ",
           align: "center",
           field: (row) => row.qa_plan_career_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "member_id",
+          label: "รหัสสมาชิค",
+          align: "center",
+          field: (row) => row.member_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "full_name",
+          label: "ชื่อ-สกุล",
+          align: "left",
+          field: (row) => row.full_name,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -583,7 +599,7 @@ export default {
               })
               .then((res) => {
                 console.log("insert:", res.data);
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -614,7 +630,7 @@ export default {
                 this.isEdit = false;
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -676,7 +692,7 @@ export default {
             })
             .then(function (response) {
               console.log("delete:", response.data);
-              self.getUpdate(self.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
@@ -715,18 +731,34 @@ export default {
       return filteredRows;
     },
     // checked
-    getUpdate(member_id) {
-      console.log("ข้อมูลจาก qa_plan_career:", member_id);
+    // getUpdate(member_id) {
+    //   console.log("ข้อมูลจาก qa_plan_career:", member_id);
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_qa_plan_career, {
+    //       action: "getAll",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       console.log("getUpdate():", res);
+    //       self.qualifications1 = res.data;
+    //       console.log("getUpdate():", self.qualifications1);
+    //     })
+    //     .finally(() => {
+    //       self.loading = false;
+    //     });
+    // },
+    getUpdate() {
+      console.log("ข้อมูลจาก qa_plan_career");
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
-          action: "getAll",
-          member_id: member_id,
+          action: "getAll_",
         })
         .then(function (res) {
-          console.log("getUpdate():", res);
+          console.log("getUpdate:", res.data);
           self.qualifications1 = res.data;
-          console.log("getUpdate():", self.qualifications1);
+          console.log("getUpdate:", self.qualifications1);
         })
         .finally(() => {
           self.loading = false;
@@ -859,7 +891,7 @@ export default {
     this.getCareer(this.member_id);
     this.getTarget();
     this.getLevel();
-    this.getUpdate(this.member_id);
+    this.getUpdate();
   },
   computed: {},
 };

@@ -213,7 +213,7 @@
                               >
                                 <q-date
                                   v-model="plan.plan_start_date"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -245,7 +245,8 @@
                               >
                                 <q-date
                                   v-model="plan.plan_end_date"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
+                                  :locale="mylocale"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -396,6 +397,61 @@
                                     )
                                   "
                                 ></q-btn>
+                              </q-td>
+                            </template>
+                            <!-- การใส่สี วัน/เดือน/สัปดาห์-->
+                            <template v-slot:body-cell="props">
+                              <!-- เดือน -->
+                              <!-- <q-tr>
+                                <q-td
+                                  key="frequency_name"
+                                  :class="
+                                    props.row.frequency_name == 'สัปดาห์'
+                                      ? 'bg-pink-4 text-white'
+                                      : 'bg-white text-black'
+                                  "
+                                  :props="props"
+                                >
+                                  {{ props.row.frequency_name }}
+                                </q-td>
+                              </q-tr> -->
+                              <q-td
+                                key="frequency_name"
+                                v-if="props.row.frequency_name == 'เดือน'"
+                                :props="props"
+                                :class="
+                                  props.row.frequency_name == 'เดือน'
+                                    ? 'bg-purple-2 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                              <!-- สัปดาห์ -->
+                              <q-td
+                                key="frequency_name"
+                                v-if="props.row.frequency_name == 'สัปดาห์'"
+                                :props="props"
+                                :class="
+                                  props.row.frequency_name == 'สัปดาห์'
+                                    ? 'bg-purple-3 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
+                              </q-td>
+                              <!-- วัน -->
+                              <q-td
+                                key="frequency_name"
+                                v-if="props.row.frequency_name == 'วัน'"
+                                :props="props"
+                                :class="
+                                  props.row.frequency_name == 'วัน'
+                                    ? 'bg-purple-5 text-white'
+                                    : 'bg-white text-black'
+                                "
+                              >
+                                <div>{{ props.value }}</div>
                               </q-td>
                             </template>
                           </q-table>
@@ -595,6 +651,19 @@ export default {
       },
       member_id: this.$store.getters.myMember_id,
       $q: useQuasar(),
+      mylocale: {
+        /* starting with Sunday */
+        days: "อาทิตย์_จันทร์_อังคาร_พุธ_พฤหัส_ศุกร์_เสาร์".split("_"),
+        daysShort: "อา_จ_อ_พ_พฤ_ศ_ส".split("_"),
+        months:
+          "มกราคม_กุมภาพันธ์_มีนาคม_เมษายน_พฤศภาคม_มิถุนายน_กรกฏาคม_สิงหาคม_กันยายน_ตุลาคม_พฤศจิกายน_ธันวาคม".split(
+            "_"
+          ),
+        monthsShort: "มค_กพ_มีค_เมย_พค_มิย_กค_สค_กย_ตค_พย_ธค".split("_"),
+        firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
+        format24h: true,
+        pluralDay: "dias",
+      },
     };
   },
   methods: {
@@ -984,13 +1053,23 @@ export default {
         );
       });
     },
+    getDayly() {
+      var current = new Date();
+      console.log("current:", current);
+      console.log("Date:", current.getDate());
+      console.log("Day:", current.getDay());
+      console.log("Month:", current.getMonth());
+      console.log("Full Year:", current.getFullYear());
+    },
   },
+
   created() {
     this.getUpdate(this.member_id);
     this.getCareer(this.member_id);
     this.getDevelopment();
     this.getImportance();
     this.getFrequency();
+    this.getDayly();
   },
 };
 </script>
