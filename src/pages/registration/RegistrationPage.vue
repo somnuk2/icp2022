@@ -245,7 +245,7 @@ export default {
         password: "",
         repassword: "",
         // defualt User/Suser/Admin
-        status: "User",
+        status: "user",
       },
       columns: [
         { name: "actions", align: "center", label: "Action" },
