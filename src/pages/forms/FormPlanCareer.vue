@@ -24,7 +24,7 @@
                   >
                     <div class="row">
                       <!-- อาชีพเป้าหมาย -->
-                      <div class="col-md-5 col-xs-12 q-pa-xs">
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
                           @filter="filterCareer"
                           color="blue-5"
@@ -49,14 +49,15 @@
                           </template>
                         </q-select>
                       </div>
-                      <!-- </div>
-                    <div class="row"> -->
                       <!-- วันเริ่มแผน -->
-                      <!-- <div class="col-md-2 col-xs-4 q-pa-xs">
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-input
                           filled
                           v-model="plan_career.start_date"
                           label="วันเริ่มแผน"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -67,7 +68,7 @@
                               >
                                 <q-date
                                   v-model="plan_career.start_date"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -82,8 +83,8 @@
                             </q-icon>
                           </template>
                         </q-input>
-                      </div> -->
-                      <div class="col-md-2 col-xs-4 q-pa-xs">
+                      </div>
+                      <!-- <div class="col-md-2 col-xs-4 q-pa-xs">
                         <q-select
                           @filter="filterCareer"
                           color="blue-5"
@@ -121,7 +122,7 @@
                           map-options
                           label="ปี"
                         />
-                      </div>
+                      </div> -->
                     </div>
                     <!-- ปุ่มควบคุม -->
                     <div class="row">
@@ -671,12 +672,12 @@ export default {
           })
           .onOk(() => {
             console.log("บันทึกการเพิ่มข้อมูล", this.plan_career.member_id);
-            this.plan_career.start_date =
-              this.plan_career.day +
-              "/" +
-              this.plan_career.month +
-              "/" +
-              this.plan_career.year;
+            // this.plan_career.start_date =
+            //   this.plan_career.day +
+            //   "/" +
+            //   this.plan_career.month +
+            //   "/" +
+            //   this.plan_career.year;
             const newplan_career = {
               member_id: this.plan_career.member_id,
               career_id: this.plan_career.career_id,
@@ -712,12 +713,12 @@ export default {
           })
           .onOk(() => {
             console.log("บันทึกการแก้ไขข้อมูล", this.plan_career.member_id);
-            this.plan_career.start_date =
-              this.plan_career.day +
-              "/" +
-              this.plan_career.month +
-              "/" +
-              this.plan_career.year;
+            // this.plan_career.start_date =
+            //   this.plan_career.day +
+            //   "/" +
+            //   this.plan_career.month +
+            //   "/" +
+            //   this.plan_career.year;
             axios
               .post(this.url_api_plan_career, {
                 action: "update",
@@ -762,9 +763,9 @@ export default {
           self.plan_career.start_date = response.data.start_date;
           var start_date_ = self.plan_career.start_date.split("/");
           // self.plan_career.end_date = response.data.end_date;
-          self.plan_career.day = start_date_[0];
-          self.plan_career.month = start_date_[1];
-          self.plan_career.year = start_date_[2];
+          // self.plan_career.day = start_date_[0];
+          // self.plan_career.month = start_date_[1];
+          // self.plan_career.year = start_date_[2];
           self.plan_careers_ = response.data;
         })
         .catch(function (error) {
