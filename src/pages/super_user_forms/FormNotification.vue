@@ -43,6 +43,9 @@
                             v-model="notification_date"
                             label="วันเริ่มแจ้งเตือน"
                             :disable="is_notification == '1' ? false : true"
+                            mask="## / ## / ####"
+                            fill-mask
+                            hint="วัน/เดือน/ปี: DD/MM/YYYY"
                           >
                             <template v-slot:append>
                               <q-icon name="event" class="cursor-pointer">

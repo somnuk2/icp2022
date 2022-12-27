@@ -57,10 +57,6 @@
                           emit-value
                           map-options
                           label="อาชีพเป้าหมาย *"
-                          :rules="[
-                            (val) =>
-                              (val && val.length > 0) || 'ต้องใส่อาชีพเป้าหมาย',
-                          ]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="work_history" />

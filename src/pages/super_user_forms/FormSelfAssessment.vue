@@ -100,6 +100,9 @@
                           filled
                           v-model="self_assessment_date"
                           label="วันประเมินตนเอง"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">

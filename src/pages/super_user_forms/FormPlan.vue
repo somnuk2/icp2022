@@ -256,6 +256,9 @@
                           filled
                           v-model="plan.plan_start_date"
                           label="วันเริ่มพัฒนา"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -266,7 +269,7 @@
                               >
                                 <q-date
                                   v-model="plan.plan_start_date"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -288,6 +291,9 @@
                           filled
                           v-model="plan.plan_end_date"
                           label="วันสิ้นสุดพัฒนา"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -298,7 +304,7 @@
                               >
                                 <q-date
                                   v-model="plan.plan_end_date"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn

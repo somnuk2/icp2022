@@ -52,8 +52,8 @@
                       <!-- </div>
                     <div class="row"> -->
                       <!-- วันเริ่มแผน -->
-                      <div class="col-md-2 col-xs-4 q-pa-xs">
-                        <!-- <q-input
+                      <!-- <div class="col-md-2 col-xs-4 q-pa-xs">
+                        <q-input
                           filled
                           v-model="plan_career.start_date"
                           label="วันเริ่มแผน"
@@ -81,7 +81,9 @@
                               </q-popup-proxy>
                             </q-icon>
                           </template>
-                        </q-input> -->
+                        </q-input>
+                      </div> -->
+                      <div class="col-md-2 col-xs-4 q-pa-xs">
                         <q-select
                           @filter="filterCareer"
                           color="blue-5"

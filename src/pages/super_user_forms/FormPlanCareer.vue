@@ -78,6 +78,9 @@
                           filled
                           v-model="plan_career.start_date"
                           label="วันเริ่มแผน"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -88,7 +91,7 @@
                               >
                                 <q-date
                                   v-model="plan_career.start_date"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn

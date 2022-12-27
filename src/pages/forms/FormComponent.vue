@@ -27,36 +27,6 @@
                       <div class="row">
                         <!-- วัน-เดือน-ปี เกิด -->
                         <div class="col-md-6 col-xs-12 q-pa-xs">
-                          <!-- <q-input
-                          filled
-                          v-model="individual.birthday"
-                          label="วันเกิด"
-                          @update:modelValue="(val) => onBirthday(val)"
-                        >
-                          <template v-slot:append>
-                            <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                cover
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date
-                                  v-model="individual.birthday"
-                                  mask="DD-MM-YYYY"
-                                >
-                                  <div class="row items-center justify-end">
-                                    <q-btn
-                                      v-close-popup
-                                      label="Close"
-                                      color="primary"
-                                      flat
-                                    />
-                                  </div>
-                                </q-date>
-                              </q-popup-proxy>
-                            </q-icon>
-                          </template>
-                        </q-input> -->
                           <q-input
                             standout
                             bottom-slots
