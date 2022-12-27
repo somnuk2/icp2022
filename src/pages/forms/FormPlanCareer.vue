@@ -84,45 +84,6 @@
                           </template>
                         </q-input>
                       </div>
-                      <!-- <div class="col-md-2 col-xs-4 q-pa-xs">
-                        <q-select
-                          @filter="filterCareer"
-                          color="blue-5"
-                          v-model="plan_career.day"
-                          use-input
-                          input-debounce="0"
-                          :options="day"
-                          emit-value
-                          map-options
-                          label="วัน"
-                        />
-                      </div>
-                      <div class="col-md-3 col-xs-4 q-pa-xs">
-                        <q-select
-                          @filter="filterCareer"
-                          color="blue-5"
-                          v-model="plan_career.month"
-                          use-input
-                          input-debounce="0"
-                          :options="month"
-                          emit-value
-                          map-options
-                          label="เดือน"
-                        />
-                      </div>
-                      <div class="col-md-2 col-xs-4 q-pa-xs">
-                        <q-select
-                          @filter="filterCareer"
-                          color="blue-5"
-                          v-model="plan_career.year"
-                          use-input
-                          input-debounce="0"
-                          :options="year"
-                          emit-value
-                          map-options
-                          label="ปี"
-                        />
-                      </div> -->
                     </div>
                     <!-- ปุ่มควบคุม -->
                     <div class="row">

@@ -667,7 +667,7 @@ export default {
           )
         )
         .join("\r\n");
-      const status = exportFile("individual.csv", "\ufeff" + content, {
+      const status = exportFile("development_report.csv", "\ufeff" + content, {
         encoding: "utf-8",
         mimeType: "text/csv;charset=utf-8;",
       });
@@ -701,7 +701,7 @@ export default {
           )
         )
         .join("\r\n");
-      const status = exportFile("individual.csv", "\ufeff" + content, {
+      const status = exportFile("development_report1.csv", "\ufeff" + content, {
         encoding: "utf-8",
         mimeType: "text/csv;charset=utf-8;",
       });

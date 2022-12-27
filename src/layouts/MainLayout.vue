@@ -450,10 +450,17 @@ export default defineComponent({
   name: "MainLayout",
   data() {
     return {
+      // ----------------------------------------------------------------------------
+      // url_api_notification:
+      //   "http://localhost:85/icp2022/icp_v1/notification_form/api-notification.php",
+      // ----------------------------------------------------------------------------
       url_api_notification:
-        "http://localhost:85/icp2022/icp_v1/notification_form/api-notification.php",
+        "https://icp2022.net/icp_v1/notification_form/api-notification.php",
+      // ----------------------------------------------------------------------------
+
       member_id: this.$store.getters.myMember_id,
       $q: useQuasar(),
+      loading: false,
     };
   },
   components: {

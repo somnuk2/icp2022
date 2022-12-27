@@ -192,6 +192,13 @@
                                   <q-icon name="search" />
                                 </template>
                               </q-input>
+                              <!-- ส่งออก excel -->
+                              <q-btn
+                                flat
+                                icon-right="archive"
+                                label="ส่งออกไฟล์"
+                                @click="exportTable()"
+                              />
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
@@ -343,7 +350,7 @@ export default {
     exportTable() {
       console.log("Export excel");
       var columns = this.columns;
-      var rows = this.individuals1;
+      var rows = this.members1;
       // naive encoding to csv format
       const content = [columns.map((col) => wrapCsvValue(col.label))]
         .concat(
@@ -363,7 +370,7 @@ export default {
         )
         .join("\r\n");
 
-      const status = exportFile("individual.csv", "\ufeff" + content, {
+      const status = exportFile("member.csv", "\ufeff" + content, {
         encoding: "utf-8",
         mimeType: "text/csv;charset=utf-8;",
       });

@@ -418,58 +418,6 @@
                                 ></q-btn>
                               </q-td>
                             </template>
-                            <!-- การใส่สี วัน/เดือน/สัปดาห์-->
-                            <!-- <template v-slot:body-cell="props">
-                              <q-tr>
-                                <q-td
-                                  key="frequency_name"
-                                  :class="
-                                    props.row.frequency_name == 'เดือน'
-                                      ? 'bg-pink-4 text-white'
-                                      : 'bg-white text-black'
-                                  "
-                                  :props="props"
-                                >
-                                  {{ props.row.frequency_name }}
-                                </q-td>
-                              </q-tr>
-                              <q-td
-                                key="frequency_name"
-                                v-if="props.row.frequency_name == 'เดือน'"
-                                :props="props"
-                                :class="
-                                  props.row.frequency_name == 'เดือน'
-                                    ? 'bg-purple-2 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-                              <q-td
-                                key="frequency_name"
-                                v-if="props.row.frequency_name == 'สัปดาห์'"
-                                :props="props"
-                                :class="
-                                  props.row.frequency_name == 'สัปดาห์'
-                                    ? 'bg-purple-3 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-                              <q-td
-                                key="frequency_name"
-                                v-if="props.row.frequency_name == 'วัน'"
-                                :props="props"
-                                :class="
-                                  props.row.frequency_name == 'วัน'
-                                    ? 'bg-purple-5 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-                            </template> -->
                           </q-table>
                         </div>
                       </div>

@@ -755,13 +755,6 @@ export default {
           field: (row) => row.birthday,
           format: (val) => `${val}`,
         },
-        // {
-        //   name: "card_id",
-        //   align: "center",
-        //   label: "บัตรประชาชน",
-        //   field: (row) => row.card_id,
-        //   format: (val) => `${val}`,
-        // },
         {
           name: "telephone",
           align: "center",
@@ -967,20 +960,6 @@ export default {
         label: "",
         value: "",
       }),
-      // myFormat: {
-      //   stringify: (date) => {
-      //     return date
-      //       ? moment(date).add(543, "y").format("[Thai year] YYYY-MM-DD")
-      //       : null;
-      //   },
-      //   parse: (value) => {
-      //     return value
-      //       ? moment(value, "[Thai year] YYYY-MM-DD")
-      //           .subtract(543, "y")
-      //           .toDate()
-      //       : null;
-      //   },
-      // },
       $q: useQuasar(),
     };
   },

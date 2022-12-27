@@ -633,10 +633,14 @@ export default {
         )
         .join("\r\n");
 
-      const status = exportFile("individual.csv", "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
+      const status = exportFile(
+        "self_assessment_report.csv",
+        "\ufeff" + content,
+        {
+          encoding: "utf-8",
+          mimeType: "text/csv;charset=utf-8;",
+        }
+      );
 
       if (status !== true) {
         $q.notify({
@@ -669,10 +673,14 @@ export default {
         )
         .join("\r\n");
 
-      const status = exportFile("individual.csv", "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
+      const status = exportFile(
+        "self_assessment_report1.csv",
+        "\ufeff" + content,
+        {
+          encoding: "utf-8",
+          mimeType: "text/csv;charset=utf-8;",
+        }
+      );
 
       if (status !== true) {
         $q.notify({
