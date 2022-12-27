@@ -1,10 +1,7 @@
 <template>
-  <q-item
-    clickable
-    exact
-    exact-active-class="text-primary text-weight-bold bg-grey-4"
-    :to="link"
-  >
+  <!-- exact
+    exact-active-class="text-primary text-weight-bold bg-grey-4" -->
+  <q-item clickable dense :to="link">
     <!-- <q-item clickable tag="a" target="_blank" :href="link"> -->
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
@@ -15,6 +12,7 @@
       <q-item-label caption>{{ caption }}</q-item-label>
     </q-item-section>
   </q-item>
+  <q-separator></q-separator>
 </template>
 
 <script>

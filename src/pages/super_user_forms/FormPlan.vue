@@ -53,7 +53,7 @@
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
-                          label="อาชีพเป้าหมาย *"
+                          label="อาชีพเป้าหมาย"
                           emit-value
                           map-options
                           @update:model-value="
@@ -89,7 +89,7 @@
                           color="green"
                           v-model="qa_plan_career_id"
                           :options="qa_plan_career.options"
-                          label="คุณสมบัติที่ต้องการ *"
+                          label="คุณสมบัติที่ต้องการ"
                           emit-value
                           map-options
                         >
@@ -124,7 +124,7 @@
                           color="green"
                           v-model="development_id"
                           :options="development.options"
-                          label="การพัฒนา *"
+                          label="การพัฒนา"
                           emit-value
                           map-options
                         >
@@ -154,7 +154,7 @@
                           standout
                           bottom-slots
                           v-model="plan.plan_title"
-                          label="เรื่อง *"
+                          label="เรื่อง"
                           clearable
                         >
                           <template v-slot:prepend>
@@ -173,7 +173,7 @@
                           standout
                           bottom-slots
                           v-model="plan.plan_channel"
-                          label="ช่องทาง *"
+                          label="ช่องทาง"
                           clearable
                         >
                           <template v-slot:prepend>
@@ -192,7 +192,7 @@
                           color="green"
                           v-model="importance_id"
                           :options="importance.options"
-                          label="ความสำคัญ *"
+                          label="ความสำคัญ"
                           emit-value
                           map-options
                         >
@@ -224,7 +224,7 @@
                           color="green"
                           v-model="frequency_id"
                           :options="frequency.options"
-                          label="ความถี่ *"
+                          label="ความถี่"
                           emit-value
                           map-options
                         >
@@ -255,10 +255,7 @@
                         <q-input
                           filled
                           v-model="plan.plan_start_date"
-                          label="วันเริ่มพัฒนา *"
-                          mask="## / ## / ####"
-                          fill-mask
-                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
+                          label="วันเริ่มพัฒนา"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -269,7 +266,7 @@
                               >
                                 <q-date
                                   v-model="plan.plan_start_date"
-                                  mask="DD/MM/YYYY"
+                                  mask="DD-MM-YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -291,9 +288,6 @@
                           filled
                           v-model="plan.plan_end_date"
                           label="วันสิ้นสุดพัฒนา"
-                          mask="## / ## / ####"
-                          fill-mask
-                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -304,7 +298,7 @@
                               >
                                 <q-date
                                   v-model="plan.plan_end_date"
-                                  mask="DD/MM/YYYY"
+                                  mask="DD-MM-YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -477,21 +471,20 @@ export default {
     return {
       // ------------------------------------------------------------------------------
       // url_api_plan:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_form/api-plan.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/plan_form/api-plan.php",
       // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_form/api-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/plan_form/api-plan-career.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_form/api-qa-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/plan_form/api-qa-plan-career.php",
       // ------------------------------------------------------------------------------
-      url_api_plan: "https://icp2022.net/icp_v1_admin/plan_form/api-plan.php",
+      url_api_plan: "https://icp2022.net/icp_v1_suser/plan_form/api-plan.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1_admin/plan_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/plan_form/api-plan-career.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1_admin/plan_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/plan_form/api-qa-plan-career.php",
       // ------------------------------------------------------------------------------
-
       message: "Form Plan Career",
-      title: "การพัฒนาตนเอง(ผู้ดูแลระบบ)",
+      title: "การพัฒนาตนเอง(ผู้ดูแลกลุ่ม)",
       plan: {
         plan_id: "",
         plan_title: "",
@@ -578,22 +571,22 @@ export default {
           format: (val) => `${val}`,
           sortable: true,
         },
-        {
-          name: "frequency_id",
-          label: "รหัสความถี่",
-          align: "center",
-          field: (row) => row.frequency_id,
-          format: (val) => `${val}`,
-          sortable: true,
-        },
-        {
-          name: "frequency_name",
-          label: "ความถี่",
-          align: "center",
-          field: (row) => row.frequency_name,
-          format: (val) => `${val}`,
-          sortable: true,
-        },
+        // {
+        //   name: "frequency_id",
+        //   label: "รหัสความถี่",
+        //   align: "center",
+        //   field: (row) => row.frequency_id,
+        //   format: (val) => `${val}`,
+        //   sortable: true,
+        // },
+        // {
+        //   name: "frequency_name",
+        //   label: "ความถี่",
+        //   align: "center",
+        //   field: (row) => row.frequency_name,
+        //   format: (val) => `${val}`,
+        //   sortable: true,
+        // },
         {
           name: "importance_id",
           label: "รหัสความสำคัญ",
@@ -623,6 +616,22 @@ export default {
           label: "วันสิ้นสุด",
           align: "center",
           field: (row) => row.plan_end_date,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "adv_id",
+          label: "รหัสผู้ดูแล",
+          align: "center",
+          field: (row) => row.advisor_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "adv_name",
+          label: "ผู้ดูแล",
+          align: "center",
+          field: (row) => row.advisor_name,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -709,7 +718,6 @@ export default {
       }
     },
     //---------------------------------------
-
     resetForm() {
       console.log("ยกเลิก");
       this.isEdit = false;
@@ -810,7 +818,7 @@ export default {
       }
     },
     onEdit(plan_id) {
-      console.log("Edit data");
+      console.log("Edit plan_id:", plan_id);
       this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;
@@ -898,10 +906,11 @@ export default {
     //     });
     // },
     getUpdate() {
-      console.log(" แสดงข้อมูลการพัฒนาตนเอง สมาชิค: ");
+      console.log("get update member: ", this.member_id);
       var self = this;
       axios
         .post(this.url_api_plan, {
+          member_id: this.member_id,
           action: "getall_",
         })
         .then(function (res) {

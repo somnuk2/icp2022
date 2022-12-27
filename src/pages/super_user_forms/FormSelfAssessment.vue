@@ -32,7 +32,7 @@
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
-                          label="อาชีพเป้าหมาย *"
+                          label="อาชีพเป้าหมาย"
                           emit-value
                           map-options
                           @update:model-value="
@@ -67,7 +67,7 @@
                           color="green"
                           v-model="qa_plan_career_id"
                           :options="qa_plan_career.options"
-                          label="คุณสมบัติที่ต้องการ *"
+                          label="คุณสมบัติที่ต้องการ"
                           emit-value
                           map-options
                         >
@@ -99,10 +99,7 @@
                         <q-input
                           filled
                           v-model="self_assessment_date"
-                          label="วันประเมินตนเอง *"
-                          mask="## / ## / ####"
-                          fill-mask
-                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
+                          label="วันประเมินตนเอง"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -113,7 +110,7 @@
                               >
                                 <q-date
                                   v-model="self_assessment_date"
-                                  mask="DD/MM/YYYY"
+                                  mask="DD-MM-YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -423,33 +420,15 @@
                             </template> -->
                             <!-- end -->
                             <!-- ตารางย่อยข้อมูลอ้างอิง -->
-                            <!-- <template v-slot:body-cell-actions="props">
-                              <q-btn
-                                icon="mode_edit"
-                                label="แก้ไข"
-                                @click="OnEdit(props.row.self_assessment_id)"
-                              ></q-btn>
-                              <q-btn
-                                icon="delete"
-                                label="ลบ"
-                                @click="
-                                  onDelete(
-                                    props.row.self_assessment_id,
-                                    props.row.self_assessment_date
-                                  )
-                                "
-                              ></q-btn>
-                            </template> -->
                             <template v-slot:body="props">
                               <!-- ปุ่ม +/- แต่ละแถว -->
                               <q-tr :props="props">
                                 <q-td auto-width>
-                                  <!-- :label="`กดดูผลงาน: ${props.row.self_assessment_id}`" -->
                                   <q-toggle
                                     v-model="props.expand"
                                     checked-icon="add"
                                     unchecked-icon="remove"
-                                    label="กด"
+                                    :label="`กดดูผลงาน: ${props.row.self_assessment_id}`"
                                     @update:model-value="
                                       subRow(props.row.self_assessment_id)
                                     "
@@ -460,7 +439,7 @@
                                     @click="
                                       OnEdit(props.row.self_assessment_id)
                                     "
-                                  />
+                                  ></q-btn>
                                   <q-btn
                                     icon="delete"
                                     label="ลบ"
@@ -470,7 +449,7 @@
                                         props.row.self_assessment_date
                                       )
                                     "
-                                  />
+                                  ></q-btn>
                                 </q-td>
                                 <q-td
                                   v-for="col in props.cols"
@@ -622,32 +601,33 @@ export default {
   data() {
     return {
       // ------------------------------------------------------------------------------
-      // url: "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-member.php",
+      // url: "http://localhost:85/icp2022/icp_v1_suser/self_assessment_form/api-member.php",
       // url_api_career_qualification:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/self_assessment_form/api-qa-plan-career.php",
       // url_api_self_assessment:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-self-assessment.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/self_assessment_form/api-self-assessment.php",
       // url_api_plan:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-plan.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/self_assessment_form/api-plan.php",
       // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/self_assessment_form/api-plan-career.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/self_assessment_form/api-qa-plan-career.php",
       // ------------------------------------------------------------------------------
-      url: "https://icp2022.net/icp_v1_admin/self_assessment_form/api-member.php",
+      url: "https://icp2022.net/icp_v1_suser/self_assessment_form/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/self_assessment_form/api-qa-plan-career.php",
       url_api_self_assessment:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-self-assessment.php",
+        "https://icp2022.net/icp_v1_suser/self_assessment_form/api-self-assessment.php",
       url_api_plan:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-plan.php",
+        "https://icp2022.net/icp_v1_suser/self_assessment_form/api-plan.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/self_assessment_form/api-plan-career.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/self_assessment_form/api-qa-plan-career.php",
       // ------------------------------------------------------------------------------
+
       message: "Form Self Acessment",
-      title: "การประเมินตนเอง(ผู้ดูแลระบบ)",
+      title: "การประเมินตนเอง(ผู้ดูแลกลุ่ม)",
 
       currentYear: new Date().getFullYear(),
       selfAssessments: Array,
@@ -688,7 +668,7 @@ export default {
         reference_description: "",
       },
       references: [
-        { name: "actions", align: "center", label: "Action" },
+        { name: "actions", align: "left", label: "Action" },
         {
           name: "reference_id",
           align: "center",
@@ -748,13 +728,6 @@ export default {
           align: "center",
           label: "รหัสการประเมิน",
           field: (row) => row.self_assessment_id,
-          format: (val) => `${val}`,
-        },
-        {
-          name: "full_name",
-          align: "left",
-          label: "ชื่อ-สกุล",
-          field: (row) => row.full_name,
           format: (val) => `${val}`,
         },
         {
@@ -832,6 +805,20 @@ export default {
           align: "center",
           label: "ผลการประเมิน",
           field: (row) => row.perform_value,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "advisor_id",
+          align: "center",
+          label: "รหัสผู้แล",
+          field: (row) => row.advisor_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "advisor_name",
+          align: "center",
+          label: "ผู้แลกลุ่ม",
+          field: (row) => row.advisor_name,
           format: (val) => `${val}`,
         },
       ],
@@ -1001,7 +988,6 @@ export default {
               .then((res) => {
                 console.log("Insert self_assessment:", res.data);
                 this.getUpdate(this.member_id);
-                this.addRefToDatabase(this.selfAssessments1);
               })
               .catch(function (error) {
                 console.log(error);
@@ -1144,13 +1130,13 @@ export default {
         .then(function (res) {
           self.selfAssessments1 = res.data;
           self.selfAssessments1_ = res.data;
-          console.log("self_assessment:+", self.selfAssessments1);
+          console.log("self_assessment:", self.selfAssessments1);
           // var leng = self.selfAssessments1.length;
           // console.log(
           //   "self_assessment[last].self_assessment_id:",
           //   self.selfAssessments1[leng - 1].self_assessment_id
           // );
-          // self.addRefToDatabase(self.selfAssessments1);
+          self.addRefToDatabase(self.selfAssessments1);
         })
         .catch(function (error) {
           console.log(error);
@@ -1161,7 +1147,7 @@ export default {
       console.log(" ข้อมูลอาชีพ สมาชิค", member_id);
       var self = this;
       axios
-        .post(this.url_api_plan_career, {
+        .post(this.url_api_self_assessment, {
           action: "get_plan_career_by_member_id",
           member_id: member_id,
         })

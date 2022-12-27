@@ -32,7 +32,7 @@
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
-                          label="อาชีพเป้าหมาย"
+                          label="อาชีพเป้าหมาย *"
                           emit-value
                           map-options
                           @update:model-value="
@@ -68,7 +68,7 @@
                           color="green"
                           v-model="qa_plan_career_id"
                           :options="qa_plan_career.options"
-                          label="คุณสมบัติที่ต้องการ"
+                          label="คุณสมบัติที่ต้องการ *"
                           emit-value
                           map-options
                         >
@@ -103,7 +103,7 @@
                           color="green"
                           v-model="development_id"
                           :options="development.options"
-                          label="การพัฒนา"
+                          label="การพัฒนา *"
                           emit-value
                           map-options
                         >
@@ -133,7 +133,7 @@
                           standout
                           bottom-slots
                           v-model="plan.plan_title"
-                          label="เรื่อง"
+                          label="เรื่อง *"
                           clearable
                         >
                           <template v-slot:prepend>
@@ -147,12 +147,12 @@
                     </div>
                     <div class="row">
                       <!-- ช่องทาง -->
-                      <div class="col-md-6 col-xs-12 q-pa-xs">
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
                         <q-input
                           standout
                           bottom-slots
                           v-model="plan.plan_channel"
-                          label="ช่องทาง"
+                          label="ช่องทาง *"
                           clearable
                         >
                           <template v-slot:prepend>
@@ -164,7 +164,7 @@
                         </q-input>
                       </div>
                       <!-- การแจ้งเตือน -->
-                      <div class="col-md-6 col-xs-12 q-pa-xs">
+                      <!-- <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
                           @filter="filterFrequency"
                           use-input
@@ -194,7 +194,7 @@
                             </q-item>
                           </template>
                         </q-select>
-                      </div>
+                      </div> -->
                     </div>
                     <div class="row">
                       <!-- วันเริ่มพัฒนา -->
@@ -202,7 +202,10 @@
                         <q-input
                           filled
                           v-model="plan.plan_start_date"
-                          label="วันเริ่มพัฒนา"
+                          label="วันเริ่มพัฒนา *"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -235,6 +238,9 @@
                           filled
                           v-model="plan.plan_end_date"
                           label="วันสิ้นสุดพัฒนา"
+                          mask="## / ## / ####"
+                          fill-mask
+                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -273,7 +279,7 @@
                           color="green"
                           v-model="importance_id"
                           :options="importance.options"
-                          label="ความสำคัญ"
+                          label="ความสำคัญ *"
                           emit-value
                           map-options
                         >
@@ -331,6 +337,7 @@
                         <!-- กลับฟอร์มกำหนดคุณสมบัติ/ทักษะ -->
                         <q-btn
                           color="primary"
+                          label="กลับฟอร์มกำหนดคุณสมบัติ"
                           no-caps
                           flat
                           icon="skip_previous"
@@ -343,6 +350,7 @@
                         <!-- ไปฟอร์มรายงานการพัฒนาตนเอง -->
                         <q-btn
                           color="primary"
+                          label="ไปฟอร์มรายงานการพัฒนาตนเอง"
                           no-caps
                           flat
                           icon="skip_next"
@@ -367,29 +375,40 @@
                             :filter="filter"
                             :loading="loading"
                           >
+                            <!-- ค้นหา+ส่งออก excel -->
                             <template v-slot:top-right>
                               <div class="col-9">
+                                <!-- ค้นหา -->
                                 <q-input
                                   borderless
                                   dense
                                   debounce="300"
                                   v-model="filter"
-                                  placeholder="Search"
+                                  placeholder="ค้นหาการพัฒนาตนเอง"
                                 >
                                   <template v-slot:append>
                                     <q-icon name="search" />
                                   </template>
                                 </q-input>
                               </div>
+                              <!-- ส่งออก excel -->
+                              <q-btn
+                                flat
+                                icon-right="archive"
+                                label="ส่งออกไฟล์"
+                                @click="exportTable()"
+                              />
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
                                 <q-btn
                                   icon="mode_edit"
+                                  label="แก้ไข"
                                   @click="onEdit(props.row.plan_id)"
                                 ></q-btn>
                                 <q-btn
                                   icon="delete"
+                                  label="ลบ"
                                   @click="
                                     onDelete(
                                       props.row.plan_id,
@@ -400,13 +419,12 @@
                               </q-td>
                             </template>
                             <!-- การใส่สี วัน/เดือน/สัปดาห์-->
-                            <template v-slot:body-cell="props">
-                              <!-- เดือน -->
-                              <!-- <q-tr>
+                            <!-- <template v-slot:body-cell="props">
+                              <q-tr>
                                 <q-td
                                   key="frequency_name"
                                   :class="
-                                    props.row.frequency_name == 'สัปดาห์'
+                                    props.row.frequency_name == 'เดือน'
                                       ? 'bg-pink-4 text-white'
                                       : 'bg-white text-black'
                                   "
@@ -414,7 +432,7 @@
                                 >
                                   {{ props.row.frequency_name }}
                                 </q-td>
-                              </q-tr> -->
+                              </q-tr>
                               <q-td
                                 key="frequency_name"
                                 v-if="props.row.frequency_name == 'เดือน'"
@@ -427,7 +445,6 @@
                               >
                                 <div>{{ props.value }}</div>
                               </q-td>
-                              <!-- สัปดาห์ -->
                               <q-td
                                 key="frequency_name"
                                 v-if="props.row.frequency_name == 'สัปดาห์'"
@@ -440,7 +457,6 @@
                               >
                                 <div>{{ props.value }}</div>
                               </q-td>
-                              <!-- วัน -->
                               <q-td
                                 key="frequency_name"
                                 v-if="props.row.frequency_name == 'วัน'"
@@ -453,7 +469,7 @@
                               >
                                 <div>{{ props.value }}</div>
                               </q-td>
-                            </template>
+                            </template> -->
                           </q-table>
                         </div>
                       </div>
@@ -473,23 +489,42 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { exportFile } from "quasar";
+// ส่งออกไฟล์ excel
+function wrapCsvValue(val, formatFn, row) {
+  let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`;
+}
 
 export default {
   name: "FormPlan",
   data() {
     return {
-      // url: "https://icp2022.net/api-member.php",
-      // url_api_plan: "http://localhost:85/icp2022/api-plan.php",
-      // url_api_plan_career: "http://localhost:85/icp2022/api-plan-career.php",
+      // --------------------------------------------------------------------------
+      // url_api_plan: "http://localhost:85/icp2022/icp_v1/plan_form/api-plan.php",
+      // url_api_plan_career:
+      //   "http://localhost:85/icp2022/icp_v1/plan_form/api-plan-career.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/api-qa-plan-career.php",
-
+      //   "http://localhost:85/icp2022/icp_v1/plan_form/api-qa-plan-career.php",
+      // --------------------------------------------------------------------------
       url_api_plan: "https://icp2022.net/icp_v1/plan_form/api-plan.php",
       url_api_plan_career:
         "https://icp2022.net/icp_v1/plan_form/api-plan-career.php",
       url_api_qa_plan_career:
         "https://icp2022.net/icp_v1/plan_form/api-qa-plan-career.php",
-
+      // --------------------------------------------------------------------------
       message: "Form Plan Career",
       title: "การพัฒนาตนเอง",
       plan: {
@@ -667,6 +702,44 @@ export default {
     };
   },
   methods: {
+    // นำออกไฟล์ excel
+    exportTable() {
+      console.log("Export excel");
+      var columns = this.columns;
+      var rows = this.plans1;
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))]
+        .concat(
+          rows.map((row) =>
+            columns
+              .map((col) =>
+                wrapCsvValue(
+                  typeof col.field === "function"
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(",")
+          )
+        )
+        .join("\r\n");
+
+      const status = exportFile("plan_do_learn.csv", "\ufeff" + content, {
+        encoding: "utf-8",
+        mimeType: "text/csv;charset=utf-8;",
+      });
+
+      if (status !== true) {
+        $q.notify({
+          message: "Browser denied file download...",
+          color: "negative",
+          icon: "warning",
+        });
+      }
+    },
+    //---------------------------------------
     resetForm() {
       console.log("ยกเลิก");
       this.isEdit = false;

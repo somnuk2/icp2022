@@ -22,6 +22,27 @@
                     method="post"
                     class="q-gutter-md"
                   >
+                    <!-- ชื่อ-สกุล -->
+                    <div class="row">
+                      <!-- ชื่อ-สกุล -->
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
+                        <q-input
+                          standout
+                          bottom-slots
+                          label="ชื่อ-สกุล"
+                          v-model="qa_plan_career_full_name"
+                          clearable
+                          disable
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="person_add" />
+                          </template>
+                          <template v-slot:append>
+                            <q-icon name="favorite" />
+                          </template>
+                        </q-input>
+                      </div>
+                    </div>
                     <!-- อาชีพเป้าหมาย + คุณสมบัติ-->
                     <div class="row">
                       <!-- แผนอาชีพ -->
@@ -32,7 +53,7 @@
                           color="green"
                           v-model="plan_career.options.value"
                           :options="plan_career.options"
-                          label="อาชีพเป้าหมาย *"
+                          label="อาชีพเป้าหมาย"
                           emit-value
                           map-options
                         >
@@ -63,7 +84,7 @@
                           color="green"
                           v-model="qualification.options.value"
                           :options="qualification.options"
-                          label="คุณสมบัติที่ต้องการ *"
+                          label="คุณสมบัติที่ต้องการ"
                           @new-value="newQualification"
                           use-input
                           input-debounce="0"
@@ -101,7 +122,7 @@
                           color="green"
                           v-model="target.options.value"
                           :options="target.options"
-                          label="ค่าเป้าหมาย *"
+                          label="ค่าเป้าหมาย"
                           emit-value
                           map-options
                         >
@@ -133,7 +154,7 @@
                           color="green"
                           v-model="level.options.value"
                           :options="level.options"
-                          label="ระดับความสำคัญ *"
+                          label="ระดับความสำคัญ"
                           emit-value
                           map-options
                         >
@@ -191,10 +212,10 @@
                         <!-- ย้อนกลับ -->
                         <q-btn
                           color="primary"
-                          label="กลับฟอร์มกำหนดอาชีพเป้าหมาย"
                           no-caps
                           flat
                           icon="skip_previous"
+                          label="กลับฟอร์มกำหนดอาชีพเป้าหมาย"
                           to="/FormPlanCareer"
                         >
                           <q-tooltip class="bg-accent"
@@ -204,10 +225,10 @@
                         <!-- ไปข้างหน้า -->
                         <q-btn
                           color="primary"
-                          label="ไปฟอร์มการพัฒนาตนเอง"
                           no-caps
                           flat
                           icon="skip_next"
+                          label="ไปฟอร์มการพัฒนาตนเอง"
                           to="/FormPlan"
                         >
                           <q-tooltip class="bg-accent"
@@ -228,17 +249,13 @@
                             :filter="filter"
                             :loading="loading"
                           >
-                            <!-- ค้นหาคุณสมบัติ/ทักษะ -->
                             <template v-slot:top-right>
-                              <!-- ค้นหา + ส่งออก excel -->
-                              <!-- <div class="col-9"> -->
-                              <!-- ค้นหา -->
                               <q-input
                                 borderless
                                 dense
                                 debounce="300"
                                 v-model="filter"
-                                placeholder="ค้นหาคุณสมบัติ/ทักษะ"
+                                placeholder="ค้นหาคุณสมบัติ"
                               >
                                 <template v-slot:append>
                                   <q-icon name="search" />
@@ -251,7 +268,6 @@
                                 label="ส่งออกไฟล์"
                                 @click="exportTable()"
                               />
-                              <!-- </div> -->
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
@@ -259,7 +275,7 @@
                                   icon="mode_edit"
                                   label="แก้ไข"
                                   @click="editUser(props.row.qa_plan_career_id)"
-                                />
+                                ></q-btn>
                                 <q-btn
                                   icon="delete"
                                   label="ลบ"
@@ -270,76 +286,9 @@
                                       props.row.qualification_name
                                     )
                                   "
-                                />
+                                ></q-btn>
                               </q-td>
                             </template>
-                            <!-- การใส่สีผลการประเมิน-->
-                            <!-- <template v-slot:body-cell="props">
-                              <q-td
-                                key="target_value"
-                                v-if="props.row.target_value == 1"
-                                :props="props"
-                                :class="
-                                  props.row.target_value == 1
-                                    ? 'bg-indigo-1 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-
-                              <q-td
-                                key="target_value"
-                                v-if="props.row.target_value == 2"
-                                :props="props"
-                                :class="
-                                  props.row.target_value == 2
-                                    ? 'bg-indigo-2 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-
-                              <q-td
-                                key="target_value"
-                                v-if="props.row.target_value == 3"
-                                :props="props"
-                                :class="
-                                  props.row.target_value == 3
-                                    ? 'bg-indigo-3 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-
-                              <q-td
-                                key="target_value"
-                                v-if="props.row.target_value == 4"
-                                :props="props"
-                                :class="
-                                  props.row.target_value == 4
-                                    ? 'bg-indigo-4 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-
-                              <q-td
-                                key="target_value"
-                                v-if="props.row.target_value == 5"
-                                :props="props"
-                                :class="
-                                  props.row.target_value == 5
-                                    ? 'bg-indigo-5 text-white'
-                                    : 'bg-white text-black'
-                                "
-                              >
-                                <div>{{ props.value }}</div>
-                              </q-td>
-                            </template> -->
                           </q-table>
                         </div>
                       </div>
@@ -395,30 +344,30 @@ export default {
   components: {},
   data() {
     return {
-      // -----------------------------------------------------------------------------
-      // url: "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-member.php",
+      // ------------------------------------------------------------------------------
+      // url: "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-member.php",
       // url_api_career:
-      //   "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-career.php",
       // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-plan-career.php",
       // url_api_qualification:
-      //   "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-qualification.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-qualification.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-qa-plan-career.php",
-      // -----------------------------------------------------------------------------
-      url: "https://icp2022.net/icp_v1/qa_plan_career_form/api-member.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-qa-plan-career.php",
+      // ------------------------------------------------------------------------------
+      url: "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-member.php",
       url_api_career:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-career.php",
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-career.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-plan-career.php",
       url_api_qualification:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qualification.php",
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-qualification.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qa-plan-career.php",
-      // -----------------------------------------------------------------------------
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-qa-plan-career.php",
+      // ------------------------------------------------------------------------------
 
       message: "Form Qualification",
-      title: "คุณสมบัติ/ทักษะ",
+      title: "คุณสมบัติ/ทักษะ(ผู้ดูแลกลุ่ม)",
       btnLabel: "เพิ่มข้อมูล",
 
       columns: [
@@ -428,6 +377,22 @@ export default {
           label: "รหัสคุณสมบัติอาชีพ",
           align: "center",
           field: (row) => row.qa_plan_career_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "member_id",
+          label: "รหัสสมาชิค",
+          align: "center",
+          field: (row) => row.member_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "full_name",
+          label: "ชื่อ-สกุล",
+          align: "left",
+          field: (row) => row.full_name,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -501,18 +466,12 @@ export default {
           field: (row) => row.target_name,
           format: (val) => `${val}`,
         },
-        {
-          name: "target_value",
-          label: "ค่าเป้าหมาย",
-          align: "center",
-          field: (row) => row.target_value,
-          format: (val) => `${val}`,
-        },
       ],
       member_id: this.$store.getters.myMember_id,
       filter: ref(""),
       loading: ref(false),
       qa_plan_career_id: "",
+      qa_plan_career_full_name: "",
       qualifications1: [],
       qualification_: {
         options: [],
@@ -549,7 +508,7 @@ export default {
     exportTable() {
       console.log("Export excel");
       var columns = this.columns;
-      var rows = this.qualifications1;
+      var rows = this.individuals1;
       // naive encoding to csv format
       const content = [columns.map((col) => wrapCsvValue(col.label))]
         .concat(
@@ -569,7 +528,7 @@ export default {
         )
         .join("\r\n");
 
-      const status = exportFile("qualification.csv", "\ufeff" + content, {
+      const status = exportFile("individual.csv", "\ufeff" + content, {
         encoding: "utf-8",
         mimeType: "text/csv;charset=utf-8;",
       });
@@ -583,7 +542,6 @@ export default {
       }
     },
     //---------------------------------------
-
     createValue1(val, done) {
       done(val, "add-unique");
       console.log("new val:", val);
@@ -632,6 +590,7 @@ export default {
       this.target.options.lebel = "";
       this.level.options.value = "";
       this.level.options.label = "";
+      this.qa_plan_career_full_name = "";
     },
     getUpdateQualification() {
       var self = this;
@@ -732,7 +691,7 @@ export default {
               })
               .then((res) => {
                 console.log("insert:", res.data);
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -763,7 +722,7 @@ export default {
                 this.isEdit = false;
                 console.log("isEdit:", this.isEdit);
                 this.btnLabel = "เพิ่มข้อมูล";
-                this.getUpdate(this.member_id);
+                this.getUpdate();
               })
               .catch(function (error) {
                 console.log(error);
@@ -797,6 +756,7 @@ export default {
           self.level.options.label = response.data.level_name;
           self.target.options.value = response.data.target_id;
           self.target.options.label = response.data.target_name;
+          self.qa_plan_career_full_name = response.data.full_name;
         })
         .catch(function (error) {
           console.log(error);
@@ -825,7 +785,7 @@ export default {
             })
             .then(function (response) {
               console.log("delete:", response.data);
-              self.getUpdate(self.member_id);
+              self.getUpdate();
             })
             .catch(function (error) {
               console.log(error);
@@ -864,18 +824,35 @@ export default {
       return filteredRows;
     },
     // checked
-    getUpdate(member_id) {
-      console.log("ข้อมูลจาก qa_plan_career:", member_id);
+    // getUpdate(member_id) {
+    //   console.log("ข้อมูลจาก qa_plan_career:", member_id);
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_qa_plan_career, {
+    //       action: "getAll",
+    //       member_id: member_id,
+    //     })
+    //     .then(function (res) {
+    //       console.log("getUpdate():", res);
+    //       self.qualifications1 = res.data;
+    //       console.log("getUpdate():", self.qualifications1);
+    //     })
+    //     .finally(() => {
+    //       self.loading = false;
+    //     });
+    // },
+    getUpdate() {
+      console.log("ข้อมูลจาก member_id:", this.member_id);
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
-          action: "getAll",
-          member_id: member_id,
+          member_id: this.member_id,
+          action: "getAll_",
         })
         .then(function (res) {
-          console.log("getUpdate():", res);
+          console.log("getUpdate:", res.data);
           self.qualifications1 = res.data;
-          console.log("getUpdate():", self.qualifications1);
+          console.log("getUpdate:", self.qualifications1);
         })
         .finally(() => {
           self.loading = false;
@@ -1008,7 +985,7 @@ export default {
     this.getCareer(this.member_id);
     this.getTarget();
     this.getLevel();
-    this.getUpdate(this.member_id);
+    this.getUpdate();
   },
   computed: {},
 };

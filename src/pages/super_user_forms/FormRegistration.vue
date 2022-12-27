@@ -32,12 +32,8 @@
                           standout
                           bottom-slots
                           v-model="member.full_name"
-                          label="ชื่อ-สกุล *"
+                          label="ชื่อ-สกุล"
                           clearable
-                          :rules="[
-                            (val) =>
-                              (val && val.length > 0) || 'ต้องใส่ชื่อ-สกุล',
-                          ]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="work_history" />
@@ -50,19 +46,20 @@
                     </div>
                     <!-- บทบาทของผู้ใช้ระบบ -->
                     <div class="row">
-                      <!-- บทบาทของผู้ใช้ระบบ +อีเมล + ยืนยัน-->
-                      <div class="col-md-4 col-xs-12 q-pa-xs">
+                      <!-- บทบาทของผู้ใช้ระบบ +อีเมล -->
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-select
                           color="blue-3"
                           v-model="member_role"
                           :options="member_roles.options"
-                          label="บทบาท *"
+                          label="บทบาท"
                           stack-label
                         >
                           <template v-slot:prepend>
                             <q-icon name="school" />
                           </template>
                           <template v-slot:selected>
+                            บทบาท:
                             <q-chip
                               v-if="member_role"
                               dense
@@ -85,14 +82,14 @@
                         </q-select>
                       </div>
                       <!-- อีเมล -->
-                      <div class="col-md-5 col-xs-12 q-pa-xs">
+                      <div class="col-md-6 col-xs-12 q-pa-xs">
                         <q-input
                           color="white"
                           bg-color="blue-5"
                           standout
                           bottom-slots
                           v-model="member.email"
-                          label="อีเมล *"
+                          label="อีเมล"
                           clearable
                           type="email"
                           lazy-rules
@@ -105,17 +102,6 @@
                             <q-icon name="favorite" />
                           </template>
                         </q-input>
-                      </div>
-                      <!-- ยืนยันอีเมลย์ -->
-                      <div class="col-md-3 col-xs-12 q-pa-xs">
-                        <q-checkbox
-                          v-model="member.is_verified"
-                          val="member.is_verified"
-                          label="ยืนยันอีเมลย์"
-                          color="teal"
-                          true-value="1"
-                          false-value="0"
-                        />
                       </div>
                     </div>
                     <div class="row">
@@ -130,7 +116,7 @@
                           :type="passwordFieldType"
                           lazy-rules
                           :rules="[this.required, this.short]"
-                          label="รหัสผ่าน *"
+                          label="รหัสผ่าน"
                         >
                           <template v-slot:prepend>
                             <q-icon name="lock" />
@@ -159,7 +145,7 @@
                             this.short,
                             this.diffPassword,
                           ]"
-                          label="ยืนยันรหัสผ่าน *"
+                          label="ยืนยันรหัสผ่าน"
                         >
                           <template v-slot:prepend>
                             <q-icon name="lock" />
@@ -174,18 +160,6 @@
                         </q-input>
                       </div>
                     </div>
-                    <!-- <div class="row">
-                      <div class="col-md-4 col-xs-12 q-pa-xs">
-                        <q-checkbox
-                          v-model="member.is_verified"
-                          val="member.is_verified"
-                          label="ตรวจสอบอีเมลย์แล้ว"
-                          color="teal"
-                          true-value="1"
-                          false-value="0"
-                        />
-                      </div>
-                    </div> -->
                     <!-- ปุ่มควบคุม -->
                     <div class="row">
                       <div
@@ -357,12 +331,13 @@ export default {
     return {
       // ------------------------------------------------------------------------------
       // url_api_member:
-      //   "http://localhost:85/icp2022/icp_v1_admin/registration_form/api-member.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/registration_form/api-member.php",
       // ------------------------------------------------------------------------------
       url_api_member:
-        "https://icp2022.net/icp_v1_admin/registration_form/api-member.php",
+        "https://icp2022.net/icp_v1_suser/registration_form/api-member.php",
       // ------------------------------------------------------------------------------
-      title: "การลงทะเบียน(ผู้ดูแลระบบ)",
+
+      title: "การลงทะเบียน(ผู้ดูแลกลุ่ม)",
       members: Array,
       register: true,
       filter: ref(""),
@@ -374,7 +349,6 @@ export default {
         password: "",
         repassword: "",
         status: "",
-        is_verified: ref("0"),
       },
       columns: [
         { name: "actions", align: "center", label: "Action" },
@@ -419,12 +393,27 @@ export default {
           format: (val) => `${val}`,
           sortable: true,
         },
-        // is_verified
         {
-          name: "is_verified",
+          name: "verified",
           align: "center",
-          label: "ยืนยันอีเมลย์",
+          label: "ยืนยัน",
           field: (row) => row.is_verified,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "adv_id",
+          align: "center",
+          label: "รหัสผู้ดูแล",
+          field: (row) => row.advisor_id,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "adv_name",
+          align: "center",
+          label: "ผู้ดูแล",
+          field: (row) => row.advisor_name,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -534,7 +523,6 @@ export default {
                 email: this.member.email,
                 password: this.member.password,
                 status: this.member_role.value,
-                is_verified: this.member.is_verified,
               })
               .then((response) => {
                 console.log("update:", response.data);
@@ -575,7 +563,6 @@ export default {
         email: this.member.email,
         password: this.member.password,
         status: this.member_role.value,
-        is_verified: this.member.is_verified,
       };
       this.$emit("saveData", newMember);
       console.log("บันทึกข้อมูล", newMember);
@@ -586,7 +573,6 @@ export default {
           email: this.member.email,
           password: this.member.password,
           status: this.member_role.value,
-          is_verified: this.member.is_verified,
         })
         .then((res) => {
           console.log(res);
@@ -624,7 +610,7 @@ export default {
           console.log(error);
         });
     },
-    getUpdate() {
+    getUpdate1() {
       console.log(
         "แสดงข้อมูลสมาชิค:",
         (this.admin ? "admin" : "") +
@@ -636,10 +622,48 @@ export default {
       var self = this;
       axios
         .post(this.url_api_member, {
-          admin: this.admin ? "admin" : "",
-          suser: this.suser ? "suser" : "",
-          user: this.user ? "user" : "",
-          action: "getall",
+          advisor_id: this.member_id,
+          action: "getall_",
+        })
+        .then(function (res) {
+          console.log("Registration:+", res.data);
+          self.members1 = res.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    // getUpdate() {
+    //   console.log(
+    //     "แสดงข้อมูลสมาชิค:",
+    //     (this.admin ? "admin" : "") +
+    //       "-" +
+    //       (this.suser ? "suser" : "") +
+    //       "-" +
+    //       (this.user ? "user" : "")
+    //   );
+    //   console.log("this.member:+");
+    //   var self = this;
+    //   axios
+    //     .post(this.url_api_member, {
+    //       member_id: this.member,
+    //       action: "getall_",
+    //     })
+    //     .then(function (res) {
+    //       console.log("Registration:", res.data);
+    //       self.members1 = res.data;
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // },
+    getUpdate() {
+      console.log("member:", this.member.member_id);
+      var self = this;
+      axios
+        .post(this.url_api_member, {
+          member_id: this.member.member_id,
+          action: "getall_",
         })
         .then(function (res) {
           console.log("Registration:", res.data);
@@ -667,7 +691,6 @@ export default {
           self.member.password = response.data.password;
           self.member.status = response.data.status;
           self.member_role.value = response.data.status;
-          self.member.is_verified = response.data.is_verified == 1 ? "1" : "0";
           if (self.member_role.value == "admin") {
             self.member_role.label = "ผู้ดูแลระบบ";
           } else if (self.member_role.value == "suser") {
@@ -762,9 +785,7 @@ export default {
       });
     },
   },
-  created() {
-    // this.getAllUser();
-  },
+  created() {},
   mounted() {
     this.getUpdate();
   },

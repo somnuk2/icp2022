@@ -13,11 +13,14 @@ import { Quasar, Dialog } from "quasar";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 
+// import xlsx from "xlsx";
+
 createApp(App)
   .use(VueApexCharts)
   .use(VueChartkick)
   .use(store)
   .use(router)
+  // .use(xlsx)
   .use(Quasar, {
     plugins: {
       Dialog,

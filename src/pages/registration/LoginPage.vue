@@ -144,9 +144,12 @@ export default {
   name: "LoginPage2",
   data() {
     return {
-      // url_api_member: "http://localhost:85/icp2022/api-member.php",
+      // ------------------------------------------------------------------------------
+      // url_api_member:
+      //   "http://localhost:85/icp2022/icp_v1/signin_form/api-member.php",
+      // ------------------------------------------------------------------------------
       url_api_member: "https://icp2022.net/icp_v1/signin_form/api-member.php",
-
+      // ------------------------------------------------------------------------------
       title: "เข้าสู่ระบบ",
       email: "",
       username: "",
@@ -200,8 +203,9 @@ export default {
             console.log("The username and / or password is incorrect");
             self.$q
               .dialog({
-                title: "เตือน",
-                message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+                title: "คำเตือน",
+                message:
+                  "ชื่อผู้ใช้/รหัสผ่านไม่ถูกต้อง หรืออีเมลย์ยังไม่ได้รับการยืนยัน",
                 persistent: true,
               })
               .onOk(() => {

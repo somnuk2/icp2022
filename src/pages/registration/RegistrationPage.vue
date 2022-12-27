@@ -232,7 +232,19 @@ import { ref } from "vue";
 export default {
   data() {
     return {
+      // ------------------------------------------------------------------------------
+      // url_api_member:
+      //   "http://localhost:85/icp2022/icp_v1/signup_form/api-member.php",
+      // url_api_mail:
+      //   "http://localhost:85/icp2022/icp_v1/registration_form/mail.php",
+      // url_api_verified_mail:
+      //   "http://localhost:85/icp2022/icp_v1/registration_form/verified_mail.php",
+      // ------------------------------------------------------------------------------
       url_api_member: "https://icp2022.net/icp_v1/signup_form/api-member.php",
+      url_api_mail: "https://icp2022.net/icp_v1/registration_form/mail.php",
+      url_api_verified_mail:
+        "https://icp2022.net/icp_v1/registration_form/verified_mail.php",
+      // ------------------------------------------------------------------------------
       title: "การลงทะเบียน",
       members: Array,
       register: true,
@@ -244,7 +256,6 @@ export default {
         email: "",
         password: "",
         repassword: "",
-        // defualt User/Suser/Admin
         status: "user",
       },
       columns: [
@@ -290,6 +301,14 @@ export default {
           format: (val) => `${val}`,
           sortable: true,
         },
+        {
+          name: "is_verified",
+          align: "center",
+          label: "ยืนยันอีเมลย์",
+          field: (row) => row.is_verified,
+          format: (val) => `${val == 0 ? "ยังไม่ยืนยัน" : "ยืนยัน"}`,
+          sortable: true,
+        },
       ],
       members1: [],
       $q: useQuasar(),
@@ -301,12 +320,38 @@ export default {
     };
   },
   methods: {
+    verifiedEmail() {
+      console.log("ยืนยัน E-mail");
+      console.log("ยืนยัน:", this.member.email);
+      var msg =
+        "กรุณากดลิงก์การยืนยันอีเมลย์เข้าสู่ระบบ ICP : <a href=" +
+        this.url_api_verified_mail +
+        '?email="' +
+        this.member.email +
+        '">กดเพื่อยืนยันตัวตน</a>';
+      console.log("ข้อความ:", msg);
+      axios
+        .post(this.url_api_mail, {
+          action: "email",
+          to_email: this.member.email,
+          subject: "การยืนยันอีเมลย์ การสมัครสมาชิคระบบ ICP",
+          from_email: "somnuk.sin2@gmail.com",
+          message: msg,
+        })
+        .then((res) => {
+          console.log("ทดสอบการส่ง E-mail:", res.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     submitForm() {
       if (!this.isEdit) {
         this.$q
           .dialog({
             title: "ยืนยัน",
-            message: "คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?",
+            message:
+              "คุณจะต้องทำการยืนยันการสมัครผ่านอีเมลย์ : " + this.member.email,
             cancel: true,
             persistent: true,
           })
@@ -333,9 +378,8 @@ export default {
               })
               .then((response) => {
                 console.log(response);
-                // this.resetForm();
-                // this.getAllUser();
                 this.getUpdate();
+                this.verifiedEmail();
               })
               .catch(function (error) {
                 console.log(error);
@@ -381,6 +425,7 @@ export default {
         .then((res) => {
           console.log(res);
           this.getUpdate();
+          this.verifiedEmail();
         })
         .catch(function (error) {
           console.log(error);

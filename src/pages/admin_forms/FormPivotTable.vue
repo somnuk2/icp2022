@@ -110,6 +110,7 @@
                           no-caps
                           flat
                           icon="skip_previous"
+                          label="กลับฟอร์มการประเมินตนเอง"
                           to="/FormSelfAssessment"
                         >
                           <q-tooltip class="bg-accent"
@@ -141,7 +142,132 @@
                             row-key="qa_plan_career_id"
                             selection="multiple"
                             v-model:selected="selected"
+                            :filter="filter"
                           >
+                            <template v-slot:top-right>
+                              <!-- ปุ่มค้นหา -->
+                              <q-input
+                                borderless
+                                dense
+                                debounce="300"
+                                v-model="filter"
+                                placeholder="ค้นหาข้อมูลส่วนตัว"
+                              >
+                                <template v-slot:append>
+                                  <q-icon name="search" />
+                                </template>
+                              </q-input>
+                              <!-- ส่งออก excel -->
+                              <q-btn
+                                flat
+                                icon-right="archive"
+                                label="ส่งออกไฟล์"
+                                @click="exportTable()"
+                              />
+                            </template>
+                            <template v-slot:header="props">
+                              <q-tr :props="props">
+                                <q-th auto-width>
+                                  <q-btn
+                                    size="sm"
+                                    color="secondary"
+                                    round
+                                    dense
+                                    @click="toggleExpansions()"
+                                    :icon="expansionsToggled ? 'remove' : 'add'"
+                                  ></q-btn>
+                                </q-th>
+                                <q-th
+                                  v-for="col in props.cols"
+                                  :key="col.name"
+                                  :props="props"
+                                >
+                                  {{ col.label }}
+                                </q-th>
+                              </q-tr>
+                            </template>
+                            <template v-slot:body="props">
+                              <q-tr :props="props">
+                                <q-td auto-width>
+                                  <q-toggle
+                                    v-model="props.expand"
+                                    checked-icon="add"
+                                    unchecked-icon="remove"
+                                    :label="`Index: ${props.row.qa_plan_career_id}`"
+                                    @update:model-value="
+                                      subRow(props.row.qa_plan_career_id)
+                                    "
+                                  />
+                                </q-td>
+                                <q-td
+                                  v-for="col in props.cols"
+                                  :key="col.name"
+                                  :props="props"
+                                >
+                                  {{ col.value }}
+                                </q-td>
+                              </q-tr>
+                              <q-tr v-show="props.expand" :props="props">
+                                <q-td colspan="100%">
+                                  <div class="text-left">
+                                    รหัสคุณสมบัติตามอาชีพเป้าหมาย:
+                                    {{ props.row.qa_plan_career_id }}
+                                    <q-table
+                                      class="my-sticky-header-table"
+                                      title="การประเมินตนเอง"
+                                      :rows="self_assessments"
+                                      :columns="columns"
+                                      row-key="self_assessment_id"
+                                      selection="multiple"
+                                      v-model:selected="
+                                        selected_self_assessment
+                                      "
+                                    >
+                                    </q-table>
+                                  </div>
+                                </q-td>
+                              </q-tr>
+                            </template>
+                          </q-table>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ตารางรายงานการประเมินตนเองภาพรวม -->
+                    <div class="row">
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
+                        <div class="q-pa-xs">
+                          <q-table
+                            class="my-sticky-header-table"
+                            ref="myTable"
+                            title="คุณสมบัติตามอาชีพเป้าหมาย"
+                            :rows="qa_plan_careers_"
+                            :columns="main_columns"
+                            row-key="qa_plan_career_id"
+                            selection="multiple"
+                            v-model:selected="selected"
+                            :filter="filter"
+                          >
+                            <template v-slot:top-right>
+                              <!-- ปุ่มค้นหา -->
+                              <q-input
+                                borderless
+                                dense
+                                debounce="300"
+                                v-model="filter"
+                                placeholder="ค้นหาข้อมูลส่วนตัว"
+                              >
+                                <template v-slot:append>
+                                  <q-icon name="search" />
+                                </template>
+                              </q-input>
+                              <!-- ส่งออก excel -->
+                              <q-btn
+                                flat
+                                icon-right="archive"
+                                label="ส่งออกไฟล์"
+                                @click="exportTable1()"
+                              />
+                            </template>
                             <template v-slot:header="props">
                               <q-tr :props="props">
                                 <q-th auto-width>
@@ -223,6 +349,24 @@
 <script>
 import axios from "axios";
 import { ref } from "vue";
+import { exportFile } from "quasar";
+// ส่งออกไฟล์ excel
+function wrapCsvValue(val, formatFn, row) {
+  let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`;
+}
 
 export default {
   name: "FormPivotTable",
@@ -230,17 +374,21 @@ export default {
   data() {
     return {
       expansionsToggled: false,
-      // url_api_pivot: "http://localhost:85/icp2022/api-pivot.php",
-      // url: "http://localhost:85/icp2022/api-member.php",
+      // ------------------------------------------------------------------------------
+      // url_api_pivot:
+      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-pivot.php",
+      // url: "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-member.php",
       // url_api_career_qualification:
-      //   "http://localhost:85/icp2022/api-qa-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-qa-plan-career.php",
       // url_api_self_assessment:
-      //   "http://localhost:85/icp2022/api-self-assessment.php",
-      // url_api_plan: "http://localhost:85/icp2022/api-plan.php",
-      // url_api_plan_career: "http://localhost:85/icp2022/api-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-self-assessment.php",
+      // url_api_plan:
+      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-plan.php",
+      // url_api_plan_career:
+      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-plan-career.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/api-qa-plan-career.php",
-
+      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_report/api-qa-plan-career.php",
+      // ------------------------------------------------------------------------------
       url_api_pivot:
         "https://icp2022.net/icp_v1_admin/self_assessment_report/api-pivot.php",
       url: "https://icp2022.net/icp_v1_admin/self_assessment_report/api-member.php",
@@ -254,8 +402,9 @@ export default {
         "https://icp2022.net/icp_v1_admin/self_assessment_report/api-plan-career.php",
       url_api_qa_plan_career:
         "https://icp2022.net/icp_v1_admin/self_assessment_report/api-qa-plan-career.php",
+      // ------------------------------------------------------------------------------
 
-      title: "รายงานผลการประเมินตนเอง(admin)",
+      title: "รายงานผลการประเมินตนเอง(ผู้ดูแลระบบ)",
       message: "Form Pivot Table",
       selected: ref([]),
       selected_self_assessment: ref([]),
@@ -373,6 +522,7 @@ export default {
       self_assessments: [],
       qualification_id: "",
       qa_plan_careers: [],
+      qa_plan_careers_: [],
       qa_plan_career_: {
         options: [],
       },
@@ -386,9 +536,85 @@ export default {
       plan_career: {
         options: [],
       },
+      filter: ref(""),
     };
   },
   methods: {
+    // นำออกไฟล์ excel
+    exportTable() {
+      console.log("Export excel");
+      var columns = this.main_columns;
+      var rows = this.qa_plan_careers;
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))]
+        .concat(
+          rows.map((row) =>
+            columns
+              .map((col) =>
+                wrapCsvValue(
+                  typeof col.field === "function"
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(",")
+          )
+        )
+        .join("\r\n");
+
+      const status = exportFile("individual.csv", "\ufeff" + content, {
+        encoding: "utf-8",
+        mimeType: "text/csv;charset=utf-8;",
+      });
+
+      if (status !== true) {
+        $q.notify({
+          message: "Browser denied file download...",
+          color: "negative",
+          icon: "warning",
+        });
+      }
+    },
+    // นำออกไฟล์ excel
+    exportTable1() {
+      console.log("Export excel");
+      var columns = this.main_columns;
+      var rows = this.qa_plan_careers_;
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))]
+        .concat(
+          rows.map((row) =>
+            columns
+              .map((col) =>
+                wrapCsvValue(
+                  typeof col.field === "function"
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(",")
+          )
+        )
+        .join("\r\n");
+
+      const status = exportFile("individual.csv", "\ufeff" + content, {
+        encoding: "utf-8",
+        mimeType: "text/csv;charset=utf-8;",
+      });
+
+      if (status !== true) {
+        $q.notify({
+          message: "Browser denied file download...",
+          color: "negative",
+          icon: "warning",
+        });
+      }
+    },
+    //---------------------------------------
     // การเปลี่ยนตำแหน่งฟอร์ม
     onNext() {
       this.$router.replace({ name: "FormProgress" });
@@ -517,6 +743,40 @@ export default {
           console.log(error);
         });
     },
+    getQaPlanCareer() {
+      var member_id = Number(this.$store.getters.myMember_id);
+      console.log(" แสดงข้อมูลคุณสมบัติ member_id:", member_id);
+      var self = this;
+      axios
+        .post(this.url_api_qa_plan_career, {
+          action: "get_qa_plan_career",
+          member_id: member_id,
+        })
+        .then(function (res) {
+          console.log("qa_plan_careers:+", res.data);
+          self.qa_plan_careers = res.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getQaPlanCareer_() {
+      var member_id = Number(this.$store.getters.myMember_id);
+      console.log(" แสดงข้อมูลคุณสมบัติ member_id:", member_id);
+      var self = this;
+      axios
+        .post(this.url_api_qa_plan_career, {
+          action: "get_qa_plan_career",
+          member_id: member_id,
+        })
+        .then(function (res) {
+          console.log("qa_plan_careers:+", res.data);
+          self.qa_plan_careers_ = res.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     onQualificationSelected(val) {
       console.log("เลือกคุณสมบัติ:", val.label);
       console.log("รหัสคุณสมบัติ:", val.value);
@@ -591,6 +851,8 @@ export default {
     },
   },
   mounted() {
+    this.getQaPlanCareer_();
+    this.getQaPlanCareer();
     this.getUpdate();
     this.getCareer();
   },

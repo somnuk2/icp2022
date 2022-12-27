@@ -23,6 +23,26 @@
                       method="post"
                       class="q-gutter-md"
                     >
+                      <div class="row">
+                        <!-- ชื่อ-สกุล -->
+                        <div class="col-md-12 col-xs-12 q-pa-xs">
+                          <q-input
+                            standout
+                            bottom-slots
+                            filled
+                            v-model="individual.birthday"
+                            label="ชื่อ-สกุล"
+                            clearable
+                          >
+                            <template v-slot:prepend>
+                              <q-icon name="school" />
+                            </template>
+                            <template v-slot:append>
+                              <q-icon name="favorite" />
+                            </template>
+                          </q-input>
+                        </div>
+                      </div>
                       <!-- วัน-เดือน-ปี เกิด+หมายเลขโทรศัพท์ -->
                       <div class="row">
                         <!-- วัน-เดือน-ปี เกิด -->
@@ -62,11 +82,10 @@
                             bottom-slots
                             filled
                             v-model="individual.birthday"
-                            label="ปีเกิด *"
+                            label="ปีเกิด"
                             clearable
                             mask="####"
-                            fill-mask
-                            hint="ปีเกิด: ####"
+                            fill-mask="#"
                             v-on:keyup.up="onTelephone()"
                             v-on:keyup.left="onTelephone()"
                           >
@@ -84,10 +103,9 @@
                             standout
                             bottom-slots
                             v-model="individual.telephone"
-                            label="หมายเลขโทรศัพท์ *"
-                            mask="( ## ) ## - ### - ###"
-                            fill-mask
-                            hint="โทรศัพท์: ( ## ) ## - ### - ###"
+                            label="หมายเลขโทรศัพท์"
+                            mask="(##)##-###-###"
+                            fill-mask="#"
                             clearable
                           >
                             <template v-slot:prepend>
@@ -109,15 +127,11 @@
                             color="blue-3"
                             v-model="institute"
                             :options="institutes.options"
-                            label="สถาบันการศึกษา *"
+                            label="สถาบันการศึกษา"
                             stack-label
                             @update:model-value="
                               (val) => onInstituteValueChange(val)
                             "
-                            :rules="[
-                              (val) =>
-                                (val && val.length > 0) || 'ต้องใส่สถาบัน',
-                            ]"
                           >
                             <template v-slot:prepend>
                               <q-icon name="school" />
@@ -153,14 +167,11 @@
                             color="blue-3"
                             v-model="faculty"
                             :options="facultys.options"
-                            label="คณะ *"
+                            label="คณะ"
                             stack-label
                             @update:model-value="
                               (val) => onFacultyValueChange(val)
                             "
-                            :rules="[
-                              (val) => (val && val.length > 0) || 'ต้องใส่คณะ',
-                            ]"
                           >
                             <template v-slot:prepend>
                               <q-icon name="school" />
@@ -199,16 +210,11 @@
                             color="blue-3"
                             v-model="degree"
                             :options="degrees.options"
-                            label="ระดับการศึกษา *"
+                            label="ระดับการศึกษา"
                             stack-label
                             @update:model-value="
                               (val) => onDegreeValueChange(val)
                             "
-                            :rules="[
-                              (val) =>
-                                (val && val.length > 0) ||
-                                'ต้องใส่ระดับการศึกษา',
-                            ]"
                           >
                             <template v-slot:prepend>
                               <q-icon name="school" />
@@ -244,15 +250,11 @@
                             color="blue-3"
                             v-model="department"
                             :options="departments.options"
-                            label="สาขาวิชา *"
+                            label="สาขาวิชา"
                             stack-label
                             @update:model-value="
                               (val) => onDepartmentValueChange(val)
                             "
-                            :rules="[
-                              (val) =>
-                                (val && val.length > 0) || 'ต้องใส่สาขาวิชา',
-                            ]"
                           >
                             <template v-slot:prepend>
                               <q-icon name="school" />
@@ -304,8 +306,7 @@
                             label="ปีที่จบ"
                             clearable
                             mask="####"
-                            fill-mask
-                            hint="ปีที่จบการศึกษา: ####"
+                            fill-mask="#"
                             :disable="
                               individual.is_graduate == '1' ? false : true
                             "
@@ -328,8 +329,7 @@
                             label="ชั้นปี"
                             clearable
                             mask="#"
-                            fill-mask
-                            hint="ชั้นปี: #"
+                            fill-mask="#"
                             :disable="
                               individual.is_graduate == '0' ? false : true
                             "
@@ -688,18 +688,18 @@ export default {
       picked: new Date(),
       // ------------------------------------------------------------------------------
       // url_api_individual:
-      //   "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-individual.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/individual_form/api-individual.php",
       // url_api_institute:
-      //   "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-institute.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/individual_form/api-institute.php",
       // url_api_disability:
-      //   "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-disability.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/individual_form/api-disability.php",
       // url_api_project:
-      //   "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-project.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/individual_form/api-project.php",
       // url_api_advisor:
-      //   "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-advisor.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/individual_form/api-advisor.php",
       // url_api_member:
-      //   "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-member.php",
-      // // ------------------------------------------------------------------------------
+      //   "http://localhost:85/icp2022/icp_v1_suser/individual_form/api-member.php",
+      // ------------------------------------------------------------------------------
       url_api_individual:
         "https://icp2022.net/icp_v1/individual_form/api-individual.php",
       url_api_institute:
@@ -1013,7 +1013,20 @@ export default {
         label: "",
         value: "",
       }),
-
+      // myFormat: {
+      //   stringify: (date) => {
+      //     return date
+      //       ? moment(date).add(543, "y").format("[Thai year] YYYY-MM-DD")
+      //       : null;
+      //   },
+      //   parse: (value) => {
+      //     return value
+      //       ? moment(value, "[Thai year] YYYY-MM-DD")
+      //           .subtract(543, "y")
+      //           .toDate()
+      //       : null;
+      //   },
+      // },
       $q: useQuasar(),
     };
   },
@@ -1211,7 +1224,7 @@ export default {
       }
     },
     editUser(individual_id) {
-      console.log("Edit data");
+      console.log("Edit individual_id:", individual_id);
       this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
       var self = this;

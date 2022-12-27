@@ -24,7 +24,7 @@
                   >
                     <div class="row">
                       <!-- อาชีพเป้าหมาย -->
-                      <div class="col-md-6 col-xs-12 q-pa-xs">
+                      <div class="col-md-5 col-xs-12 q-pa-xs">
                         <q-select
                           @filter="filterCareer"
                           color="blue-5"
@@ -35,7 +35,7 @@
                           @new-value="createValue"
                           emit-value
                           map-options
-                          label="อาชีพเป้าหมาย"
+                          label="อาชีพเป้าหมาย *"
                         >
                           <template v-slot:prepend>
                             <q-icon name="work_history" />
@@ -52,8 +52,8 @@
                       <!-- </div>
                     <div class="row"> -->
                       <!-- วันเริ่มแผน -->
-                      <div class="col-md-6 col-xs-12 q-pa-xs">
-                        <q-input
+                      <div class="col-md-2 col-xs-4 q-pa-xs">
+                        <!-- <q-input
                           filled
                           v-model="plan_career.start_date"
                           label="วันเริ่มแผน"
@@ -81,10 +81,47 @@
                               </q-popup-proxy>
                             </q-icon>
                           </template>
-                        </q-input>
+                        </q-input> -->
+                        <q-select
+                          @filter="filterCareer"
+                          color="blue-5"
+                          v-model="plan_career.day"
+                          use-input
+                          input-debounce="0"
+                          :options="day"
+                          emit-value
+                          map-options
+                          label="วัน"
+                        />
+                      </div>
+                      <div class="col-md-3 col-xs-4 q-pa-xs">
+                        <q-select
+                          @filter="filterCareer"
+                          color="blue-5"
+                          v-model="plan_career.month"
+                          use-input
+                          input-debounce="0"
+                          :options="month"
+                          emit-value
+                          map-options
+                          label="เดือน"
+                        />
+                      </div>
+                      <div class="col-md-2 col-xs-4 q-pa-xs">
+                        <q-select
+                          @filter="filterCareer"
+                          color="blue-5"
+                          v-model="plan_career.year"
+                          use-input
+                          input-debounce="0"
+                          :options="year"
+                          emit-value
+                          map-options
+                          label="ปี"
+                        />
                       </div>
                     </div>
-                     <!-- ปุ่มควบคุม -->
+                    <!-- ปุ่มควบคุม -->
                     <div class="row">
                       <!-- ปุ่มควบคุม -->
                       <div
@@ -118,6 +155,7 @@
                         <!-- กลับฟอร์มกรอกข้อมูลส่วนตัว -->
                         <q-btn
                           color="primary"
+                          label="กลับฟอร์มกรอกข้อมูลส่วนตัว"
                           no-caps
                           flat
                           icon="skip_previous"
@@ -130,6 +168,7 @@
                         <!-- ไปฟอร์มกำหนดคุณสมบัติ/ทักษะ -->
                         <q-btn
                           color="primary"
+                          label="ไปฟอร์มกำหนดคุณสมบัติ"
                           no-caps
                           flat
                           icon="skip_next"
@@ -146,34 +185,45 @@
                         <div class="q-pa-xs">
                           <q-table
                             class="my-sticky-header-table"
-                            title="ข้อมูลส่วนตัว"
+                            title="ข้อมูลอาชีพเป้าหมาย"
                             :rows="plan_careers1"
                             :columns="columns"
                             row-key="Name_Plan_Career"
                             :filter="filter"
                             :loading="loading"
                           >
+                            <!-- ค้นหา+ส่งออก excel -->
                             <template v-slot:top-right>
+                              <!-- ค้นหา -->
                               <q-input
                                 borderless
                                 dense
                                 debounce="300"
                                 v-model="filter"
-                                placeholder="Search"
+                                placeholder="ค้นหาอาชีพเป้าหมาย"
                               >
                                 <template v-slot:append>
                                   <q-icon name="search" />
                                 </template>
                               </q-input>
+                              <!-- ส่งออก excel -->
+                              <q-btn
+                                flat
+                                icon-right="archive"
+                                label="ส่งออกไฟล์"
+                                @click="exportTable()"
+                              />
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
                                 <q-btn
                                   icon="mode_edit"
+                                  label="แก้ไข"
                                   @click="editUser(props.row.plan_career_id)"
                                 ></q-btn>
                                 <q-btn
                                   icon="delete"
+                                  label="ลบ"
                                   @click="
                                     deleteUser(
                                       props.row.plan_career_id,
@@ -202,18 +252,40 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { exportFile } from "quasar";
+// ส่งออกไฟล์ excel
+function wrapCsvValue(val, formatFn, row) {
+  let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`;
+}
 
 export default {
   name: "FormPlanCareer",
   data() {
     return {
-      // url_api_career: "http://localhost:85/icp2022/api-career.php",
-      // url_api_plan_career: "http://localhost:85/icp2022/api-plan-career.php",
+      // ----------------------------------------------------------------------
+      // url_api_career:
+      //   "http://localhost:85/icp2022/icp_v1/plan_career_form/api-career.php",
+      // url_api_plan_career:
+      //   "http://localhost:85/icp2022/icp_v1/plan_career_form/api-plan-career.php",
+      // ----------------------------------------------------------------------
       url_api_career:
         "https://icp2022.net/icp_v1/plan_career_form/api-career.php",
       url_api_plan_career:
         "https://icp2022.net/icp_v1/plan_career_form/api-plan-career.php",
-
+      // ----------------------------------------------------------------------
       message: "Form Plan Career",
       title: "อาชีพเป้าหมาย",
       plan_careers: Array,
@@ -226,6 +298,9 @@ export default {
         member_id: this.$store.getters.myMember_id,
         career_id: "",
         start_date: "",
+        day: "",
+        month: "",
+        year: "",
         // end_date: "",
       },
       status: "บันทึก",
@@ -284,9 +359,270 @@ export default {
       loading: true,
       filter: ref(""),
       $q: useQuasar(),
+      day: [
+        {
+          value: "1",
+          label: "1",
+        },
+        {
+          value: "2",
+          label: "2",
+        },
+        {
+          value: "3",
+          label: "3",
+        },
+        {
+          value: "4",
+          label: "4",
+        },
+        {
+          value: "5",
+          label: "5",
+        },
+        {
+          value: "6",
+          label: "6",
+        },
+        {
+          value: "7",
+          label: "7",
+        },
+        {
+          value: "8",
+          label: "8",
+        },
+        {
+          value: "9",
+          label: "9",
+        },
+        {
+          value: "10",
+          label: "10",
+        },
+        {
+          value: "11",
+          label: "11",
+        },
+        {
+          value: "12",
+          label: "12",
+        },
+        {
+          value: "13",
+          label: "13",
+        },
+        {
+          value: "14",
+          label: "14",
+        },
+        {
+          value: "15",
+          label: "15",
+        },
+        {
+          value: "16",
+          label: "16",
+        },
+        {
+          value: "17",
+          label: "17",
+        },
+        {
+          value: "18",
+          label: "18",
+        },
+        {
+          value: "19",
+          label: "19",
+        },
+        {
+          value: "20",
+          label: "20",
+        },
+        {
+          value: "21",
+          label: "21",
+        },
+        {
+          value: "22",
+          label: "22",
+        },
+        {
+          value: "23",
+          label: "23",
+        },
+        {
+          value: "24",
+          label: "24",
+        },
+        {
+          value: "25",
+          label: "25",
+        },
+        {
+          value: "26",
+          label: "26",
+        },
+        {
+          value: "27",
+          label: "27",
+        },
+        {
+          value: "28",
+          label: "28",
+        },
+        {
+          value: "29",
+          label: "29",
+        },
+        {
+          value: "30",
+          label: "30",
+        },
+        {
+          value: "31",
+          label: "31",
+        },
+      ],
+      month: [
+        {
+          value: "1",
+          label: "มกราคม",
+        },
+        {
+          value: "2",
+          label: "กุมภาพันธ์",
+        },
+        {
+          value: "3",
+          label: "มีนาคม",
+        },
+        {
+          value: "4",
+          label: "เมษายน",
+        },
+        {
+          value: "5",
+          label: "พฤษภาคม",
+        },
+        {
+          value: "6",
+          label: "มิถุนายน",
+        },
+        {
+          value: "7",
+          label: "กรกฏาคม",
+        },
+        {
+          value: "8",
+          label: "สิงหาคม",
+        },
+        {
+          value: "9",
+          label: "กันยายน",
+        },
+        {
+          value: "10",
+          label: "ตุลาคม",
+        },
+        {
+          value: "11",
+          label: "พฤศจิกายน",
+        },
+        {
+          value: "12",
+          label: "ธันวาคม",
+        },
+      ],
+      year: [
+        {
+          value: "2560",
+          label: "2560",
+        },
+        {
+          value: "2561",
+          label: "2561",
+        },
+        {
+          value: "2562",
+          label: "2562",
+        },
+        {
+          value: "2563",
+          label: "2563",
+        },
+        {
+          value: "2564",
+          label: "2564",
+        },
+        {
+          value: "2565",
+          label: "2565",
+        },
+        {
+          value: "2566",
+          label: "2566",
+        },
+        {
+          value: "2567",
+          label: "2567",
+        },
+        {
+          value: "2568",
+          label: "2568",
+        },
+        {
+          value: "2569",
+          label: "2569",
+        },
+        {
+          value: "2570",
+          label: "2570",
+        },
+      ],
     };
   },
   methods: {
+    // นำออกไฟล์ excel
+    exportTable() {
+      console.log("Export excel");
+      var columns = this.columns;
+      var rows = this.plan_careers1;
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))]
+        .concat(
+          rows.map((row) =>
+            columns
+              .map((col) =>
+                wrapCsvValue(
+                  typeof col.field === "function"
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(",")
+          )
+        )
+        .join("\r\n");
+
+      const status = exportFile("plan_career.csv", "\ufeff" + content, {
+        encoding: "utf-8",
+        mimeType: "text/csv;charset=utf-8;",
+      });
+
+      if (status !== true) {
+        $q.notify({
+          message: "Browser denied file download...",
+          color: "negative",
+          icon: "warning",
+        });
+      }
+    },
+    //---------------------------------------
+
     resetForm() {
       this.isEdit = false;
       console.log("isEdit:", this.isEdit);
@@ -333,6 +669,12 @@ export default {
           })
           .onOk(() => {
             console.log("บันทึกการเพิ่มข้อมูล", this.plan_career.member_id);
+            this.plan_career.start_date =
+              this.plan_career.day +
+              "/" +
+              this.plan_career.month +
+              "/" +
+              this.plan_career.year;
             const newplan_career = {
               member_id: this.plan_career.member_id,
               career_id: this.plan_career.career_id,
@@ -368,6 +710,12 @@ export default {
           })
           .onOk(() => {
             console.log("บันทึกการแก้ไขข้อมูล", this.plan_career.member_id);
+            this.plan_career.start_date =
+              this.plan_career.day +
+              "/" +
+              this.plan_career.month +
+              "/" +
+              this.plan_career.year;
             axios
               .post(this.url_api_plan_career, {
                 action: "update",
@@ -410,7 +758,11 @@ export default {
           self.plan_career.member_id = response.data.member_id;
           self.plan_career.career_id = response.data.career_id;
           self.plan_career.start_date = response.data.start_date;
+          var start_date_ = self.plan_career.start_date.split("/");
           // self.plan_career.end_date = response.data.end_date;
+          self.plan_career.day = start_date_[0];
+          self.plan_career.month = start_date_[1];
+          self.plan_career.year = start_date_[2];
           self.plan_careers_ = response.data;
         })
         .catch(function (error) {
@@ -533,8 +885,7 @@ export default {
     this.getUpdate(this.plan_career.member_id);
     this.getCareer();
   },
-  created() {
-  },
+  created() {},
 };
 </script>
 

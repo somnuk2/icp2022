@@ -32,7 +32,7 @@
                           color="green"
                           v-model="plan_career_id"
                           :options="plan_career.options"
-                          label="อาชีพเป้าหมาย *"
+                          label="อาชีพเป้าหมาย"
                           emit-value
                           map-options
                           @update:model-value="
@@ -67,7 +67,7 @@
                           color="green"
                           v-model="qa_plan_career_id"
                           :options="qa_plan_career.options"
-                          label="คุณสมบัติที่ต้องการ *"
+                          label="คุณสมบัติที่ต้องการ"
                           emit-value
                           map-options
                         >
@@ -99,10 +99,7 @@
                         <q-input
                           filled
                           v-model="self_assessment_date"
-                          label="วันประเมินตนเอง *"
-                          mask="## / ## / ####"
-                          fill-mask
-                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
+                          label="วันประเมินตนเอง"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -113,7 +110,7 @@
                               >
                                 <q-date
                                   v-model="self_assessment_date"
-                                  mask="DD/MM/YYYY"
+                                  mask="DD-MM-YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -179,37 +176,34 @@
                             <!-- ค้นหา -->
                             <template v-slot:top-right>
                               <!-- ค้นหา -->
-                              <q-input
-                                borderless
-                                dense
-                                debounce="300"
-                                v-model="filter_reference"
-                                placeholder="ค้นหาผลงาน"
-                              >
-                                <template v-slot:append>
-                                  <q-icon name="search" />
-                                </template>
-                              </q-input>
-                              <!-- ส่งออก excel -->
-                              <q-btn
-                                flat
-                                icon-right="archive"
-                                label="ส่งออกไฟล์"
-                                @click="exportTable()"
-                              />
-                              <!-- ปุ่มเพิ่มแหล่งอ้างอิง -->
-                              <q-btn
-                                rounded
-                                flat
-                                @click="show_dialog = true"
-                                icon="add_circle"
-                                label="เพิ่มข้อมูล"
-                                no-caps
-                              >
-                                <q-tooltip class="bg-accent"
-                                  >เพิ่มแหล่งอ้างอิง/ผลงาน</q-tooltip
+                              <div class="col-9">
+                                <q-input
+                                  borderless
+                                  dense
+                                  debounce="300"
+                                  v-model="filter_reference"
+                                  placeholder="ค้นหาผลงาน"
                                 >
-                              </q-btn>
+                                  <template v-slot:append>
+                                    <q-icon name="search" />
+                                  </template>
+                                </q-input>
+                              </div>
+                              <!-- ปุ่มเพิ่มแหล่งอ้างอิง -->
+                              <div class="col-5">
+                                <q-btn
+                                  round
+                                  flat
+                                  @click="show_dialog = true"
+                                  icon="add_circle"
+                                  label="เพิ่มผลงาน"
+                                  no-caps
+                                >
+                                  <q-tooltip class="bg-accent"
+                                    >เพิ่มแหล่งอ้างอิง/ผลงาน</q-tooltip
+                                  >
+                                </q-btn>
+                              </div>
                               <!-- ปุ่มทดสอบการเพิ่มข้อมูลในฐานข้อมูล -->
                               <!-- <q-btn
                                 round
@@ -232,22 +226,18 @@
                                       </div>
                                     </q-card-section>
                                     <q-card-section>
-                                      <q-input
-                                        v-model="editedReference.reference_id"
-                                        label="รหัสผลงาน"
-                                        :disable="true"
-                                      />
+                                      <!-- ค้นหา -->
                                       <q-input
                                         v-model="
                                           editedReference.reference_description
                                         "
                                         label="แหล่งช้อมูลอ้างอิง/ผลงาน"
-                                      />
+                                      ></q-input>
                                     </q-card-section>
                                     <q-card-actions align="right">
                                       <q-btn
                                         flat
-                                        :label="btnLabel_"
+                                        label="เพิ่มข้อมูล"
                                         color="primary"
                                         v-close-popup
                                         @click="addRow"
@@ -264,13 +254,11 @@
                                 <!-- แก้ไขข้อมูล -->
                                 <q-btn
                                   icon="mode_edit"
-                                  label="แก้ไข"
                                   @click="editItem(props.row)"
                                 ></q-btn>
                                 <!-- ลบข้อมูล -->
                                 <q-btn
                                   icon="delete"
-                                  label="ลบ"
                                   @click="deleteItem(props.row)"
                                 ></q-btn>
                               </q-td>
@@ -358,39 +346,22 @@
                           >
                             <!-- การค้นหา -->
                             <template v-slot:top-right>
-                              <q-input
-                                borderless
-                                dense
-                                debounce="300"
-                                v-model="filter"
-                                placeholder="ค้นหาการประเมินตนเเอง"
-                              >
-                                <template v-slot:append>
-                                  <q-icon name="search" />
-                                </template>
-                              </q-input>
-                              <!-- ส่งออก excel -->
-                              <q-btn
-                                flat
-                                icon-right="archive"
-                                label="ส่งออกไฟล์"
-                                @click="exportTableRef()"
-                              />
-                              <q-btn
-                                flat
-                                rounded
-                                @click="toggleExpansions()"
-                                :icon="
-                                  expansionsToggled
-                                    ? 'remove_circle'
-                                    : 'add_circle'
-                                "
-                                label="ขยาย"
-                                no-caps
-                              ></q-btn>
+                              <div class="col-9">
+                                <q-input
+                                  borderless
+                                  dense
+                                  debounce="300"
+                                  v-model="filter"
+                                  placeholder="ค้นหาการประเมินตนเเอง"
+                                >
+                                  <template v-slot:append>
+                                    <q-icon name="search" />
+                                  </template>
+                                </q-input>
+                              </div>
                             </template>
                             <!-- ปุ่มลบ/ปุ่มแก้ไข -->
-                            <!-- <template v-slot:body-cell-actions="props">
+                            <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
                                 <q-btn
                                   icon="mode_edit"
@@ -408,10 +379,20 @@
                                   "
                                 ></q-btn>
                               </q-td>
-                            </template> -->
+                            </template>
                             <!-- ปุ่ม +/- ส่วนหัว -->
-                            <!-- <template v-slot:header="props">
+                            <template v-slot:header="props">
                               <q-tr :props="props">
+                                <q-th auto-width>
+                                  <q-btn
+                                    size="sm"
+                                    color="secondary"
+                                    round
+                                    dense
+                                    @click="toggleExpansions()"
+                                    :icon="expansionsToggled ? 'remove' : 'add'"
+                                  ></q-btn>
+                                </q-th>
                                 <q-th
                                   v-for="col in props.cols"
                                   :key="col.name"
@@ -420,36 +401,18 @@
                                   {{ col.label }}
                                 </q-th>
                               </q-tr>
-                            </template> -->
+                            </template>
                             <!-- end -->
                             <!-- ตารางย่อยข้อมูลอ้างอิง -->
-                            <!-- <template v-slot:body-cell-actions="props">
-                              <q-btn
-                                icon="mode_edit"
-                                label="แก้ไข"
-                                @click="OnEdit(props.row.self_assessment_id)"
-                              ></q-btn>
-                              <q-btn
-                                icon="delete"
-                                label="ลบ"
-                                @click="
-                                  onDelete(
-                                    props.row.self_assessment_id,
-                                    props.row.self_assessment_date
-                                  )
-                                "
-                              ></q-btn>
-                            </template> -->
                             <template v-slot:body="props">
                               <!-- ปุ่ม +/- แต่ละแถว -->
                               <q-tr :props="props">
                                 <q-td auto-width>
-                                  <!-- :label="`กดดูผลงาน: ${props.row.self_assessment_id}`" -->
                                   <q-toggle
                                     v-model="props.expand"
                                     checked-icon="add"
                                     unchecked-icon="remove"
-                                    label="กด"
+                                    :label="`กดดูผลงาน: ${props.row.self_assessment_id}`"
                                     @update:model-value="
                                       subRow(props.row.self_assessment_id)
                                     "
@@ -460,7 +423,7 @@
                                     @click="
                                       OnEdit(props.row.self_assessment_id)
                                     "
-                                  />
+                                  ></q-btn>
                                   <q-btn
                                     icon="delete"
                                     label="ลบ"
@@ -470,7 +433,7 @@
                                         props.row.self_assessment_date
                                       )
                                     "
-                                  />
+                                  ></q-btn>
                                 </q-td>
                                 <q-td
                                   v-for="col in props.cols"
@@ -487,7 +450,7 @@
                                     <q-table
                                       class="my-sticky-header-table"
                                       title="การพัฒนาตนเอง"
-                                      :rows="references2"
+                                      :rows="references1"
                                       :columns="sub_columns"
                                       row-key="reference_id"
                                     >
@@ -621,34 +584,33 @@ export default {
   name: "FormSelfAssessment",
   data() {
     return {
-      // ------------------------------------------------------------------------------
-      // url: "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-member.php",
+      // ---------------------------------------------------------------------------------
+      // url: "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-member.php",
       // url_api_career_qualification:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-qa-plan-career.php",
       // url_api_self_assessment:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-self-assessment.php",
+      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-self-assessment.php",
       // url_api_plan:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-plan.php",
+      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-plan.php",
       // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-plan-career.php",
+      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-plan-career.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-      url: "https://icp2022.net/icp_v1_admin/self_assessment_form/api-member.php",
+      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-qa-plan-career.php",
+      // ---------------------------------------------------------------------------------
+      url: "https://icp2022.net/icp_v1/self_assessment_form/api-member.php",
       url_api_career_qualification:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
+        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
       url_api_self_assessment:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-self-assessment.php",
+        "https://icp2022.net/icp_v1/self_assessment_form/api-self-assessment.php",
       url_api_plan:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-plan.php",
+        "https://icp2022.net/icp_v1/self_assessment_form/api-plan.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1/self_assessment_form/api-plan-career.php",
       url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1_admin/self_assessment_form/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
+        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
+      // ---------------------------------------------------------------------------------
       message: "Form Self Acessment",
-      title: "การประเมินตนเอง(ผู้ดูแลระบบ)",
-
+      title: "การประเมินตนเอง",
       currentYear: new Date().getFullYear(),
       selfAssessments: Array,
       selfAssessments_: Array,
@@ -665,13 +627,11 @@ export default {
         isVisible: false,
       },
       isEdit: false,
-      isEditRef: false,
       status: "บันทึก",
       qualification: {
         options: [],
       },
       btnLabel: "เพิ่มข้อมูล",
-      btnLabel_: "เพิ่มผลงาน",
       pagination: ref({
         sortBy: "reference_description",
         descending: false,
@@ -682,25 +642,16 @@ export default {
       editedIndex: -1,
       references1_: [],
       references1: [],
-      references2: [],
       editedReference: {
-        reference_id: "",
         reference_description: "",
       },
       references: [
-        { name: "actions", align: "center", label: "Action" },
+        { name: "actions", align: "left", label: "Action" },
         {
           name: "reference_id",
           align: "center",
           label: "รหัสผลงาน",
           field: (row) => row.reference_id,
-          format: (val) => `${val}`,
-        },
-        {
-          name: "member_id",
-          align: "center",
-          label: "รหัสสมาชิค",
-          field: (row) => row.member_id,
           format: (val) => `${val}`,
         },
         {
@@ -742,19 +693,11 @@ export default {
         },
       ],
       main_columns: [
-        { name: "actions", align: "center" },
         {
           name: "self_assessment_id",
           align: "center",
           label: "รหัสการประเมิน",
           field: (row) => row.self_assessment_id,
-          format: (val) => `${val}`,
-        },
-        {
-          name: "full_name",
-          align: "left",
-          label: "ชื่อ-สกุล",
-          field: (row) => row.full_name,
           format: (val) => `${val}`,
         },
         {
@@ -834,6 +777,7 @@ export default {
           field: (row) => row.perform_value,
           format: (val) => `${val}`,
         },
+        { name: "actions", align: "left", label: "Action" },
       ],
       selected: ref([]),
       selected_reference: ref([]),
@@ -873,8 +817,8 @@ export default {
     // นำออกไฟล์ excel
     exportTable() {
       console.log("Export excel");
-      var columns = this.references;
-      var rows = this.references1;
+      var columns = this.columns;
+      var rows = this.individuals1;
       // naive encoding to csv format
       const content = [columns.map((col) => wrapCsvValue(col.label))]
         .concat(
@@ -894,44 +838,7 @@ export default {
         )
         .join("\r\n");
 
-      const status = exportFile("reference.csv", "\ufeff" + content, {
-        encoding: "utf-8",
-        mimeType: "text/csv;charset=utf-8;",
-      });
-
-      if (status !== true) {
-        $q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
-        });
-      }
-    },
-    // นำออกไฟล์ excel
-    exportTableRef() {
-      console.log("Export excel");
-      var columns = this.main_columns;
-      var rows = this.selfAssessments1;
-      // naive encoding to csv format
-      const content = [columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          rows.map((row) =>
-            columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format,
-                  row
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
-
-      const status = exportFile("self_accessment.csv", "\ufeff" + content, {
+      const status = exportFile("individual.csv", "\ufeff" + content, {
         encoding: "utf-8",
         mimeType: "text/csv;charset=utf-8;",
       });
@@ -972,6 +879,45 @@ export default {
           console.log(error);
         });
     },
+    submitRef() {
+      if (!this.isEdit) {
+        console.log("บันทึกข้อมูล ref");
+        var length = this.selfAssessments1.length;
+        var last_self_assessment_id =
+          this.selfAssessments1[length - 1].self_assessment_id;
+        console.log("self_assessment_id:", last_self_assessment_id);
+        // const newReference = {
+        //   self_assessment_id: last_self_assessment_id,
+        //   references: this.references1_,
+        // };
+        // this.$emit("saveData", newReference);
+        // axios
+        //   .post(this.url_api_self_assessment, {
+        //     action: "insert_reference",
+        //     self_assessment_id: last_self_assessment_id,
+        //     references: this.references1_,
+        //   })
+        //   .then((res) => {
+        //     console.log("Insert:", res.data);
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
+      }
+      // else {
+      //   console.log("Update ข้อมูล ref");
+      //   axios
+      //     .post(this.url_api_self_assessment, {
+      //       action: "update",
+      //     })
+      //     .then((response) => {
+      //       console.log("Update:", response.data);
+      //     })
+      //     .catch(function (error) {
+      //       console.log(error);
+      //     });
+      // }
+    },
     submitForm() {
       if (!this.isEdit) {
         // if (this.confirm("คุณต้องการเพิ่มข้อมูลการประเมินตนเองหรือไม่ ?")) {
@@ -983,7 +929,7 @@ export default {
             cancel: true,
           })
           .onOk(() => {
-            console.log("บันทึกข้อมูลการประเมินตนเอง");
+            console.log("บันทึกข้อมูล");
             console.log("qualification:", this.selfAssessment);
             const newSelfAssessment = {
               self_assessment_date: this.self_assessment_date,
@@ -999,62 +945,56 @@ export default {
                 perform_id: this.perform_id,
               })
               .then((res) => {
-                console.log("Insert self_assessment:", res.data);
+                console.log("Insert:", res.data);
                 this.getUpdate(this.member_id);
-                this.addRefToDatabase(this.selfAssessments1);
+                this.submitRef();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
+      } else {
+        // if (this.confirm("คุณต้องการแก้ไขข้อมูลการประเมินตนเองหรือไม่ ?")) {
+        this.$q
+          .dialog({
+            title: "ยืนยัน",
+            message: "คุณต้องการแก้ไขข้อมูลการประเมินตนเองหรือไม่ ?",
+            persistent: true,
+            cancel: true,
+          })
+          .onOk(() => {
+            console.log("Update ข้อมูลการประเมินตนเอง");
+            axios
+              .post(this.url_api_self_assessment, {
+                action: "update",
+                self_assessment_id: this.self_assessment_id,
+                qa_plan_career_id: this.qa_plan_career_id,
+                perform_id: this.perform_id,
+                self_assessment_date: this.self_assessment_date,
+              })
+              .then((response) => {
+                console.log("update:", response.data);
+                this.isEdit = false;
+                console.log("isEdit:", this.isEdit);
+                this.btnLabel = "เพิ่มข้อมูล";
+
+                this.getUpdate(this.member_id);
               })
               .catch(function (error) {
                 console.log(error);
               });
           })
-          .onCancel(() => {});
-      } else {
-        this.isEdit = false;
-        console.log("isEdit:", this.isEdit);
-        this.btnLabel = "เพิ่มข้อมูล";
-        this.references1 = [];
-        this.references1_ = [];
-        // this.$q
-        //   .dialog({
-        //     title: "ยืนยัน",
-        //     message: "คุณต้องการแก้ไขข้อมูลการประเมินตนเองหรือไม่ ?",
-        //     persistent: true,
-        //     cancel: true,
-        //   })
-        //   .onOk(() => {
-        //     console.log("Update ข้อมูลการประเมินตนเอง");
-        //     axios
-        //       .post(this.url_api_self_assessment, {
-        //         action: "update",
-        //         self_assessment_id: this.self_assessment_id,
-        //         qa_plan_career_id: this.qa_plan_career_id,
-        //         perform_id: this.perform_id,
-        //         self_assessment_date: this.self_assessment_date,
-        //       })
-        //       .then((response) => {
-        //         console.log("update:", response.data);
-        //         this.isEdit = false;
-        //         console.log("isEdit:", this.isEdit);
-        //         this.btnLabel = "เพิ่มข้อมูล";
-
-        //         this.getUpdate(this.member_id);
-        //       })
-        //       .catch(function (error) {
-        //         console.log(error);
-        //       });
-        //   })
-        //   .onCancel(() => {
-        //     this.isEdit = false;
-        //     console.log("isEdit:", this.isEdit);
-        //     this.btnLabel = "เพิ่มข้อมูล";
-        //   });
+          .onCancel(() => {
+            this.isEdit = false;
+            console.log("isEdit:", this.isEdit);
+            this.btnLabel = "เพิ่มข้อมูล";
+          });
       }
     },
     OnEdit(self_assessment_id) {
       console.log("Edit data");
-      this.btnLabel = "เปลี่ยนเป็นเพิ่ม";
+      this.btnLabel = "แก้ไขข้อมูล";
       this.isEdit = true;
-
       var self = this;
       console.log("Edit", this.self_assessment_id);
       axios
@@ -1081,24 +1021,7 @@ export default {
           console.log(error);
         });
     },
-    // OnEditRef(reference_id) {
-    //   console.log("Edit data reference");
-    //   this.btnLabel_ = "แก้ไขผลงาน";
-    //   this.isEditRef = true;
-    //   // var self = this;
-    //   // console.log("Edit reference", reference_id);
-    //   // axios
-    //   //   .post(this.url_api_self_assessment, {
-    //   //     action: "edit_ref",
-    //   //     reference_id: reference_id,
-    //   //   })
-    //   //   .then(function (response) {
-    //   //     console.log("Edit_ref:", response.data);
-    //   //   })
-    //   //   .catch(function (error) {
-    //   //     console.log(error);
-    //   //   });
-    // },
+
     onDelete(self_assessment_id, self_assessment_date) {
       this.$q
         .dialog({
@@ -1144,13 +1067,28 @@ export default {
         .then(function (res) {
           self.selfAssessments1 = res.data;
           self.selfAssessments1_ = res.data;
-          console.log("self_assessment:+", self.selfAssessments1);
+          console.log("self_assessment:", self.selfAssessments1);
           // var leng = self.selfAssessments1.length;
           // console.log(
           //   "self_assessment[last].self_assessment_id:",
           //   self.selfAssessments1[leng - 1].self_assessment_id
           // );
-          // self.addRefToDatabase(self.selfAssessments1);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getUpdateReference(member_id) {
+      console.log(" แสดงข้อมูลการอ้างอิงทั้งหมด ", member_id);
+      var self = this;
+      axios
+        .post(this.url_api_self_assessment, {
+          action: "getAllReference",
+          member_id: member_id,
+        })
+        .then(function (res) {
+          self.references1 = res.data;
+          console.log("reference:", self.references1);
         })
         .catch(function (error) {
           console.log(error);
@@ -1283,344 +1221,53 @@ export default {
       });
     },
     // start ตารางแหล่งอ้างอิง/ผลงาน
-    // addNewEdit() {
-    //   console.log("Add while edit data reference");
-    //   var self_assessment_id = this.self_assessment_id;
-
-    //   console.log(" เพิ่มข้อมูลผลงานขณะแก้ไข: ", self_assessment_id);
-    //   var ref = [
-    //     {
-    //       self_assessment_id: self_assessment_id,
-    //       assessment_describtion: "",
-    //     },
-    //   ];
-    //   console.log("object", Object.assign({}, ref));
-    //   this.editedReference = Object.assign({}, ref);
-    //   this.show_dialog = true;
-    // },
     addRow() {
-      // เพิ่มข้อมูลผลงาน โดยที่ไม่ได้ยังไม่ได้เพิ่มลงฐานข้อมูล
-      if (!this.isEdit) {
-        console.log("Edit1==true");
-        // แก้ไขช้อมูล
-        if (this.editedIndex > -1) {
-          Object.assign(
-            this.references1[this.editedIndex],
-            this.editedReference
-          );
-        }
-        // เพิ่มช้อมูล
-        else {
-          this.references1.push(this.editedReference);
-          this.references1_.push(this.editedReference.reference_description);
-          console.log(
-            "references1:",
-            this.editedReference.reference_description
-          );
-        }
-        this.close();
-      }
-      // ------------------------------------
-      // เพิ่มข้อมูลผลงาน ลงฐานข้อมูล
-      else {
-        console.log("Edit1==false");
-        // แก้ไขช้อมูล
-        if (this.editedIndex > -1) {
-          Object.assign(
-            this.references1[this.editedIndex],
-            this.editedReference
-          );
-        }
-        // เพิ่มช้อมูล
-        else {
-          this.references1.push(this.editedReference);
-          this.references1_.push(this.editedReference.reference_description);
-          console.log(
-            "references1+:",
-            this.editedReference.reference_description
-          );
-        }
-        this.close();
-
-        // เพิ่มข้อมูลผลงาน ลงฐานข้อมูลทีละแถว
-        if (!this.isEditRef) {
-          console.log("Add new in Edit");
-          // console.log(" เพิ่มข้อมูลผลงานลงฐานข้อมูล: ", self_assessment_id);
-          // var self = this;
-          // axios
-          //   .post(this.url_api_self_assessment, {
-          //     action: "add_reference_by_self_assessment_id",
-          //     self_assessment_id: self_assessment_id,
-          //   })
-          //   .then(function (res) {
-          //     console.log("reference:", res.data);
-          //     self.references1 = res.data;
-          //   })
-          //   .catch(function (error) {
-          //     console.log(error);
-          //   });
-          var reference_description =
-            this.editedReference.reference_description;
-          var self_assessment_id = this.self_assessment_id;
-          var member_id = this.member_id;
-
-          console.log(
-            " add new in Edit+: ",
-            self_assessment_id + "/" + member_id + "/" + reference_description
-          );
-          var self = this;
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "add_reference",
-              self_assessment_id: self_assessment_id,
-              reference_description: reference_description,
-            })
-            .then(function (res) {
-              console.log("add_reference:", res.data);
-              self.getUpdateReference_(member_id, self_assessment_id);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-        // บันทึกการแก้ไข ลงฐานข้อมูล
-        else {
-          console.log("Update data reference");
-          this.btnLabel_ = "เพิ่มผลงาน";
-          this.isEditRef = false;
-          var self = this;
-          var reference_id = this.editedReference.reference_id;
-          var reference_description =
-            this.editedReference.reference_description;
-          console.log("reference_id:", reference_id);
-          console.log("reference_description:", reference_description);
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "edit_reference_by_reference_id",
-              reference_id: reference_id,
-              reference_description: reference_description,
-            })
-            .then(function (res) {
-              console.log("update reference:", res.data);
-              // self.references1 = res.data;
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-      }
-    },
-    addRow1() {
-      // เพิ่มข้อมูลผลงาน โดยที่ไม่ได้ยังไม่ได้เพิ่มลงฐานข้อมูล
-      if (!this.isEdit) {
-        console.log("Edit1==true");
-        // แก้ไขช้อมูล
-        if (this.editedIndex > -1) {
-          Object.assign(
-            this.references1[this.editedIndex],
-            this.editedReference
-          );
-        }
-        // เพิ่มช้อมูล
-        else {
-          this.references1.push(this.editedReference);
-          this.references1_.push(this.editedReference.reference_description);
-          console.log(
-            "references1:",
-            this.editedReference.reference_description
-          );
-        }
-        this.close();
-      }
-      // ------------------------------------
-      // เพิ่มข้อมูลผลงาน ลงฐานข้อมูล
-      else {
-        console.log("Edit1==false");
-        // แก้ไขช้อมูล
-        if (this.editedIndex > -1) {
-          Object.assign(
-            this.references1[this.editedIndex],
-            this.editedReference
-          );
-        }
-        // เพิ่มช้อมูล
-        else {
-          this.references1.push(this.editedReference);
-          this.references1_.push(this.editedReference.reference_description);
-          console.log(
-            "references1+:",
-            this.editedReference.reference_description
-          );
-        }
-        this.close();
-
-        // เพิ่มข้อมูลผลงาน ลงฐานข้อมูลทีละแถว
-        if (!this.isEditRef) {
-          console.log("Add new in Edit");
-          // console.log(" เพิ่มข้อมูลผลงานลงฐานข้อมูล: ", self_assessment_id);
-          // var self = this;
-          // axios
-          //   .post(this.url_api_self_assessment, {
-          //     action: "add_reference_by_self_assessment_id",
-          //     self_assessment_id: self_assessment_id,
-          //   })
-          //   .then(function (res) {
-          //     console.log("reference:", res.data);
-          //     self.references1 = res.data;
-          //   })
-          //   .catch(function (error) {
-          //     console.log(error);
-          //   });
-          var reference_description =
-            this.editedReference.reference_description;
-          var self_assessment_id = this.self_assessment_id;
-
-          console.log(
-            " self_assessment_id/reference_description: ",
-            self_assessment_id + "/" + reference_description
-          );
-          var self = this;
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "add_reference",
-              self_assessment_id: self_assessment_id,
-              reference_description: reference_description,
-            })
-            .then(function (res) {
-              console.log("add_reference:", res.data);
-              self.getUpdateReference_(self.member_id, self_assessment_id);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-        // บันทึกการแก้ไข ลงฐานข้อมูล
-        else {
-          console.log("Update data reference");
-          this.btnLabel_ = "เพิ่มผลงาน";
-          this.isEditRef = false;
-          var self = this;
-          var reference_id = this.editedReference.reference_id;
-          var reference_description =
-            this.editedReference.reference_description;
-          console.log("reference_id:", reference_id);
-          console.log("reference_description:", reference_description);
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "edit_reference_by_reference_id",
-              reference_id: reference_id,
-              reference_description: reference_description,
-            })
-            .then(function (res) {
-              console.log("update reference:", res.data);
-              // self.references1 = res.data;
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-      }
-    },
-    addRefToDatabase(selfAssessments1) {
-      if (!this.isEditRef) {
-        console.log("บันทึกข้อมูล ref");
-        var length = this.selfAssessments1.length;
-        if (length > 0) {
-          var last_self_assessment_id =
-            selfAssessments1[length - 1].self_assessment_id;
-          console.log("self_assessment_id:", last_self_assessment_id);
-          const newReference = {
-            self_assessment_id: last_self_assessment_id,
-            references: this.references1_,
-          };
-          this.$emit("saveData", newReference);
-          axios
-            .post(this.url_api_self_assessment, {
-              action: "insert_reference",
-              self_assessment_id: last_self_assessment_id,
-              references: this.references1_,
-            })
-            .then((res) => {
-              console.log("insert_reference:", res.data);
-              this.references1 = [];
-              this.references_ = [];
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-      } else {
-        console.log("Update ข้อมูล ref");
+      if (this.isEdit) {
+        console.log(" เพิ่มข้อมูลแหล่งอ้างอิง: ", self_assessment_id);
+        var self = this;
         axios
           .post(this.url_api_self_assessment, {
-            action: "update_reference",
+            action: "add_reference_by_self_assessment_id",
+            self_assessment_id: self_assessment_id,
           })
-          .then((response) => {
-            console.log("update_reference:", response.data);
-            this.isEditRef = false;
-            console.log("isEdit:", this.isEditRef);
-            this.btnLabel_ = "เพิ่มผลงาน";
-            // this.getUpdate(this.member_id);
+          .then(function (res) {
+            console.log("reference:", res.data);
+            self.references1 = res.data;
           })
           .catch(function (error) {
             console.log(error);
           });
+      } else {
+        if (this.editedIndex > -1) {
+          Object.assign(
+            this.references1[this.editedIndex],
+            this.editedReference
+          );
+        } else {
+          this.references1.push(this.editedReference);
+          this.references1_.push(this.editedReference.reference_description);
+          console.log(
+            "references1:",
+            this.editedReference.reference_description
+          );
+        }
+        this.close();
       }
-    },
-    getUpdateReference(member_id) {
-      console.log(" แสดงข้อมูลการอ้างอิงทั้งหมด ", member_id);
-      var self = this;
-      axios
-        .post(this.url_api_self_assessment, {
-          action: "getAllReference",
-          member_id: member_id,
-        })
-        .then(function (res) {
-          self.references2 = res.data;
-          console.log("reference:", self.references2);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    getUpdateReference_(member_id, self_assessment_id) {
-      console.log(
-        " แสดงข้อมูลการอ้างอิงทั้งหมด ",
-        member_id + "/" + self_assessment_id
-      );
-
-      var self = this;
-      axios
-        .post(this.url_api_self_assessment, {
-          action: "getAllReference_",
-          member_id: member_id,
-          self_assessment_id: self_assessment_id,
-        })
-        .then(function (res) {
-          self.references1 = res.data;
-          console.log("Update reference:", self.references1);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
     deleteItem(item) {
       if (this.isEdit) {
         var self_assessment_id = item.self_assessment_id;
         var reference_id = item.reference_id;
-        var member_id = item.member_id;
         console.log(
           " ลบข้อมูลรหัสการประเมินตนเอง/เอกสารอ้างอิง: ",
-          self_assessment_id + "/" + member_id + "/" + reference_id
+          self_assessment_id + "/" + reference_id
         );
         this.$q
           .dialog({
             title: "ยืนยัน",
             message:
-              "คุณต้องการลบรหัสการประเมินตนเอง/ผลงาน: " +
+              "คุณต้องการลบรหัสการประเมินตนเอง/ผลงาน " +
               self_assessment_id +
-              "/" +
-              member_id +
               "/" +
               reference_id +
               " หรือไม่ ?",
@@ -1636,7 +1283,7 @@ export default {
               })
               .then(function (res) {
                 console.log("reference:", res.data);
-                self.getUpdateReference_(member_id, self_assessment_id);
+                // self.references1 = res.data;
               })
               .catch(function (error) {
                 console.log(error);
@@ -1650,41 +1297,28 @@ export default {
       }
     },
     editItem(item) {
-      console.log("Edit data reference");
-      this.btnLabel_ = "แก้ไขผลงาน";
-      this.isEditRef = true;
-
-      var self_assessment_id = item.self_assessment_id;
-      var reference_id = item.reference_id;
-
-      console.log(
-        " ลบข้อมูลรหัสการประเมินตนเอง/เอกสารอ้างอิง: ",
-        self_assessment_id + "/" + reference_id
-      );
-      console.log(" isEditRef: ", this.isEditRef);
-      // if (this.isEditRef) {
-      //   console.log(" แก้ไขข้อมูลแหล่งอ้างอิง: ", reference_id);
-      //   var self = this;
-      //   axios
-      //     .post(this.url_api_self_assessment, {
-      //       action: "edit_reference_by_reference_id",
-      //       reference_id: reference_id,
-      //       self_assessment_id: self_assessment_id,
-      //       reference_description: reference_description,
-      //     })
-      //     .then(function (res) {
-      //       console.log("reference:", res.data);
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //     });
-      // } else {
-      console.log("item:", this.references1.indexOf(item));
-      this.editedIndex = this.references1.indexOf(item);
-      console.log("object", Object.assign({}, item));
-      this.editedReference = Object.assign({}, item);
-      this.show_dialog = true;
-      // }
+      if (this.isEdit) {
+        console.log(" แก้ไขข้อมูลแหล่งอ้างอิง: ", self_assessment_id);
+        var self = this;
+        axios
+          .post(this.url_api_self_assessment, {
+            action: "edit_reference_by_self_assessment_id",
+            self_assessment_id: self_assessment_id,
+          })
+          .then(function (res) {
+            console.log("reference:", res.data);
+            self.references1 = res.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        console.log("item:", this.references1.indexOf(item));
+        this.editedIndex = this.references1.indexOf(item);
+        console.log("object", Object.assign({}, item));
+        this.editedReference = Object.assign({}, item);
+        this.show_dialog = true;
+      }
     },
     close() {
       this.show_dialog = false;
@@ -1703,14 +1337,14 @@ export default {
         rowArray = this.selfAssessments1_.map((row) => row.self_assessment_id);
         console.log("self_assessment_id:", rowArray);
         this.getUpdateReference(this.member_id);
-        // } else {
-        //   rowArray = [];
+      } else {
+        rowArray = [];
       }
       this.$refs.myTable.setExpanded(rowArray);
     },
     subRow(self_assessment_id) {
       console.log("self_assessment_id:", self_assessment_id);
-      this.getReferenceBySelf_Assessment_id_(self_assessment_id);
+      this.getReferenceBySelf_Assessment_id(self_assessment_id);
     },
     getReferenceBySelf_Assessment_id(self_assessment_id) {
       console.log(" แสดงข้อมูลแหล่งอ้างอิง: ", self_assessment_id);
@@ -1721,37 +1355,21 @@ export default {
           self_assessment_id: self_assessment_id,
         })
         .then(function (res) {
-          console.log("reference+:", res.data);
+          console.log("reference:", res.data);
           self.references1 = res.data;
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    getReferenceBySelf_Assessment_id_(self_assessment_id) {
-      console.log(" แสดงข้อมูลแหล่งอ้างอิง: ", self_assessment_id);
-      var self = this;
-      axios
-        .post(this.url_api_self_assessment, {
-          action: "get_reference_by_self_assessment_id",
-          self_assessment_id: self_assessment_id,
-        })
-        .then(function (res) {
-          console.log("reference+:", res.data);
-          self.references2 = res.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    getReferenceBySelf_Assessment_id1(self_assessment_id, expand) {
+      if (expand) {
+        console.log(" แสดงข้อมูลแหล่งอ้างอิง: ", self_assessment_id);
+      } else {
+        console.log("Not expand");
+      }
+      return self_assessment_id;
     },
-    // getReferenceBySelf_Assessment_id1(self_assessment_id, expand) {
-    //   if (expand) {
-    //     console.log(" แสดงข้อมูลแหล่งอ้างอิง: ", self_assessment_id);
-    //   } else {
-    //     console.log("Not expand");
-    //   }
-    //   return self_assessment_id;
-    // },
     // end
   },
   mounted() {

@@ -232,7 +232,10 @@ import { ref } from "vue";
 export default {
   data() {
     return {
-      url_api_member: "https://icp2022.net/icp_v1/signup_form/api-member.php",
+      url_api_member:
+        "http://localhost:85/icp2022/icp_v1/signup_form/api-member.php",
+
+      // url_api_member: "https://icp2022.net/icp_v1/signup_form/api-member.php",
       title: "การลงทะเบียน",
       members: Array,
       register: true,

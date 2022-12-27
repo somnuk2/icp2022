@@ -22,6 +22,27 @@
                     method="post"
                     class="q-gutter-md"
                   >
+                    <!-- ชื่อ-สกุล -->
+                    <div class="row">
+                      <!-- ชื่อ-สกุล -->
+                      <div class="col-md-12 col-xs-12 q-pa-xs">
+                        <q-input
+                          standout
+                          bottom-slots
+                          label="ชื่อ-สกุล"
+                          v-model="qa_plan_career_full_name"
+                          clearable
+                          disable
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="person_add" />
+                          </template>
+                          <template v-slot:append>
+                            <q-icon name="favorite" />
+                          </template>
+                        </q-input>
+                      </div>
+                    </div>
                     <!-- อาชีพเป้าหมาย + คุณสมบัติ-->
                     <div class="row">
                       <!-- แผนอาชีพ -->
@@ -32,9 +53,14 @@
                           color="green"
                           v-model="plan_career.options.value"
                           :options="plan_career.options"
-                          label="อาชีพเป้าหมาย"
+                          label="อาชีพเป้าหมาย *"
                           emit-value
                           map-options
+                          :rules="[
+                            (val) =>
+                              (val !== null && val !== '') ||
+                              'กรุณาเลือกอาชีพเป้าหมาย',
+                          ]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="work_history" />
@@ -63,12 +89,17 @@
                           color="green"
                           v-model="qualification.options.value"
                           :options="qualification.options"
-                          label="คุณสมบัติที่ต้องการ"
+                          label="คุณสมบัติที่ต้องการ *"
                           @new-value="newQualification"
                           use-input
                           input-debounce="0"
                           emit-value
                           map-options
+                          :rules="[
+                            (val) =>
+                              (val !== null && val !== '') ||
+                              'กรุณาเลือกคุณสมบัติ',
+                          ]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="fact_check" />
@@ -101,9 +132,14 @@
                           color="green"
                           v-model="target.options.value"
                           :options="target.options"
-                          label="ค่าเป้าหมาย"
+                          label="ค่าเป้าหมาย *"
                           emit-value
                           map-options
+                          :rules="[
+                            (val) =>
+                              (val !== null && val !== '') ||
+                              'กรุณาเลือกค่าเป้าหมาย',
+                          ]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="flag_circle" />
@@ -133,9 +169,14 @@
                           color="green"
                           v-model="level.options.value"
                           :options="level.options"
-                          label="ระดับความสำคัญ"
+                          label="ระดับความสำคัญ *"
                           emit-value
                           map-options
+                          :rules="[
+                            (val) =>
+                              (val !== null && val !== '') ||
+                              'กรุณาเลือกระดับความสำคัญ',
+                          ]"
                         >
                           <template v-slot:prepend>
                             <q-icon name="running_with_errors" />
@@ -194,6 +235,7 @@
                           no-caps
                           flat
                           icon="skip_previous"
+                          label="กลับฟอร์มกำหนดอาชีพเป้าหมาย"
                           to="/FormPlanCareer"
                         >
                           <q-tooltip class="bg-accent"
@@ -206,6 +248,7 @@
                           no-caps
                           flat
                           icon="skip_next"
+                          label="ไปฟอร์มการพัฒนาตนเอง"
                           to="/FormPlan"
                         >
                           <q-tooltip class="bg-accent"
@@ -227,28 +270,35 @@
                             :loading="loading"
                           >
                             <template v-slot:top-right>
-                              <div class="col-9">
-                                <q-input
-                                  borderless
-                                  dense
-                                  debounce="300"
-                                  v-model="filter"
-                                  placeholder="Search"
-                                >
-                                  <template v-slot:append>
-                                    <q-icon name="search" />
-                                  </template>
-                                </q-input>
-                              </div>
+                              <q-input
+                                borderless
+                                dense
+                                debounce="300"
+                                v-model="filter"
+                                placeholder="ค้นหาคุณสมบัติ"
+                              >
+                                <template v-slot:append>
+                                  <q-icon name="search" />
+                                </template>
+                              </q-input>
+                              <!-- ส่งออก excel -->
+                              <q-btn
+                                flat
+                                icon-right="archive"
+                                label="ส่งออกไฟล์"
+                                @click="exportTable()"
+                              />
                             </template>
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
                                 <q-btn
                                   icon="mode_edit"
+                                  label="แก้ไข"
                                   @click="editUser(props.row.qa_plan_career_id)"
                                 ></q-btn>
                                 <q-btn
                                   icon="delete"
+                                  label="ลบ"
                                   @click="
                                     onDelete(
                                       props.row.qa_plan_career_id,
@@ -290,20 +340,41 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { exportFile } from "quasar";
+// ส่งออกไฟล์ excel
+function wrapCsvValue(val, formatFn, row) {
+  let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`;
+}
 
 export default {
   name: "FormQualification",
   components: {},
   data() {
     return {
-      // url: "http://localhost:85/icp2022/api-member.php",
-      // url_api_career: "http://localhost:85/icp2022/api-career.php",
-      // url_api_plan_career: "http://localhost:85/icp2022/api-plan-career.php",
+      // ------------------------------------------------------------------------------
+      // url: "http://localhost:85/icp2022/icp_v1_admin/qa_plan_career_form/api-member.php",
+      // url_api_career:
+      //   "http://localhost:85/icp2022/icp_v1_admin/qa_plan_career_form/api-career.php",
+      // url_api_plan_career:
+      //   "http://localhost:85/icp2022/icp_v1_admin/qa_plan_career_form/api-plan-career.php",
       // url_api_qualification:
-      //   "http://localhost:85/icp2022/api-qualification.php",
+      //   "http://localhost:85/icp2022/icp_v1_admin/qa_plan_career_form/api-qualification.php",
       // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/api-qa-plan-career.php",
-
+      //   "http://localhost:85/icp2022/icp_v1_admin/qa_plan_career_form/api-qa-plan-career.php",
+      // ------------------------------------------------------------------------------
       url: "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-member.php",
       url_api_career:
         "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-career.php",
@@ -313,9 +384,9 @@ export default {
         "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-qualification.php",
       url_api_qa_plan_career:
         "https://icp2022.net/icp_v1_admin/qa_plan_career_form/api-qa-plan-career.php",
-
+      // ------------------------------------------------------------------------------
       message: "Form Qualification",
-      title: "คุณสมบัติ/ทักษะ(admin)",
+      title: "คุณสมบัติ/ทักษะ(ผู้ดูแลระบบ)",
       btnLabel: "เพิ่มข้อมูล",
 
       columns: [
@@ -419,6 +490,7 @@ export default {
       filter: ref(""),
       loading: ref(false),
       qa_plan_career_id: "",
+      qa_plan_career_full_name: "",
       qualifications1: [],
       qualification_: {
         options: [],
@@ -451,6 +523,44 @@ export default {
     };
   },
   methods: {
+    // นำออกไฟล์ excel
+    exportTable() {
+      console.log("Export excel");
+      var columns = this.columns;
+      var rows = this.individuals1;
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))]
+        .concat(
+          rows.map((row) =>
+            columns
+              .map((col) =>
+                wrapCsvValue(
+                  typeof col.field === "function"
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(",")
+          )
+        )
+        .join("\r\n");
+
+      const status = exportFile("individual.csv", "\ufeff" + content, {
+        encoding: "utf-8",
+        mimeType: "text/csv;charset=utf-8;",
+      });
+
+      if (status !== true) {
+        $q.notify({
+          message: "Browser denied file download...",
+          color: "negative",
+          icon: "warning",
+        });
+      }
+    },
+    //---------------------------------------
     createValue1(val, done) {
       done(val, "add-unique");
       console.log("new val:", val);
@@ -499,6 +609,7 @@ export default {
       this.target.options.lebel = "";
       this.level.options.value = "";
       this.level.options.label = "";
+      this.qa_plan_career_full_name = "";
     },
     getUpdateQualification() {
       var self = this;
@@ -573,6 +684,8 @@ export default {
     submitForm() {
       if (!this.isEdit) {
         // if (this.confirm("คุณต้องการบันทึกการเพิ่มข้อมูลหรือไม่?")) {
+        this.$refs.country.validate();
+
         this.$q
           .dialog({
             title: "ยืนยัน",
@@ -664,6 +777,7 @@ export default {
           self.level.options.label = response.data.level_name;
           self.target.options.value = response.data.target_id;
           self.target.options.label = response.data.target_name;
+          self.qa_plan_career_full_name = response.data.full_name;
         })
         .catch(function (error) {
           console.log(error);

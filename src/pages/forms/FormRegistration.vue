@@ -31,7 +31,7 @@
                           standout
                           bottom-slots
                           v-model="member.full_name"
-                          label="ชื่อ-สกุล"
+                          label="ชื่อ-สกุล *"
                           clearable
                         >
                           <template v-slot:prepend>
@@ -50,7 +50,7 @@
                           standout
                           bottom-slots
                           v-model="member.email"
-                          label="อีเมล"
+                          label="อีเมล *"
                           clearable
                           type="email"
                           lazy-rules
@@ -77,7 +77,7 @@
                           :type="passwordFieldType"
                           lazy-rules
                           :rules="[this.required, this.short]"
-                          label="รหัสผ่าน"
+                          label="รหัสผ่าน *"
                         >
                           <template v-slot:prepend>
                             <q-icon name="lock" />
@@ -106,7 +106,7 @@
                             this.short,
                             this.diffPassword,
                           ]"
-                          label="ยืนยันรหัสผ่าน"
+                          label="ยืนยันรหัสผ่าน *"
                         >
                           <template v-slot:prepend>
                             <q-icon name="lock" />
@@ -154,6 +154,7 @@
                         <!-- ไปฟอร์มกรอกข้อมูลส่วนตัว -->
                         <q-btn
                           color="primary"
+                          label="ไปฟอร์มกรอกข้อมูลส่วนตัว"
                           no-caps
                           flat
                           icon="skip_next"
@@ -185,7 +186,7 @@
                                 dense
                                 debounce="300"
                                 v-model="filter"
-                                placeholder="Search"
+                                placeholder="ค้นหาสมาชิค"
                               >
                                 <template v-slot:append>
                                   <q-icon name="search" />
@@ -195,10 +196,12 @@
                             <template v-slot:body-cell-actions="props">
                               <q-td :props="props">
                                 <q-btn
+                                  label="แก้ไข"
                                   icon="mode_edit"
                                   @click="editUser(props.row.member_id)"
                                 ></q-btn>
                                 <q-btn
+                                  label="ลบ"
                                   icon="delete"
                                   @click="
                                     deleteUser(
@@ -231,13 +234,36 @@
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { ref } from "vue";
+import { exportFile } from "quasar";
+// ส่งออกไฟล์ excel
+function wrapCsvValue(val, formatFn, row) {
+  let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
+
+  formatted = formatted.split('"').join('""');
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`;
+}
 
 export default {
   data() {
     return {
+      // -----------------------------------------------------------------------
+      // url_api_member:
+      //   "http://localhost:85/icp2022/icp_v1/registration_form/api-member.php",
+      // -----------------------------------------------------------------------
       url_api_member:
         "https://icp2022.net/icp_v1/registration_form/api-member.php",
-      title: "การลงทะเบียน",
+      // -----------------------------------------------------------------------
+      title: "การตั้งค่าส่วนตัว",
       members: Array,
       register: true,
       filter: ref(""),
@@ -294,6 +320,14 @@ export default {
           format: (val) => `${val}`,
           sortable: true,
         },
+        {
+          name: "is_verified",
+          align: "center",
+          label: "ยืนยันอีเมลย์",
+          field: (row) => row.is_verified,
+          format: (val) => `${val == 0 ? "ยังไม่ยืนยัน" : "ยืนยัน"}`,
+          sortable: true,
+        },
       ],
       members1: [],
       $q: useQuasar(),
@@ -305,6 +339,45 @@ export default {
     };
   },
   methods: {
+    // นำออกไฟล์ excel
+    exportTable() {
+      console.log("Export excel");
+      var columns = this.columns;
+      var rows = this.individuals1;
+      // naive encoding to csv format
+      const content = [columns.map((col) => wrapCsvValue(col.label))]
+        .concat(
+          rows.map((row) =>
+            columns
+              .map((col) =>
+                wrapCsvValue(
+                  typeof col.field === "function"
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(",")
+          )
+        )
+        .join("\r\n");
+
+      const status = exportFile("individual.csv", "\ufeff" + content, {
+        encoding: "utf-8",
+        mimeType: "text/csv;charset=utf-8;",
+      });
+
+      if (status !== true) {
+        $q.notify({
+          message: "Browser denied file download...",
+          color: "negative",
+          icon: "warning",
+        });
+      }
+    },
+    //---------------------------------------
+
     submitForm() {
       if (!this.isEdit) {
         this.$q

@@ -56,11 +56,7 @@
                           @new-value="createValue"
                           emit-value
                           map-options
-                          label="อาชีพเป้าหมาย *"
-                          :rules="[
-                            (val) =>
-                              (val && val.length > 0) || 'ต้องใส่อาชีพเป้าหมาย',
-                          ]"
+                          label="อาชีพเป้าหมาย"
                         >
                           <template v-slot:prepend>
                             <q-icon name="work_history" />
@@ -82,9 +78,6 @@
                           filled
                           v-model="plan_career.start_date"
                           label="วันเริ่มแผน"
-                          mask="## / ## / ####"
-                          fill-mask
-                          hint="วัน/เดือน/ปี: DD/MM/YYYY"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -95,7 +88,7 @@
                               >
                                 <q-date
                                   v-model="plan_career.start_date"
-                                  mask="DD/MM/YYYY"
+                                  mask="DD-MM-YYYY"
                                 >
                                   <div class="row items-center justify-end">
                                     <q-btn
@@ -297,18 +290,18 @@ export default {
     return {
       // ------------------------------------------------------------------------------
       // url_api_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_career_form/api-career.php",
+      //   "http://localhost:85/icp2022/icp_v1_suser/plan_career_form/api-career.php",
       // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_career_form/api-plan-career.php",
-      // ------------------------------------------------------------------------------
+      //   "http://localhost:85/icp2022/icp_v1_suser/plan_career_form/api-plan-career.php",
+      // // ------------------------------------------------------------------------------
       url_api_career:
-        "https://icp2022.net/icp_v1_admin/plan_career_form/api-career.php",
+        "https://icp2022.net/icp_v1_suser/plan_career_form/api-career.php",
       url_api_plan_career:
-        "https://icp2022.net/icp_v1_admin/plan_career_form/api-plan-career.php",
+        "https://icp2022.net/icp_v1_suser/plan_career_form/api-plan-career.php",
       // ------------------------------------------------------------------------------
 
       message: "Form Plan Career",
-      title: "อาชีพเป้าหมาย(ผู้ดูแลระบบ)",
+      title: "อาชีพเป้าหมาย(ผู้ดูแลกลุ่ม)",
       plan_careers: Array,
       emp_id: Array,
       plan_careers_: Array,
@@ -373,13 +366,20 @@ export default {
           field: (row) => row.start_date,
           format: (val) => `${val}`,
         },
-        // {
-        //   name: "end_date",
-        //   label: "วันสิ้นสุดแผน",
-        //   align: "center",
-        //   field: (row) => row.end_date,
-        //   format: (val) => `${val}`,
-        // },
+        {
+          name: "adv_id",
+          label: "รหัสผู้ดูแล",
+          align: "center",
+          field: (row) => row.advisor_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "adv_name",
+          label: "ผู้ดูแล",
+          align: "center",
+          field: (row) => row.advisor_name,
+          format: (val) => `${val}`,
+        },
       ],
       plan_careers1: [],
       loading: true,
@@ -426,7 +426,6 @@ export default {
       }
     },
     //---------------------------------------
-
     resetForm() {
       this.isEdit = false;
       console.log("isEdit:", this.isEdit);
@@ -606,6 +605,7 @@ export default {
       var self = this;
       axios
         .post(this.url_api_plan_career, {
+          member_id: this.plan_career.member_id,
           action: "getAll_",
         })
         .then(function (res) {
