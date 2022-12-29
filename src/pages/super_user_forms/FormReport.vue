@@ -376,33 +376,14 @@ export default {
   data() {
     return {
       expansionsToggled: false,
-      // ------------------------------------------------------------------------------
-      // url_api_pivot:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-pivot.php",
-      // url: "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-member.php",
-      // url_api_career_qualification:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-qa-plan-career.php",
-      // url_api_self_assessment:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-self-assessment.php",
-      // url_api_plan:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-plan.php",
-      // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-plan-career.php",
-      // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-      url_api_pivot:
-        "https://icp2022.net/icp_v1_suser/plan_report/api-pivot.php",
-      url: "https://icp2022.net/icp_v1_suser/plan_report/api-member.php",
-      url_api_career_qualification:
-        "https://icp2022.net/icp_v1_suser/plan_report/api-qa-plan-career.php",
-      url_api_self_assessment:
-        "https://icp2022.net/icp_v1_suser/plan_report/api-self-assessment.php",
-      url_api_plan: "https://icp2022.net/icp_v1_suser/plan_report/api-plan.php",
-      url_api_plan_career:
-        "https://icp2022.net/icp_v1_suser/plan_report/api-plan-career.php",
-      url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1_suser/plan_report/api-qa-plan-career.php",
+
+      url_api_pivot: "",
+      url: "",
+      url_api_career_qualification: "",
+      url_api_self_assessment: "",
+      url_api_plan: "",
+      url_api_plan_career: "",
+      url_api_qa_plan_career: "",
       // ------------------------------------------------------------------------------
 
       title: "รายงานการพัฒนาตนเอง(ผู้ดูแลกลุ่ม)",
@@ -941,7 +922,40 @@ export default {
     this.getQaPlanCareer_();
     this.getQaPlanCareer();
   },
-  created() {},
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.url_api_pivot =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-pivot.php";
+      this.url =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-member.php";
+      this.url_api_career_qualification =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-qa-plan-career.php";
+      this.url_api_self_assessment =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-self-assessment.php";
+      this.url_api_plan =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-plan.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_report/api-qa-plan-career.php";
+    } else {
+      this.url_api_pivot =
+        "https://icp2022.net/icp_v1_suser/plan_report/api-pivot.php";
+      this.url = "https://icp2022.net/icp_v1_suser/plan_report/api-member.php";
+      this.url_api_career_qualification =
+        "https://icp2022.net/icp_v1_suser/plan_report/api-qa-plan-career.php";
+      this.url_api_self_assessment =
+        "https://icp2022.net/icp_v1_suser/plan_report/api-self-assessment.php";
+      this.url_api_plan =
+        "https://icp2022.net/icp_v1_suser/plan_report/api-plan.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1_suser/plan_report/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "https://icp2022.net/icp_v1_suser/plan_report/api-qa-plan-career.php";
+    }
+  },
 };
 </script>
 

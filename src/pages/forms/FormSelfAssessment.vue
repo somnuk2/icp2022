@@ -604,35 +604,14 @@ export default {
   name: "FormSelfAssessment",
   data() {
     return {
-      // ------------------------------------------------------------------------------
-      // url: "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-member.php",
-      // url_api_career_qualification:
-      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-qa-plan-career.php",
-      // url_api_self_assessment:
-      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-self-assessment.php",
-      // url_api_plan:
-      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-plan.php",
-      // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-plan-career.php",
-      // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-      url: "https://icp2022.net/icp_v1/self_assessment_form/api-member.php",
-      url_api_career_qualification:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
-      url_api_self_assessment:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-self-assessment.php",
-      url_api_plan:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-plan.php",
-      url_api_plan_career:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-plan-career.php",
-      url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-
+      url: "",
+      url_api_career_qualification: "",
+      url_api_self_assessment: "",
+      url_api_plan: "",
+      url_api_plan_career: "",
+      url_api_qa_plan_career: "",
       message: "Form Self Acessment",
       title: "การประเมินตนเอง",
-
       currentYear: new Date().getFullYear(),
       selfAssessments: Array,
       selfAssessments_: Array,
@@ -1289,20 +1268,6 @@ export default {
         // เพิ่มข้อมูลผลงาน ลงฐานข้อมูลทีละแถว
         if (!this.isEditRef) {
           console.log("Add new in Edit");
-          // console.log(" เพิ่มข้อมูลผลงานลงฐานข้อมูล: ", self_assessment_id);
-          // var self = this;
-          // axios
-          //   .post(this.url_api_self_assessment, {
-          //     action: "add_reference_by_self_assessment_id",
-          //     self_assessment_id: self_assessment_id,
-          //   })
-          //   .then(function (res) {
-          //     console.log("reference:", res.data);
-          //     self.references1 = res.data;
-          //   })
-          //   .catch(function (error) {
-          //     console.log(error);
-          //   });
           var reference_description =
             this.editedReference.reference_description;
           var self_assessment_id = this.self_assessment_id;
@@ -1604,23 +1569,6 @@ export default {
         self_assessment_id + "/" + reference_id
       );
       console.log(" isEditRef: ", this.isEditRef);
-      // if (this.isEditRef) {
-      //   console.log(" แก้ไขข้อมูลแหล่งอ้างอิง: ", reference_id);
-      //   var self = this;
-      //   axios
-      //     .post(this.url_api_self_assessment, {
-      //       action: "edit_reference_by_reference_id",
-      //       reference_id: reference_id,
-      //       self_assessment_id: self_assessment_id,
-      //       reference_description: reference_description,
-      //     })
-      //     .then(function (res) {
-      //       console.log("reference:", res.data);
-      //     })
-      //     .catch(function (error) {
-      //       console.log(error);
-      //     });
-      // } else {
       console.log("item:", this.references1.indexOf(item));
       this.editedIndex = this.references1.indexOf(item);
       console.log("object", Object.assign({}, item));
@@ -1693,7 +1641,36 @@ export default {
     this.getPerform();
   },
 
-  created() {},
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      this.url =
+        "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-member.php";
+      this.url_api_career_qualification =
+        "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-qa-plan-career.php";
+      this.url_api_self_assessment =
+        "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-self-assessment.php";
+      this.url_api_plan =
+        "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-plan.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "http://localhost:85/icp2022/icp_v1/self_assessment_form/api-qa-plan-career.php";
+    } else {
+      this.url =
+        "https://icp2022.net/icp_v1/self_assessment_form/api-member.php";
+      this.url_api_career_qualification =
+        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php";
+      this.url_api_self_assessment =
+        "https://icp2022.net/icp_v1/self_assessment_form/api-self-assessment.php";
+      this.url_api_plan =
+        "https://icp2022.net/icp_v1/self_assessment_form/api-plan.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1/self_assessment_form/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "https://icp2022.net/icp_v1/self_assessment_form/api-qa-plan-career.php";
+    }
+  },
 };
 </script>
 

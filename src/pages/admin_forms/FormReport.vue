@@ -243,7 +243,7 @@
                             ref="myTable"
                             title="คุณสมบัติตามอาชีพเป้าหมาย"
                             :rows="qa_plan_careers_"
-                            :columns="main_columns"
+                            :columns="main_columns_"
                             row-key="qa_plan_career_id"
                             selection="multiple"
                             v-model:selected="selected"
@@ -374,35 +374,14 @@ export default {
   data() {
     return {
       expansionsToggled: false,
+      url_api_pivot: "",
+      url: "",
+      url_api_career_qualification: "",
+      url_api_self_assessment: "",
+      url_api_plan: "",
+      url_api_plan_career: "",
+      url_api_qa_plan_career: "",
       // ------------------------------------------------------------------------------
-      // url_api_pivot:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-pivot.php",
-      // url: "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-member.php",
-      // url_api_career_qualification:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-qa-plan-career.php",
-      // url_api_self_assessment:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-self-assessment.php",
-      // url_api_plan:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-plan.php",
-      // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-plan-career.php",
-      // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-      url_api_pivot:
-        "https://icp2022.net/icp_v1_admin/plan_report/api-pivot.php",
-      url: "https://icp2022.net/icp_v1_admin/plan_report/api-member.php",
-      url_api_career_qualification:
-        "https://icp2022.net/icp_v1_admin/plan_report/api-qa-plan-career.php",
-      url_api_self_assessment:
-        "https://icp2022.net/icp_v1_admin/plan_report/api-self-assessment.php",
-      url_api_plan: "https://icp2022.net/icp_v1_admin/plan_report/api-plan.php",
-      url_api_plan_career:
-        "https://icp2022.net/icp_v1_admin/plan_report/api-plan-career.php",
-      url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1_admin/plan_report/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-
       title: "รายงานการพัฒนาตนเอง(ผู้ดูแลระบบ)",
       message: "Form Report",
       selected: ref([]),
@@ -574,6 +553,127 @@ export default {
           format: (val) => `${val}`,
         },
       ],
+      main_columns_: [
+        {
+          name: "qa_plan_career_id",
+          align: "center",
+          label: "รหัสคุณสมบัติอาชีพ",
+          field: (row) => row.qa_plan_career_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "member_id",
+          align: "center",
+          label: "รหัสสมาชิค",
+          field: (row) => row.member_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "full_name",
+          align: "center",
+          label: "ชื่อ-สกุล",
+          field: (row) => row.full_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "career_id",
+          align: "center",
+          label: "รหัสอาชีพ",
+          field: (row) => row.career_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "career_name",
+          align: "left",
+          label: "อาชีพ",
+          field: (row) => row.career_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "qualification_id",
+          align: "center",
+          label: "รหัสคุณสมบัติ",
+          field: (row) => row.qualification_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "qualification_name",
+          align: "left",
+          label: "คุณสมบัติ",
+          field: (row) => row.qualification_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "target_id",
+          align: "center",
+          label: "รหัสเป้าหมาย",
+          field: (row) => row.target_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "target_name",
+          align: "left",
+          label: "เป้าหมาย",
+          field: (row) => row.target_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "level_id",
+          align: "center",
+          label: "รหัสระดับ",
+          field: (row) => row.level_id,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "level_description",
+          align: "left",
+          label: "ระดับ",
+          field: (row) => row.level_description,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_title",
+          align: "left",
+          label: "ชื่อแผน",
+          field: (row) => row.plan_title,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_channel",
+          align: "left",
+          label: "ช่องทาง",
+          field: (row) => row.plan_channel,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_start_date",
+          align: "left",
+          label: "วันเริ่ม",
+          field: (row) => row.plan_start_date,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "plan_end_date",
+          align: "left",
+          label: "วันสิ้นสุด",
+          field: (row) => row.plan_end_date,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "development_name",
+          align: "left",
+          label: "การพัฒนา",
+          field: (row) => row.development_name,
+          format: (val) => `${val}`,
+        },
+        {
+          name: "importance_name",
+          align: "left",
+          label: "ความสำคัญ",
+          field: (row) => row.importance_name,
+          format: (val) => `${val}`,
+        },
+      ],
       qualification_id: "",
       qa_plan_careers: [],
       qa_plan_careers_: [],
@@ -710,33 +810,6 @@ export default {
       console.log("qa_plan_career_id:", qa_plan_career_id);
       this.getPlanByQaPlanCareerId(qa_plan_career_id);
     },
-    // อาชีพเป้าหมาย
-    // getCareer() {
-    //   console.log(" ข้อมูลอาชีพ ");
-    //   var self = this;
-    //   var member_id = Number(this.$store.getters.myMember_id);
-    //   console.log("member_id:", member_id);
-    //   axios
-    //     .post(this.url_api_plan_career, {
-    //       action: "get_plan_career_by_member_id",
-    //       member_id: member_id,
-    //     })
-    //     .then(function (res) {
-    //       var plan_career_id = res.data.map((item) => item.plan_career_id);
-    //       var career_name = res.data.map((item) => item.career_name);
-    //       self.plan_career.options.splice(0);
-    //       for (var i = 0; i < plan_career_id.length; i++) {
-    //         self.plan_career.options.push({
-    //           label: career_name[i],
-    //           value: plan_career_id[i],
-    //         });
-    //       }
-    //       self.plan_career_.options = self.plan_career.options;
-    //     })
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // },
     getCareer() {
       console.log(" ข้อมูลอาชีพ ");
       var self = this;
@@ -820,7 +893,7 @@ export default {
       var self = this;
       axios
         .post(this.url_api_qa_plan_career, {
-          action: "get_qa_plan_career",
+          action: "qa_plan_career_plan",
           member_id: member_id,
         })
         .then(function (res) {
@@ -909,7 +982,42 @@ export default {
     this.getUpdate();
     this.getCareer();
   },
-  created() {},
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.url_api_pivot =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-pivot.php";
+      this.url =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-member.php";
+      this.url_api_career_qualification =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-qa-plan-career.php";
+      this.url_api_self_assessment =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-self-assessment.php";
+      this.url_api_plan =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-plan.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_report/api-qa-plan-career.php";
+      // ------------------------------------------------------------------------------
+      // ------------------------------------------------------------------------------
+    } else {
+      this.url_api_pivot =
+        "https://icp2022.net/icp_v1_admin/plan_report/api-pivot.php";
+      this.url = "https://icp2022.net/icp_v1_admin/plan_report/api-member.php";
+      this.url_api_career_qualification =
+        "https://icp2022.net/icp_v1_admin/plan_report/api-qa-plan-career.php";
+      this.url_api_self_assessment =
+        "https://icp2022.net/icp_v1_admin/plan_report/api-self-assessment.php";
+      this.url_api_plan =
+        "https://icp2022.net/icp_v1_admin/plan_report/api-plan.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1_admin/plan_report/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "https://icp2022.net/icp_v1_admin/plan_report/api-qa-plan-career.php";
+    }
+  },
 };
 </script>
 

@@ -713,6 +713,27 @@ export default {
     this.getUpdate(member_id);
     this.getUpdateNotify(member_id);
   },
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.url_api_plan =
+        "http://localhost:85/icp2022/icp_v1_admin/plan_form/api-plan.php";
+      this.url_api_individual =
+        "http://localhost:85/icp2022/icp_v1_admin/individual_form/api-individual.php";
+      this.url_api_notification =
+        "http://localhost:85/icp2022/icp_v1_admin/notification_form/api-notification.php";
+      // ------------------------------------------------------------------------------
+    } else {
+      this.url_api_plan =
+        "https://icp2022.net/icp_v1_admin/plan_form/api-plan.php";
+      this.url_api_individual =
+        "https://icp2022.net/icp_v1_admin/individual_form/api-individual.php";
+      this.url_api_notification =
+        "https://icp2022.net/icp_v1_admin/notification_form/api-notification.php";
+    }
+    // ------------------------------------------------------------------------------
+  },
 };
 </script>
 <style lang="sass">

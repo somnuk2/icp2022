@@ -460,19 +460,10 @@ export default {
   name: "FormPlan",
   data() {
     return {
-      // --------------------------------------------------------------------------
-      // url_api_plan: "http://localhost:85/icp2022/icp_v1/plan_form/api-plan.php",
-      // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1/plan_form/api-plan-career.php",
-      // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1/plan_form/api-qa-plan-career.php",
-      // --------------------------------------------------------------------------
-      url_api_plan: "https://icp2022.net/icp_v1/plan_form/api-plan.php",
-      url_api_plan_career:
-        "https://icp2022.net/icp_v1/plan_form/api-plan-career.php",
-      url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1/plan_form/api-qa-plan-career.php",
-      // --------------------------------------------------------------------------
+      url_api_plan: "",
+      url_api_plan_career: "",
+      url_api_qa_plan_career: "",
+
       message: "Form Plan Career",
       title: "การพัฒนาตนเอง",
       plan: {
@@ -1083,14 +1074,30 @@ export default {
       console.log("Full Year:", current.getFullYear());
     },
   },
-
-  created() {
+  mounted() {
     this.getUpdate(this.member_id);
     this.getCareer(this.member_id);
     this.getDevelopment();
     this.getImportance();
     this.getFrequency();
     this.getDayly();
+  },
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      this.url_api_plan =
+        "http://localhost:85/icp2022/icp_v1/plan_form/api-plan.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1/plan_form/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "http://localhost:85/icp2022/icp_v1/plan_form/api-qa-plan-career.php";
+    } else {
+      this.url_api_plan = "https://icp2022.net/icp_v1/plan_form/api-plan.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1/plan_form/api-plan-career.php";
+      this.url_api_qa_plan_career =
+        "https://icp2022.net/icp_v1/plan_form/api-qa-plan-career.php";
+    }
   },
 };
 </script>

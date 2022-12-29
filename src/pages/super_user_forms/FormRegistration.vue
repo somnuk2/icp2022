@@ -785,7 +785,19 @@ export default {
       });
     },
   },
-  created() {},
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      url_api_member =
+        "http://localhost:85/icp2022/icp_v1_suser/registration_form/api-member.php";
+      // ------------------------------------------------------------------------------
+    } else {
+      url_api_member =
+        "https://icp2022.net/icp_v1_suser/registration_form/api-member.php";
+      // ------------------------------------------------------------------------------
+    }
+  },
   mounted() {
     this.getUpdate();
   },

@@ -1003,14 +1003,39 @@ export default {
       });
     },
   },
-  created() {
+  mounted() {
     this.getQualification();
     this.getCareer(this.member_id);
     this.getTarget();
     this.getLevel();
     this.getUpdate(this.member_id);
   },
-  computed: {},
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      this.url =
+        "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-member.php";
+      this.url_api_career =
+        "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-career.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-plan-career.php";
+      this.url_api_qualification =
+        "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-qualification.php";
+      this.url_api_qa_plan_career =
+        "http://localhost:85/icp2022/icp_v1/qa_plan_career_form/api-qa-plan-career.php";
+    } else {
+      this.url =
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-member.php";
+      this.url_api_career =
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-career.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-plan-career.php";
+      this.url_api_qualification =
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qualification.php";
+      this.url_api_qa_plan_career =
+        "https://icp2022.net/icp_v1/qa_plan_career_form/api-qa-plan-career.php";
+    }
+  },
 };
 </script>
 

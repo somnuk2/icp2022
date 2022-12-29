@@ -144,10 +144,7 @@ export default {
   name: "LoginPage2",
   data() {
     return {
-      url_api_member:
-        "http://localhost:85/icp2022/icp_v1/signin_form/api-member.php",
-      // url_api_member: "https://icp2022.net/icp_v1/signin_form/api-member.php",
-
+      url_api_member: "",
       title: "เข้าสู่ระบบ",
       email: "",
       username: "",
@@ -275,8 +272,17 @@ export default {
       this.$store.commit("setMyStatus", "");
     },
   },
-  created() {
+  mounted() {
     this.createState();
+  },
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      this.url_api_member =
+        "http://localhost:85/icp2022/icp_v1/signin_form/api-member.php";
+    } else {
+      this.url_api_member = "https://icp2022.net/icp_v1/signin_form/api-member.php";
+    }
   },
 };
 </script>

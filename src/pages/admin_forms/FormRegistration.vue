@@ -355,12 +355,7 @@ function wrapCsvValue(val, formatFn, row) {
 export default {
   data() {
     return {
-      // ------------------------------------------------------------------------------
-      // url_api_member:
-      //   "http://localhost:85/icp2022/icp_v1_admin/registration_form/api-member.php",
-      // ------------------------------------------------------------------------------
-      url_api_member:
-        "https://icp2022.net/icp_v1_admin/registration_form/api-member.php",
+      url_api_member: "",
       // ------------------------------------------------------------------------------
       title: "การลงทะเบียน(ผู้ดูแลระบบ)",
       members: Array,
@@ -763,7 +758,16 @@ export default {
     },
   },
   created() {
-    // this.getAllUser();
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.url_api_member =
+        "http://localhost:85/icp2022/icp_v1_admin/registration_form/api-member.php";
+    } else {
+      // ------------------------------------------------------------------------------
+      this.url_api_member =
+        "https://icp2022.net/icp_v1_admin/registration_form/api-member.php";
+    }
   },
   mounted() {
     this.getUpdate();

@@ -291,18 +291,9 @@ export default {
   name: "FormPlanCareer",
   data() {
     return {
+      url_api_career: "",
+      url_api_plan_career: "",
       // ------------------------------------------------------------------------------
-      // url_api_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_career_form/api-career.php",
-      // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/plan_career_form/api-plan-career.php",
-      // // ------------------------------------------------------------------------------
-      url_api_career:
-        "https://icp2022.net/icp_v1_suser/plan_career_form/api-career.php",
-      url_api_plan_career:
-        "https://icp2022.net/icp_v1_suser/plan_career_form/api-plan-career.php",
-      // ------------------------------------------------------------------------------
-
       message: "Form Plan Career",
       title: "อาชีพเป้าหมาย(ผู้ดูแลกลุ่ม)",
       plan_careers: Array,
@@ -693,7 +684,23 @@ export default {
     this.getUpdate(this.plan_career.member_id);
     this.getCareer();
   },
-  created() {},
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.url_api_career =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_career_form/api-career.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1_suser/plan_career_form/api-plan-career.php";
+      // // ------------------------------------------------------------------------------
+    } else {
+      this.url_api_career =
+        "https://icp2022.net/icp_v1_suser/plan_career_form/api-career.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1_suser/plan_career_form/api-plan-career.php";
+      // ------------------------------------------------------------------------------
+    }
+  },
 };
 </script>
 

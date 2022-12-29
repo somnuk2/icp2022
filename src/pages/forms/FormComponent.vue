@@ -640,34 +640,13 @@ export default {
     return {
       pdpa: ref(false),
       picked: new Date(),
+      url_api_individual: "",
+      url_api_institute: "",
+      url_api_disability: "",
+      url_api_project: "",
+      url_api_advisor: "",
+      url_api_member: "",
       // ----------------------------------------------------------------------
-      // url_api_individual:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-individual.php",
-      // url_api_institute:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-institute.php",
-      // url_api_disability:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-disability.php",
-      // url_api_project:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-project.php",
-      // url_api_advisor:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-advisor.php",
-      // url_api_member:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-member.php",
-      // ----------------------------------------------------------------------
-      url_api_individual:
-        "https://icp2022.net/icp_v1/individual_form/api-individual.php",
-      url_api_institute:
-        "https://icp2022.net/icp_v1/individual_form/api-institute.php",
-      url_api_disability:
-        "https://icp2022.net/icp_v1/individual_form/api-disability.php",
-      url_api_project:
-        "https://icp2022.net/icp_v1/individual_form/api-project.php",
-      url_api_advisor:
-        "https://icp2022.net/icp_v1/individual_form/api-advisor.php",
-      url_api_member:
-        "https://icp2022.net/icp_v1/individual_form/api-member.php",
-      // ----------------------------------------------------------------------
-
       title: "ข้อมูลส่วนตัว",
       email: "",
       username: "",
@@ -1601,6 +1580,38 @@ export default {
     this.getDisabilitys();
     this.getProjects();
     this.getAdvisors();
+  },
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      console.log("!www:", !www);
+      this.url_api_individual =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-individual.php";
+      this.url_api_institute =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-institute.php";
+      this.url_api_disability =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-disability.php";
+      this.url_api_project =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-project.php";
+      this.url_api_advisor =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-advisor.php";
+      this.url_api_member =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-member.php";
+    } else {
+      console.log("www:", www);
+      this.url_api_individual =
+        "https://icp2022.net/icp_v1/individual_form/api-individual.php";
+      this.url_api_institute =
+        "https://icp2022.net/icp_v1/individual_form/api-institute.php";
+      this.url_api_disability =
+        "https://icp2022.net/icp_v1/individual_form/api-disability.php";
+      this.url_api_project =
+        "https://icp2022.net/icp_v1/individual_form/api-project.php";
+      this.url_api_advisor =
+        "https://icp2022.net/icp_v1/individual_form/api-advisor.php";
+      this.url_api_member =
+        "https://icp2022.net/icp_v1/individual_form/api-member.php";
+    }
   },
 };
 </script>

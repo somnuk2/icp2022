@@ -344,28 +344,12 @@ export default {
   components: {},
   data() {
     return {
+      url: "",
+      url_api_career: "",
+      url_api_plan_career: "",
+      url_api_qualification: "",
+      url_api_qa_plan_career: "",
       // ------------------------------------------------------------------------------
-      // url: "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-member.php",
-      // url_api_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-career.php",
-      // url_api_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-plan-career.php",
-      // url_api_qualification:
-      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-qualification.php",
-      // url_api_qa_plan_career:
-      //   "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-      url: "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-member.php",
-      url_api_career:
-        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-career.php",
-      url_api_plan_career:
-        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-plan-career.php",
-      url_api_qualification:
-        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-qualification.php",
-      url_api_qa_plan_career:
-        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-qa-plan-career.php",
-      // ------------------------------------------------------------------------------
-
       message: "Form Qualification",
       title: "คุณสมบัติ/ทักษะ(ผู้ดูแลกลุ่ม)",
       btnLabel: "เพิ่มข้อมูล",
@@ -980,12 +964,40 @@ export default {
       });
     },
   },
-  created() {
+  mouted() {
     this.getQualification();
     this.getCareer(this.member_id);
     this.getTarget();
     this.getLevel();
     this.getUpdate();
+  },
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.ur =
+        "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-member.php";
+      this.url_api_career =
+        "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-career.php";
+      this.url_api_plan_career =
+        "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-plan-career.php";
+      this.url_api_qualification =
+        "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-qualification.php";
+      this.url_api_qa_plan_career =
+        "http://localhost:85/icp2022/icp_v1_suser/qa_plan_career_form/api-qa-plan-career.php";
+      // ------------------------------------------------------------------------------
+    } else {
+      this.url =
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-member.php";
+      this.url_api_career =
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-career.php";
+      this.url_api_plan_career =
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-plan-career.php";
+      this.url_api_qualification =
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-qualification.php";
+      this.url_api_qa_plan_career =
+        "https://icp2022.net/icp_v1_suser/qa_plan_career_form/api-qa-plan-career.php";
+    }
   },
   computed: {},
 };

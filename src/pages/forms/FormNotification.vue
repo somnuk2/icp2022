@@ -262,20 +262,10 @@ export default {
     return {
       pdpa: ref(false),
       picked: new Date(),
+      url_api_plan: "",
+      url_api_individual: "",
+      url_api_notification: "",
       // ---------------------------------------------------------------------------
-      // url_api_plan: "http://localhost:85/icp2022/icp_v1/plan_form/api-plan.php",
-      // url_api_individual:
-      //   "http://localhost:85/icp2022/icp_v1/individual_form/api-individual.php",
-      // url_api_notification:
-      //   "http://localhost:85/icp2022/icp_v1/notification_form/api-notification.php",
-      // ---------------------------------------------------------------------------
-      url_api_plan: "https://icp2022.net/icp_v1/plan_form/api-plan.php",
-      url_api_individual:
-        "https://icp2022.net/icp_v1/individual_form/api-individual.php",
-      url_api_notification:
-        "https://icp2022.net/icp_v1/notification_form/api-notification.php",
-      // ---------------------------------------------------------------------------
-
       title: "การแจ้งเตือน",
       isEdit: false,
       btnLabel: "เพิ่มข้อมูล",
@@ -657,6 +647,23 @@ export default {
     var member_id = this.member_id;
     this.getUpdate(member_id);
     this.getUpdateNotify(member_id);
+  },
+  created() {
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      this.url_api_plan =
+        "http://localhost:85/icp2022/icp_v1/plan_form/api-plan.php";
+      this.url_api_individual =
+        "http://localhost:85/icp2022/icp_v1/individual_form/api-individual.php";
+      this.url_api_notification =
+        "http://localhost:85/icp2022/icp_v1/notification_form/api-notification.php";
+    } else {
+      this.url_api_plan = "https://icp2022.net/icp_v1/plan_form/api-plan.php";
+      this.url_api_individual =
+        "https://icp2022.net/icp_v1/individual_form/api-individual.php";
+      this.url_api_notification =
+        "https://icp2022.net/icp_v1/notification_form/api-notification.php";
+    }
   },
 };
 </script>

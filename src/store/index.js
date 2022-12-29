@@ -7,6 +7,7 @@ export default createStore({
     employee_id: "",
     name: "",
     status: "",
+    www: true,
   },
   mutations: {
     setMyAuthenticate(state, authenticate) {
@@ -24,6 +25,9 @@ export default createStore({
     setMyStatus(state, status) {
       state.status = status;
     },
+    setMyWWW(state, www) {
+      state.www = www;
+    },
   },
   getters: {
     myAuthenticate: (state) => state.authenticate,
@@ -31,6 +35,7 @@ export default createStore({
     myEmployee_id: (state) => state.employee_id,
     myName: (state) => state.name,
     myStatus: (state) => state.status,
+    myWWW: (state) => state.www,
   },
   actions: {},
   modules: {},

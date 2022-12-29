@@ -232,18 +232,9 @@ import { ref } from "vue";
 export default {
   data() {
     return {
-      // ------------------------------------------------------------------------------
-      // url_api_member:
-      //   "http://localhost:85/icp2022/icp_v1/signup_form/api-member.php",
-      // url_api_mail:
-      //   "http://localhost:85/icp2022/icp_v1/registration_form/mail.php",
-      // url_api_verified_mail:
-      //   "http://localhost:85/icp2022/icp_v1/registration_form/verified_mail.php",
-      // ------------------------------------------------------------------------------
-      url_api_member: "https://icp2022.net/icp_v1/signup_form/api-member.php",
-      url_api_mail: "https://icp2022.net/icp_v1/registration_form/mail.php",
-      url_api_verified_mail:
-        "https://icp2022.net/icp_v1/registration_form/verified_mail.php",
+      url_api_member: "",
+      url_api_mail: "",
+      url_api_verified_mail: "",
       // ------------------------------------------------------------------------------
       title: "การลงทะเบียน",
       members: Array,
@@ -561,7 +552,25 @@ export default {
     },
   },
   created() {
-    // this.getAllUser();
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      // ------------------------------------------------------------------------------
+      this.url_api_member =
+        "http://localhost:85/icp2022/icp_v1/signup_form/api-member.php";
+      this.url_api_mail =
+        "http://localhost:85/icp2022/icp_v1/registration_form/mail.php";
+      this.url_api_verified_mail =
+        "http://localhost:85/icp2022/icp_v1/registration_form/verified_mail.php";
+    } else {
+      // ------------------------------------------------------------------------------
+      this.url_api_member =
+        "https://icp2022.net/icp_v1/signup_form/api-member.php";
+      this.url_api_mail =
+        "https://icp2022.net/icp_v1/registration_form/mail.php";
+      this.url_api_verified_mail =
+        "https://icp2022.net/icp_v1/registration_form/verified_mail.php";
+      // ------------------------------------------------------------------------------
+    }
   },
   mounted() {
     this.getUpdate();

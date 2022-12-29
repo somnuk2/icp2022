@@ -263,13 +263,7 @@ function wrapCsvValue(val, formatFn, row) {
 export default {
   data() {
     return {
-      // -----------------------------------------------------------------------
-      // url_api_member:
-      //   "http://localhost:85/icp2022/icp_v1/registration_form/api-member.php",
-      // -----------------------------------------------------------------------
-      url_api_member:
-        "https://icp2022.net/icp_v1/registration_form/api-member.php",
-      // -----------------------------------------------------------------------
+      url_api_member: "",
       title: "การตั้งค่าส่วนตัว",
       members: Array,
       register: true,
@@ -607,7 +601,16 @@ export default {
     },
   },
   created() {
-    // this.getAllUser();
+    var www = this.$store.getters.myWWW;
+    if (!www) {
+      console.log("!www:", !www);
+      this.url_api_member =
+        "http://localhost:85/icp2022/icp_v1/registration_form/api-member.php";
+    } else {
+      console.log("www:", www);
+      this.url_api_member =
+        "https://icp2022.net/icp_v1/registration_form/api-member.php";
+    }
   },
   mounted() {
     this.getUpdate();
